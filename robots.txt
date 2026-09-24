@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://beepdo.app/sitemap.xml
