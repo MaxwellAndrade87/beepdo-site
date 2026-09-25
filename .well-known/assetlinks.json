@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.beepdo.app",
+      "sha256_cert_fingerprints": [
+        "0D:C1:E6:92:F4:40:47:2B:12:A3:41:76:A3:D4:B7:B0:53:B6:17:DB:52:4D:82:4E:BE:74:75:C9:14:68:F7:0F",
+        "6A:70:55:7A:A0:49:70:A2:70:F2:0E:83:DE:15:F9:9D:5B:00:BB:E8:D5:AE:6F:43:E0:31:13:16:0A:EE:7A:5E"
+      ]
+    }
+  }
+]
