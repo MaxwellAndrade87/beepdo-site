@@ -110,3 +110,28 @@ details p,details ul{margin:0 0 14px}
 .rodape a{display:block;color:var(--t2);text-decoration:none;margin:0 0 8px}
 .rodape a:hover{color:var(--ac)}
 .rodape .marca{font-size:18px;margin-bottom:10px}
+
+/* conta: confirmar e-mail / nova senha */
+.conta{padding:56px 0 80px}
+.conta .painel{max-width:440px;margin:0 auto;background:var(--card);border:1px solid var(--bd);border-radius:22px;padding:32px 26px;box-shadow:var(--sombra);text-align:center}
+.conta .painel img.logo{width:64px;height:64px;margin:0 auto 12px}
+.conta h1{font-size:28px;margin:6px 0 8px;letter-spacing:-.4px}
+.conta p{margin:0 0 14px}
+.conta .icone{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;margin:0 auto 10px}
+.conta .icone svg{width:30px;height:30px;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.conta .ok{background:color-mix(in srgb,var(--ok) 16%,transparent)}.conta .ok svg{stroke:var(--ok)}
+.conta .erro{background:color-mix(in srgb,#E5484D 16%,transparent)}.conta .erro svg{stroke:#E5484D}
+.conta form{text-align:left;margin-top:10px}
+.conta label{display:block;color:var(--t);font-weight:600;font-size:14px;margin:14px 0 6px}
+.campo{display:flex;align-items:center;border:1px solid var(--bd);border-radius:12px;background:var(--bg);padding-right:6px}
+.campo:focus-within{border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 22%,transparent)}
+.campo input{flex:1;border:0;background:transparent;color:var(--t);font:inherit;padding:13px 14px;outline:0;min-width:0}
+.olho{border:0;background:transparent;cursor:pointer;padding:8px;border-radius:8px;color:var(--mut);display:grid;place-items:center}
+.olho svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dica{font-size:13px;color:var(--mut);margin:6px 0 0}
+.msg-erro{color:#E5484D;font-size:14px;margin:12px 0 0;min-height:1em}
+.conta .btn{width:100%;justify-content:center;margin-top:18px;border:0;cursor:pointer;font:inherit;font-weight:700}
+.conta .btn[disabled]{opacity:.6;cursor:default}
+.carregando{width:34px;height:34px;border:3px solid var(--bd);border-top-color:var(--ac);border-radius:50%;margin:18px auto;animation:gira .8s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+[hidden]{display:none!important}
