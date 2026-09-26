@@ -237,3 +237,13 @@ details p,details ul{margin:0 0 14px}
 .news-msg.ok{color:var(--ok);font-weight:600}
 .news-msg.erro{color:#E5484D}
 .post .post-corpo h3{font-size:19px;color:var(--t);margin:24px 0 8px}
+.blog-cats{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 26px}
+.blog-cats .chip{font-size:14px;padding:8px 14px}
+.post-destaque{display:grid;grid-template-columns:1.1fr 1fr;background:var(--card);border:1px solid var(--bd);border-radius:22px;overflow:hidden;text-decoration:none;color:inherit;box-shadow:var(--sombra);transition:border-color .15s ease}
+.post-destaque:hover{border-color:var(--ac)}
+.post-destaque .capa{height:100%;min-height:240px}
+.post-destaque .capa span{font-size:84px}
+.post-destaque .post-info{padding:28px 30px;justify-content:center;gap:10px}
+.post-destaque h2{color:var(--t);font-size:clamp(22px,2.6vw,30px);line-height:1.2;margin:0}
+.post-destaque p{margin:0;color:var(--t2)}
+@media (max-width:760px){.post-destaque{grid-template-columns:1fr}.post-destaque .capa{min-height:160px}.post-destaque .post-info{padding:18px 18px 22px}}
