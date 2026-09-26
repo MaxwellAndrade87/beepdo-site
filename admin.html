@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel do suporte · BeepDo</title>
+<meta name="description" content="Área restrita da equipe BeepDo.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#6D4AE0">
+<meta property="og:title" content="Painel do suporte · BeepDo">
+<meta property="og:description" content="Área restrita da equipe BeepDo.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://beepdo.app/admin">
+<link rel="icon" href="/logo.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="topo"><div class="wrap">
+  <a class="marca" href="/"><img src="/logo.svg" alt="">BeepDo</a>
+  <nav class="menu">
+    <a href="/#recursos">Recursos</a>
+    <a href="/#premium">Premium</a>
+    <a href="/faq">Dúvidas</a>
+    <a href="/cancelamento">Cancelamento</a>
+    <a class="cta" href="/#premium">Ver planos</a>
+  </nav>
+</div></header>
+<main>
+<div class="conta adm"><div class="wrap">
+<div data-etapa="entrar" hidden><div class="painel">
+<img class="logo" src="/logo.svg" alt=""><h1>Painel do suporte</h1><p>Área restrita da equipe BeepDo.</p>
+<form id="fEntrar" novalidate>
+<label for="email">E-mail</label><div class="campo"><input id="email" type="email" autocomplete="username" required></div>
+<label for="senha">Senha</label>
+<div class="campo"><input id="senha" type="password" autocomplete="current-password" minlength="6" required>
+<button type="button" class="olho" data-alvo="senha" aria-label="Mostrar senha"><svg viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.7 10.7 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div>
+<p class="msg-erro" id="erroEntrar" role="alert"></p>
+<button class="btn btn-p" id="bEntrar" type="submit">Entrar</button>
+</form></div></div>
+<div data-etapa="negado" hidden><div class="painel"><div class="icone erro"><svg viewBox="0 0 24 24"><path d="M9 9l6 6M15 9l-6 6"/><circle cx="12" cy="12" r="9"/></svg></div><h1>Sem acesso</h1><p>Esta conta não é da equipe do BeepDo.</p><button class="btn btn-s" data-sair type="button">Sair</button></div></div>
+<div data-etapa="validando"><div class="painel"><div class="carregando"></div></div></div>
+<div data-etapa="painel" hidden>
+<div class="adm-topo"><div><h1>Painel do suporte</h1><p class="dica" id="quem"></p></div>
+<div class="adm-acoes"><button class="btn btn-s" id="bAtualizar" type="button">Atualizar</button><button class="btn btn-s" data-sair type="button">Sair</button></div></div>
+<div class="adm-filtros" id="fStatus"></div>
+<div class="adm-filtros" id="fTipo"></div>
+<div id="lista" class="adm-lista"></div>
+</div>
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.js"></script>
+<script>
+  const SB_URL = 'https://kbbclredwktimecdqtwq.supabase.co';
+  const SB_KEY = 'sb_publishable_vuSQaDWky4xRYPwCPvbr8g_5AUFizC5';
+  const sb = supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, storageKey: 'beepdo-admin', detectSessionInUrl: false } });
+  const q = new URLSearchParams(location.search);
+  const $ = id => document.getElementById(id);
+  const mostrar = id => { for (const e of document.querySelectorAll('[data-etapa]')) e.hidden = e.dataset.etapa !== id; };
+  function traduz(msg) {
+    const m = (msg || '').toLowerCase();
+    if (m.includes('should be different') || m.includes('same password')) return 'A nova senha precisa ser diferente da atual.';
+    if (m.includes('at least') || m.includes('weak')) return 'Senha fraca. Use pelo menos 6 caracteres.';
+    if (m.includes('rate limit') || m.includes('too many')) return 'Muitas tentativas seguidas. Aguarde alguns minutos.';
+    if (m.includes('expired') || m.includes('invalid')) return 'Esse link expirou ou já foi usado. Peça um novo no app.';
+    if (m.includes('fetch') || m.includes('network')) return 'Sem conexão. Verifique a internet e tente de novo.';
+    return 'Não deu certo. Tente de novo.';
+  }
+</script>
+<script>
+const TIPOS = { sugestao: 'Sugestão', problema: 'Problema', elogio: 'Elogio' };
+const STATUS = { nova: 'Nova', em_analise: 'Em análise', resolvida: 'Resolvida' };
+let itens = [], fStatus = 'nova', fTipo = 'todos';
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+for (const b of document.querySelectorAll('.olho')) b.addEventListener('click', () => {
+  const i = $(b.dataset.alvo); const ver = i.type === 'password'; i.type = ver ? 'text' : 'password';
+  b.querySelector('svg').innerHTML = ver ? '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>' : '<path d="M3 3l18 18"/><path d="M10.6 5.1A10.7 10.7 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>';
+});
+for (const b of document.querySelectorAll('[data-sair]')) b.addEventListener('click', async () => { await sb.auth.signOut(); mostrar('entrar'); });
+$('bAtualizar').addEventListener('click', () => carregar());
+$('fEntrar').addEventListener('submit', async e => {
+  e.preventDefault(); $('erroEntrar').textContent = ''; $('bEntrar').disabled = true;
+  const { error } = await sb.auth.signInWithPassword({ email: $('email').value.trim().toLowerCase(), password: $('senha').value });
+  $('bEntrar').disabled = false;
+  if (error) { $('erroEntrar').textContent = /invalid/i.test(error.message) ? 'E-mail ou senha incorretos.' : traduz(error.message); return; }
+  iniciar();
+});
+async function iniciar() {
+  mostrar('validando');
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return mostrar('entrar');
+  const { data: ok } = await sb.rpc('eh_admin');
+  if (!ok) return mostrar('negado');
+  $('quem').textContent = 'Conectado como ' + session.user.email;
+  mostrar('painel'); carregar();
+}
+async function carregar() {
+  const { data, error } = await sb.from('sugestoes').select('*').order('criado_em', { ascending: false }).limit(1000);
+  if (error) { $('lista').innerHTML = '<p class="msg-erro">Não foi possível carregar.</p>'; return; }
+  itens = data || []; desenhar();
+}
+function chip(ativo, texto, attr) { return '<button type="button" class="chip' + (ativo ? ' ativo' : '') + '" ' + attr + '>' + esc(texto) + '</button>'; }
+function desenhar() {
+  const n = { todas: itens.length, nova: 0, em_analise: 0, resolvida: 0 }; for (const i of itens) n[i.status]++;
+  $('fStatus').innerHTML = ['nova','em_analise','resolvida','todas'].map(s => chip(fStatus === s, (s === 'todas' ? 'Todas' : STATUS[s]) + ' (' + n[s] + ')', 'data-fs="' + s + '"')).join('');
+  $('fTipo').innerHTML = chip(fTipo === 'todos', 'Todos os tipos', 'data-ft="todos"') + Object.entries(TIPOS).map(([k, v]) => chip(fTipo === k, v, 'data-ft="' + k + '"')).join('');
+  const lista = itens.filter(i => (fStatus === 'todas' || i.status === fStatus) && (fTipo === 'todos' || i.tipo === fTipo));
+  $('lista').innerHTML = lista.length ? lista.map(i => {
+    const quando = new Date(i.criado_em).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const assunto = encodeURIComponent('Re: ' + (TIPOS[i.tipo] || 'Mensagem') + ' no BeepDo');
+    const corpo = encodeURIComponent('Olá' + (i.nome ? ', ' + i.nome : '') + '!\n\n\n\n---\nSua mensagem:\n' + i.mensagem);
+    return '<article class="adm-card st-' + i.status + '">' +
+      '<div class="adm-card-topo"><b>' + esc(TIPOS[i.tipo]) + '</b><span>' + esc(quando) + '</span></div>' +
+      '<p class="adm-msg">' + esc(i.mensagem) + '</p>' +
+      '<p class="dica">' + esc(i.nome || 'Sem nome') + ' · ' + esc(i.email || 'sem e-mail') + '<br>App ' + esc(i.versao_app || '?') + ' · ' + esc(i.dispositivo || '?') + '</p>' +
+      '<div class="adm-card-acoes">' + ['nova','em_analise','resolvida'].map(s => chip(i.status === s, STATUS[s], 'data-id="' + i.id + '" data-st="' + s + '"')).join('') +
+      (i.email ? '<a class="chip resp" href="mailto:' + esc(i.email) + '?subject=' + assunto + '&body=' + corpo + '">Responder por e-mail</a>' : '') + '</div></article>';
+  }).join('') : '<p class="dica" style="text-align:center;padding:40px 0">Nenhuma mensagem aqui.</p>';
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.fs) { fStatus = b.dataset.fs; desenhar(); }
+  else if (b.dataset.ft) { fTipo = b.dataset.ft; desenhar(); }
+  else if (b.dataset.st) {
+    const it = itens.find(x => x.id === b.dataset.id); if (!it || it.status === b.dataset.st) return;
+    const antes = it.status; it.status = b.dataset.st; desenhar();
+    const { error } = await sb.from('sugestoes').update({ status: it.status }).eq('id', it.id);
+    if (error) { it.status = antes; desenhar(); alert('Não deu pra mudar o status.'); }
+  }
+});
+iniciar();
+</script>
+</main>
+<footer class="rodape"><div class="wrap">
+  <div>
+    <a class="marca" href="/"><img src="/logo.svg" alt="">BeepDo</a>
+    <p style="margin:0 0 6px">Um app da Norte Max · CNPJ 65.855.690/0001-06</p>
+    <p style="margin:0 0 6px">Barra do Piraí, RJ</p>
+    <p style="margin:0">Suporte: <a style="display:inline" href="mailto:suporte@beepdo.app">suporte@beepdo.app</a></p>
+  </div>
+  <div>
+    <h4>App</h4>
+    <a href="/#recursos">Recursos</a>
+    <a href="/#premium">Premium</a>
+    <a href="/faq">Perguntas frequentes</a>
+  </div>
+  <div>
+    <h4>Legal</h4>
+    <a href="/privacidade">Política de Privacidade</a>
+    <a href="/termos">Termos de Uso</a>
+    <a href="/cancelamento">Cancelamento e reembolso</a>
+    <a href="/excluir-conta">Excluir conta</a>
+  </div>
+</div></footer>
+</body>
+</html>
