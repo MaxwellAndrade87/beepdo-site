@@ -155,3 +155,28 @@ details p,details ul{margin:0 0 14px}
 .adm-card-topo span{color:var(--mut);font-size:13px}
 .adm-msg{color:var(--t);white-space:pre-wrap;margin:8px 0}
 .adm-card-acoes{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.adm-abas{display:flex;gap:4px;border-bottom:1px solid var(--bd);margin:6px 0 12px}
+.adm-aba{flex:1;background:none;border:0;border-bottom:2px solid transparent;padding:12px;font:inherit;font-weight:700;color:var(--mut);cursor:pointer}
+.adm-aba.ativa{color:var(--ac);border-bottom-color:var(--ac)}
+.adm-usu{display:block;width:100%;font:inherit;color:inherit;cursor:pointer;border-left-color:var(--bd)}
+.adm-usu:hover{border-color:var(--ac)}
+.adm-usu .dica{margin:6px 0 0}
+.adm-selo{display:inline-block;margin-left:4px;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:700;background:var(--acbg);color:var(--ac)}
+.adm-selo.s-dono{background:var(--ac);color:#fff}
+.adm-selo.s-cort{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
+.adm-selo.s-venc{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.adm-ficha{width:min(560px,calc(100vw - 32px));max-height:calc(100vh - 32px);border:1px solid var(--bd);border-radius:18px;background:var(--card);color:var(--t2);padding:20px;box-shadow:var(--sombra);text-align:left}
+.adm-ficha::backdrop{background:rgba(10,8,20,.5)}
+.adm-ficha h2{font-size:22px;margin:0}
+.adm-ficha h3{color:var(--t);font-size:16px;margin:18px 0 4px}
+.adm-ficha-topo{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.adm-sw{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer;color:var(--t)}
+.adm-sw input{width:20px;height:20px;margin-top:2px;accent-color:var(--ac)}
+.adm-sw small{color:var(--mut)}
+.adm-linha{display:flex;justify-content:space-between;align-items:center;padding:10px 0;color:var(--t)}
+.adm-step{display:flex;align-items:center;gap:10px}
+.adm-step b{min-width:28px;text-align:center}
+.adm-aviso{background:var(--acbg);color:var(--ac);border-radius:12px;padding:10px 12px;font-weight:600;font-size:14px}
+.adm-ficha .adm-acoes{margin-top:14px;flex-wrap:wrap}
+.adm-ficha .adm-acoes .btn{width:auto;margin:0;padding:10px 16px;font-size:14px}
+#abaUsu .campo{margin-bottom:10px}
