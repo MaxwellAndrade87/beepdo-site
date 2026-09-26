@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+<title>Blog do BeepDo</title>
+<link>https://beepdo.app/blog/</link>
+<atom:link href="https://beepdo.app/blog/feed.xml" rel="self" type="application/rss+xml"/>
+<description>Dicas de organização, produtividade e novidades do app BeepDo.</description>
+<language>pt-BR</language>
+<item>
+<title>Como parar de esquecer tarefas: o método dos 3 avisos</title>
+<link>https://beepdo.app/blog/nunca-mais-esquecer-tarefas</link>
+<guid>https://beepdo.app/blog/nunca-mais-esquecer-tarefas</guid>
+<pubDate>Sat, 26 Sep 2026 15:00:00 GMT</pubDate>
+<category>Produtividade</category>
+<description>Anotar não basta: o que faz uma tarefa acontecer é ser lembrado na hora certa. Veja como combinar aviso antecipado, alarme e revisão do dia.</description>
+</item>
+<item>
+<title>Tarefas recorrentes: coloque a rotina no automático</title>
+<link>https://beepdo.app/blog/tarefas-recorrentes-rotina-no-automatico</link>
+<guid>https://beepdo.app/blog/tarefas-recorrentes-rotina-no-automatico</guid>
+<pubDate>Thu, 24 Sep 2026 15:00:00 GMT</pubDate>
+<category>Rotina</category>
+<description>Contas, remédios, faxina, relatórios: o que se repete não precisa ser anotado toda semana. Aprenda a criar tarefas recorrentes que se renovam sozinhas.</description>
+</item>
+<item>
+<title>Widgets na tela inicial: veja o seu dia sem abrir o app</title>
+<link>https://beepdo.app/blog/widgets-na-tela-inicial</link>
+<guid>https://beepdo.app/blog/widgets-na-tela-inicial</guid>
+<pubDate>Tue, 22 Sep 2026 15:00:00 GMT</pubDate>
+<category>Dicas do app</category>
+<description>O lugar mais visto do celular é a tela inicial. Veja como usar os widgets do BeepDo para acompanhar e concluir tarefas em um toque.</description>
+</item>
+<item>
+<title>Projetos: transforme metas grandes em passos pequenos</title>
+<link>https://beepdo.app/blog/projetos-metas-grandes-em-passos-pequenos</link>
+<guid>https://beepdo.app/blog/projetos-metas-grandes-em-passos-pequenos</guid>
+<pubDate>Sun, 20 Sep 2026 15:00:00 GMT</pubDate>
+<category>Produtividade</category>
+<description>Reforma, viagem, mudança, TCC: metas grandes travam porque parecem uma tarefa só. Veja como quebrar em passos pequenos e acompanhar o progresso.</description>
+</item>
+</channel>
+</rss>
