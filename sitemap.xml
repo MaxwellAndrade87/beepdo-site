@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://beepdo.app/</loc></url>
+  <url><loc>https://beepdo.app/blog/</loc></url>
   <url><loc>https://beepdo.app/faq</loc></url>
   <url><loc>https://beepdo.app/cancelamento</loc></url>
   <url><loc>https://beepdo.app/privacidade</loc></url>
   <url><loc>https://beepdo.app/termos</loc></url>
   <url><loc>https://beepdo.app/excluir-conta</loc></url>
+  <url><loc>https://beepdo.app/blog/nunca-mais-esquecer-tarefas</loc></url>
+  <url><loc>https://beepdo.app/blog/tarefas-recorrentes-rotina-no-automatico</loc></url>
+  <url><loc>https://beepdo.app/blog/widgets-na-tela-inicial</loc></url>
+  <url><loc>https://beepdo.app/blog/projetos-metas-grandes-em-passos-pequenos</loc></url>
 </urlset>

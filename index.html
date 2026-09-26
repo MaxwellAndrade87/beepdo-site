@@ -5,11 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BeepDo · Tarefas com alarme que toca de verdade</title>
 <meta name="description" content="Organize tarefas, projetos e lembretes com alarmes que tocam na hora certa, mesmo sem internet. App para Android.">
+<link rel="canonical" href="https://beepdo.app/">
+<link rel="alternate" type="application/rss+xml" title="Blog do BeepDo" href="https://beepdo.app/blog/feed.xml">
 <meta name="theme-color" content="#6D4AE0">
 <meta property="og:title" content="BeepDo · Tarefas com alarme que toca de verdade">
 <meta property="og:description" content="Organize tarefas, projetos e lembretes com alarmes que tocam na hora certa, mesmo sem internet. App para Android.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://beepdo.app/">
+<meta property="og:image" content="https://beepdo.app/favicon.png">
+<meta property="og:locale" content="pt_BR">
 <link rel="icon" href="/logo.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,8 +27,8 @@
   <nav class="menu">
     <a href="/#recursos">Recursos</a>
     <a href="/#premium">Premium</a>
+    <a href="/blog/">Blog</a>
     <a href="/faq">Dúvidas</a>
-    <a href="/cancelamento">Cancelamento</a>
     <a class="cta" href="/#premium">Ver planos</a>
   </nav>
 </div></header>
@@ -99,11 +103,95 @@
   </div>
 </div></section>
 
+<section class="blog-home"><div class="wrap">
+  <div class="blog-topo">
+    <div><h2>Do blog</h2><p class="sub" style="margin:0">Dicas para organizar a rotina e tirar o máximo do BeepDo.</p></div>
+    <div class="carrossel-nav">
+      <button type="button" class="seta" data-car="-1" aria-label="Posts anteriores"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <button type="button" class="seta" data-car="1" aria-label="Próximos posts"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+  <div class="carrossel" id="carrossel" tabindex="0" aria-label="Posts recentes do blog">
+    <a class="post-card" href="/blog/nunca-mais-esquecer-tarefas">
+  <div class="capa" style="background:linear-gradient(135deg,#6D4AE0,#B25AE0)" aria-hidden="true"><span>⏰</span></div>
+  <div class="post-info">
+    <span class="post-cat">Produtividade</span>
+    <h3>Como parar de esquecer tarefas: o método dos 3 avisos</h3>
+    <p>Anotar não basta: o que faz uma tarefa acontecer é ser lembrado na hora certa. Veja como combinar aviso antecipado, alarme e revisão do dia.</p>
+    <span class="post-meta">26 de setembro de 2026 · 5 min de leitura</span>
+  </div>
+</a>
+<a class="post-card" href="/blog/tarefas-recorrentes-rotina-no-automatico">
+  <div class="capa" style="background:linear-gradient(135deg,#1F9D63,#3DB8A8)" aria-hidden="true"><span>🔁</span></div>
+  <div class="post-info">
+    <span class="post-cat">Rotina</span>
+    <h3>Tarefas recorrentes: coloque a rotina no automático</h3>
+    <p>Contas, remédios, faxina, relatórios: o que se repete não precisa ser anotado toda semana. Aprenda a criar tarefas recorrentes que se renovam sozinhas.</p>
+    <span class="post-meta">24 de setembro de 2026 · 4 min de leitura</span>
+  </div>
+</a>
+<a class="post-card" href="/blog/widgets-na-tela-inicial">
+  <div class="capa" style="background:linear-gradient(135deg,#E08A2E,#E0B84A)" aria-hidden="true"><span>📱</span></div>
+  <div class="post-info">
+    <span class="post-cat">Dicas do app</span>
+    <h3>Widgets na tela inicial: veja o seu dia sem abrir o app</h3>
+    <p>O lugar mais visto do celular é a tela inicial. Veja como usar os widgets do BeepDo para acompanhar e concluir tarefas em um toque.</p>
+    <span class="post-meta">22 de setembro de 2026 · 3 min de leitura</span>
+  </div>
+</a>
+<a class="post-card" href="/blog/projetos-metas-grandes-em-passos-pequenos">
+  <div class="capa" style="background:linear-gradient(135deg,#3B6FE0,#6D4AE0)" aria-hidden="true"><span>🎯</span></div>
+  <div class="post-info">
+    <span class="post-cat">Produtividade</span>
+    <h3>Projetos: transforme metas grandes em passos pequenos</h3>
+    <p>Reforma, viagem, mudança, TCC: metas grandes travam porque parecem uma tarefa só. Veja como quebrar em passos pequenos e acompanhar o progresso.</p>
+    <span class="post-meta">20 de setembro de 2026 · 5 min de leitura</span>
+  </div>
+</a>
+  </div>
+  <p style="margin:18px 0 0"><a href="/blog/">Ver todos os posts ›</a></p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="news" id="newsletter">
+  <div class="news-txt">
+    <h2>Receba dicas e novidades do BeepDo</h2>
+    <p>Um e-mail de vez em quando, com dicas de organização e as novidades do app. Sem spam, e dá pra sair quando quiser.</p>
+  </div>
+  <form class="news-form" data-origem="home" novalidate>
+    <div class="news-campos">
+      <input type="text" name="nome" placeholder="Nome (opcional)" autocomplete="given-name" maxlength="80">
+      <input type="email" name="email" placeholder="Seu melhor e-mail" autocomplete="email" required maxlength="254">
+      <button class="btn btn-p" type="submit">Quero receber</button>
+    </div>
+    <label class="news-ok"><input type="checkbox" name="aceite" required><span>Aceito receber e-mails do BeepDo e li a <a href="/privacidade">Política de Privacidade</a>.</span></label>
+    <p class="news-msg" role="status" aria-live="polite"></p>
+  </form>
+</div>
+</div></section>
+
 <section class="alt"><div class="wrap estreito">
   <h2>Perguntas frequentes</h2>
   <p class="sub">As dúvidas mais comuns. <a href="/faq">Ver todas</a>.</p>
   <details><summary>Funciona sem internet?</summary><p>Sim. Tudo é salvo primeiro no celular. Quando a internet volta, o BeepDo sincroniza sozinho com a sua conta.</p></details><details><summary>Como funciona o teste grátis?</summary><p>No plano anual, quem nunca assinou tem 7 dias grátis. Se cancelar antes do fim do teste, nada é cobrado. Se não cancelar, a assinatura começa automaticamente.</p></details><details><summary>Como cancelo?</summary><p>No Google Play › Pagamentos e assinaturas › Assinaturas › BeepDo › Cancelar. Ou no app: Perfil › Gerenciar assinatura. <a href="/cancelamento">Veja o passo a passo</a>.</p></details><details><summary>O que acontece com meus dados se eu cancelar?</summary><p>Nada é apagado. Os recursos Premium ficam travados: projetos acima de 3 continuam editáveis, o alarme volta a ser notificação comum e o tema volta ao padrão.</p></details><details><summary>O alarme não tocou. E agora?</summary><ul><li>Confira se as notificações do BeepDo estão ligadas no Android e no Perfil do app.</li><li>Desative a economia de bateria para o BeepDo (Configurações › Apps › BeepDo › Bateria › Sem restrições).</li><li>No modo alarme, permita "Alarmes e lembretes" e "Tela cheia" quando o app pedir.</li></ul></details>
 </div></section>
+<script>
+(() => {
+  const c = document.getElementById('carrossel'); if (!c) return;
+  const passo = () => { const card = c.querySelector('.post-card'); return card ? card.getBoundingClientRect().width + 18 : 300; };
+  for (const b of document.querySelectorAll('[data-car]')) b.addEventListener('click', () => c.scrollBy({ left: passo() * Number(b.dataset.car), behavior: 'smooth' }));
+  // Passa sozinho a cada 6 s (para quando a pessoa interage ou prefere menos movimento)
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let parado = false; const parar = () => { parado = true; };
+  ['pointerdown','wheel','touchstart','focusin','keydown'].forEach(e => c.addEventListener(e, parar, { passive: true }));
+  setInterval(() => {
+    if (parado || document.hidden) return;
+    const fim = c.scrollLeft + c.clientWidth >= c.scrollWidth - 8;
+    c.scrollTo({ left: fim ? 0 : c.scrollLeft + passo(), behavior: 'smooth' });
+  }, 6000);
+})();
+</script>
+<script src="/newsletter.js" defer></script>
 
 </main>
 <footer class="rodape"><div class="wrap">
@@ -118,6 +206,8 @@
     <a href="/#recursos">Recursos</a>
     <a href="/#premium">Premium</a>
     <a href="/faq">Perguntas frequentes</a>
+    <a href="/blog/">Blog</a>
+    <a href="/#newsletter">Newsletter</a>
   </div>
   <div>
     <h4>Legal</h4>

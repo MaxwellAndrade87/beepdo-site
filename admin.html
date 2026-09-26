@@ -6,11 +6,15 @@
 <title>Painel do suporte · BeepDo</title>
 <meta name="description" content="Área restrita da equipe BeepDo.">
 <meta name="robots" content="noindex">
+<link rel="canonical" href="https://beepdo.app/admin">
+<link rel="alternate" type="application/rss+xml" title="Blog do BeepDo" href="https://beepdo.app/blog/feed.xml">
 <meta name="theme-color" content="#6D4AE0">
 <meta property="og:title" content="Painel do suporte · BeepDo">
 <meta property="og:description" content="Área restrita da equipe BeepDo.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://beepdo.app/admin">
+<meta property="og:image" content="https://beepdo.app/favicon.png">
+<meta property="og:locale" content="pt_BR">
 <link rel="icon" href="/logo.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,8 +28,8 @@
   <nav class="menu">
     <a href="/#recursos">Recursos</a>
     <a href="/#premium">Premium</a>
+    <a href="/blog/">Blog</a>
     <a href="/faq">Dúvidas</a>
-    <a href="/cancelamento">Cancelamento</a>
     <a class="cta" href="/#premium">Ver planos</a>
   </nav>
 </div></header>
@@ -46,7 +50,7 @@
 <div data-etapa="painel" hidden>
 <div class="adm-topo"><div><h1>Painel do suporte</h1><p class="dica" id="quem"></p></div>
 <div class="adm-acoes"><button class="btn btn-s" id="bAtualizar" type="button">Atualizar</button><button class="btn btn-s" data-sair type="button">Sair</button></div></div>
-<div class="adm-abas"><button type="button" class="adm-aba ativa" data-aba="msg">Mensagens</button><button type="button" class="adm-aba" data-aba="usu">Usuários</button></div>
+<div class="adm-abas"><button type="button" class="adm-aba ativa" data-aba="msg">Mensagens</button><button type="button" class="adm-aba" data-aba="usu">Usuários</button><button type="button" class="adm-aba" data-aba="news">Newsletter</button></div>
 <div id="abaMsg">
 <div class="adm-filtros" id="fStatus"></div>
 <div class="adm-filtros" id="fTipo"></div>
@@ -55,6 +59,11 @@
 <div id="abaUsu" hidden>
 <div class="campo"><input id="busca" type="search" placeholder="Buscar por nome ou e-mail" autocomplete="off"></div>
 <div id="usuarios" class="adm-lista"></div>
+</div>
+<div id="abaNews" hidden>
+<div class="adm-topo" style="margin:0 0 10px"><p class="dica" id="newsResumo" style="margin:0"></p><div class="adm-acoes"><button class="btn btn-s" id="bNewsCsv" type="button">Exportar CSV</button></div></div>
+<div class="campo" style="margin-bottom:10px"><input id="buscaNews" type="search" placeholder="Buscar por nome ou e-mail" autocomplete="off"></div>
+<div id="newsLista" class="adm-lista"></div>
 </div>
 </div>
 <dialog id="ficha" class="adm-ficha"><form method="dialog" id="fFicha" novalidate>
@@ -201,9 +210,34 @@ const temAlgo = c => !!c && (c.premium || c.projetos_extra > 0 || RECS.some(r =>
 const vencida = c => !!(c && c.expira_em) && new Date(c.expira_em).getTime() <= Date.now();
 for (const b of document.querySelectorAll('.adm-aba')) b.addEventListener('click', () => {
   for (const x of document.querySelectorAll('.adm-aba')) x.classList.toggle('ativa', x === b);
-  $('abaMsg').hidden = b.dataset.aba !== 'msg'; $('abaUsu').hidden = b.dataset.aba !== 'usu';
+  $('abaMsg').hidden = b.dataset.aba !== 'msg'; $('abaUsu').hidden = b.dataset.aba !== 'usu'; $('abaNews').hidden = b.dataset.aba !== 'news';
   if (b.dataset.aba === 'usu' && !usuarios.length) carregarUsuarios();
 });
+// ---------- Newsletter: inscritos ----------
+let inscritos = null;
+async function carregarNews() {
+  $('newsLista').innerHTML = '<div class="carregando"></div>';
+  const { data, error } = await sb.rpc('newsletter_listar');
+  if (error) { $('newsLista').innerHTML = '<p class="msg-erro">Não foi possível carregar os inscritos.</p>'; return; }
+  inscritos = data || []; desenharNews();
+}
+function desenharNews() {
+  const termo = $('buscaNews').value.trim().toLowerCase();
+  const ativos = inscritos.filter(i => !i.cancelado_em).length;
+  $('newsResumo').textContent = ativos + ' inscritos ativos · ' + (inscritos.length - ativos) + ' cancelados';
+  const lista = inscritos.filter(i => !termo || (i.email + ' ' + (i.nome || '')).toLowerCase().includes(termo));
+  $('newsLista').innerHTML = lista.length ? lista.map(i => '<div class="adm-card adm-usu" style="cursor:default' + (i.cancelado_em ? ';opacity:.55' : '') + '"><div class="adm-card-topo"><b>' + esc(i.email) + '</b><span>' + esc(new Date(i.criado_em).toLocaleDateString('pt-BR')) + '</span></div><p class="dica">' + esc(i.nome || 'Sem nome') + ' · origem: ' + esc(i.origem || 'site') + (i.cancelado_em ? ' · cancelou em ' + esc(new Date(i.cancelado_em).toLocaleDateString('pt-BR')) : '') + '</p></div>').join('') : '<p class="dica" style="text-align:center;padding:40px 0">Ninguém inscrito ainda.</p>';
+}
+$('buscaNews').addEventListener('input', () => inscritos && desenharNews());
+$('bNewsCsv').addEventListener('click', () => {
+  if (!inscritos) return;
+  const cel = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const linhas = [['email','nome','origem','inscrito_em','cancelado_em'].join(';')].concat(inscritos.filter(i => !i.cancelado_em).map(i => [i.email, i.nome, i.origem, i.criado_em, i.cancelado_em].map(cel).join(';')));
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\ufeff' + linhas.join('\r\n')], { type: 'text/csv;charset=utf-8' }));
+  a.download = 'newsletter-beepdo.csv'; a.click();
+});
+for (const b of document.querySelectorAll('.adm-aba[data-aba="news"]')) b.addEventListener('click', () => { if (!inscritos) carregarNews(); });
 $('busca').addEventListener('input', () => { clearTimeout(tBusca); tBusca = setTimeout(carregarUsuarios, 400); });
 async function carregarUsuarios() {
   $('usuarios').innerHTML = '<div class="carregando"></div>';
@@ -308,6 +342,8 @@ iniciar();
     <a href="/#recursos">Recursos</a>
     <a href="/#premium">Premium</a>
     <a href="/faq">Perguntas frequentes</a>
+    <a href="/blog/">Blog</a>
+    <a href="/#newsletter">Newsletter</a>
   </div>
   <div>
     <h4>Legal</h4>

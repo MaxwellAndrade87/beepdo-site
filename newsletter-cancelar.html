@@ -3,15 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Excluir conta · BeepDo</title>
-<meta name="description" content="Como excluir sua conta do BeepDo e os dados ligados a ela.">
-<link rel="canonical" href="https://beepdo.app/excluir-conta">
+<title>Cancelar newsletter · BeepDo</title>
+<meta name="description" content="Cancelar a inscrição na newsletter do BeepDo.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://beepdo.app/newsletter-cancelar">
 <link rel="alternate" type="application/rss+xml" title="Blog do BeepDo" href="https://beepdo.app/blog/feed.xml">
 <meta name="theme-color" content="#6D4AE0">
-<meta property="og:title" content="Excluir conta · BeepDo">
-<meta property="og:description" content="Como excluir sua conta do BeepDo e os dados ligados a ela.">
+<meta property="og:title" content="Cancelar newsletter · BeepDo">
+<meta property="og:description" content="Cancelar a inscrição na newsletter do BeepDo.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://beepdo.app/excluir-conta">
+<meta property="og:url" content="https://beepdo.app/newsletter-cancelar">
 <meta property="og:image" content="https://beepdo.app/favicon.png">
 <meta property="og:locale" content="pt_BR">
 <link rel="icon" href="/logo.svg" type="image/svg+xml">
@@ -33,23 +34,20 @@
   </nav>
 </div></header>
 <main>
-<div class="doc"><div class="wrap estreito">
-<div class="migalha"><a href="/">Início</a> › Excluir conta</div>
-<h1>Excluir conta do BeepDo</h1>
-<p class="data">Você pode excluir sua conta e todos os dados ligados a ela quando quiser, sem custo.</p>
-<h2>Pelo app (na hora)</h2>
-<ol class="passos">
-  <li>Abra o BeepDo e vá em <b>Perfil › Excluir conta</b>.</li>
-  <li>Digite <b>EXCLUIR</b> para confirmar e toque em <b>Excluir minha conta</b>. É preciso estar com internet.</li>
-</ol>
-<h2>Sem o app (por e-mail)</h2>
-<p>Envie um e-mail para <a href="mailto:suporte@beepdo.app?subject=Excluir%20conta%20BeepDo">suporte@beepdo.app</a> a partir do e-mail da sua conta, com o assunto <b>"Excluir conta BeepDo"</b>. Confirmamos o pedido e excluímos a conta em até 15 dias.</p>
-<h2>O que é apagado</h2>
-<ul><li>Tarefas, projetos, descrições, alarmes e etiquetas.</li><li>Perfil, nome de usuário, preferências e o login (e-mail e senha).</li></ul>
-<h2>O que fica guardado por um tempo</h2>
-<ul><li>Registros de acesso (IP, data e hora): 6 meses, como exige o art. 15 do Marco Civil da Internet.</li><li>Dados de compra da assinatura: pelo prazo exigido pela legislação fiscal e de defesa do consumidor.</li></ul>
-<div class="caixa">Tem Premium? Excluir a conta não cancela a cobrança. <a href="/cancelamento">Cancele a assinatura</a> antes.</div>
+<div class="conta"><div class="wrap">
+<div data-etapa="validando"><div class="painel"><div class="carregando"></div><p>Cancelando sua inscrição…</p></div></div>
+<div data-etapa="ok" hidden><div class="painel"><div class="icone ok"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><h1>Inscrição cancelada</h1><p>Você não vai mais receber a newsletter do BeepDo. Se mudar de ideia, é só se inscrever de novo no site.</p><a class="btn btn-s" href="/">Voltar ao início</a></div></div>
+<div data-etapa="erro" hidden><div class="painel"><div class="icone erro"><svg viewBox="0 0 24 24"><path d="M9 9l6 6M15 9l-6 6"/><circle cx="12" cy="12" r="9"/></svg></div><h1>Link inválido</h1><p>Não encontramos essa inscrição, ou ela já foi cancelada. Se continuar recebendo e-mails, fale com <a href="mailto:suporte@beepdo.app">suporte@beepdo.app</a>.</p><a class="btn btn-s" href="/">Voltar ao início</a></div></div>
 </div></div>
+<script src="/newsletter.js"></script>
+<script>
+(async () => {
+  const mostrar = id => { for (const e of document.querySelectorAll('[data-etapa]')) e.hidden = e.dataset.etapa !== id; };
+  const t = new URLSearchParams(location.search).get('t') || '';
+  if (!/^[0-9a-f-]{36}$/i.test(t)) return mostrar('erro');
+  try { mostrar((await window.BeepDoNews.cancelar(t)) ? 'ok' : 'erro'); } catch { mostrar('erro'); }
+})();
+</script>
 </main>
 <footer class="rodape"><div class="wrap">
   <div>
