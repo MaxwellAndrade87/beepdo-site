@@ -236,3 +236,4 @@ details p,details ul{margin:0 0 14px}
 .news-msg{font-size:14px;margin:10px 0 0;min-height:1em}
 .news-msg.ok{color:var(--ok);font-weight:600}
 .news-msg.erro{color:#E5484D}
+.post .post-corpo h3{font-size:19px;color:var(--t);margin:24px 0 8px}
