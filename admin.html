@@ -57,6 +57,7 @@
 <div id="lista" class="adm-lista"></div>
 </div>
 <div id="abaUsu" hidden>
+<div class="adm-card adm-usu" style="cursor:default;margin-bottom:10px"><div class="adm-card-topo"><b>Espaços no Premium</b><span class="adm-step"><button type="button" class="chip" data-lim="-1">−</button> <b id="limEsp">…</b> <button type="button" class="chip" data-lim="1">+</button> <button type="button" class="chip ativo" id="bLimEsp" hidden>Salvar</button></span></div><p class="dica" id="limEspTxt">Grátis: 2. Este é o máximo por conta com Premium ou cortesia de espaços.</p></div>
 <div class="campo"><input id="busca" type="search" placeholder="Buscar por nome ou e-mail" autocomplete="off"></div>
 <div id="usuarios" class="adm-lista"></div>
 </div>
@@ -79,6 +80,7 @@
 <label class="adm-sw"><input type="checkbox" id="c_recorrencia"> <span>Recorrência por regras</span></label>
 <label class="adm-sw"><input type="checkbox" id="c_modo_alarme"> <span>Modo alarme</span></label>
 <label class="adm-sw"><input type="checkbox" id="c_widget_projeto"> <span>Widget de Projeto</span></label>
+<label class="adm-sw"><input type="checkbox" id="c_espacos"> <span>Espaços do Premium</span></label>
 </div>
 <h3>Validade</h3>
 <div class="adm-filtros" id="cPrazos"></div>
@@ -202,7 +204,7 @@ async function enviarResposta(id, botao) {
   await carregar(); await carregarConversa(id);
 }
 // ---------- Usuários e cortesias ----------
-const RECS = ['temas', 'recorrencia', 'modo_alarme', 'widget_projeto'];
+const RECS = ['temas', 'recorrencia', 'modo_alarme', 'widget_projeto', 'espacos'];
 const LIMITE_GRATIS = 3;
 let usuarios = [], souDono = false, atual = null, extra = 0, prazo = 'sem', tBusca = null;
 const dataBR = iso => iso ? new Date(iso).toLocaleDateString('pt-BR') : '';
@@ -212,6 +214,7 @@ for (const b of document.querySelectorAll('.adm-aba')) b.addEventListener('click
   for (const x of document.querySelectorAll('.adm-aba')) x.classList.toggle('ativa', x === b);
   $('abaMsg').hidden = b.dataset.aba !== 'msg'; $('abaUsu').hidden = b.dataset.aba !== 'usu'; $('abaNews').hidden = b.dataset.aba !== 'news';
   if (b.dataset.aba === 'usu' && !usuarios.length) carregarUsuarios();
+if (b.dataset.aba === 'usu' && limEsp === null) carregarLimite();
 });
 // ---------- Newsletter: inscritos ----------
 let inscritos = null;
@@ -325,6 +328,21 @@ $('fRetirar').addEventListener('click', async () => {
   const { error } = await sb.from('cortesias').delete().eq('user_id', u.id);
   if (error) { $('fErro').textContent = 'Não deu pra retirar.'; return; }
   $('ficha').close(); carregarUsuarios();
+});
+// ---------- Limite de espaços do Premium ----------
+let limEsp = null, limSalvo = null;
+async function carregarLimite() { const { data } = await sb.rpc('limite_espacos_premium'); if (typeof data === 'number') { limEsp = limSalvo = data; desenharLimite(); } }
+function desenharLimite() { $('limEsp').textContent = limEsp == null ? '…' : limEsp; $('bLimEsp').hidden = limEsp === limSalvo; }
+$('abaUsu').addEventListener('click', async e => {
+const b = e.target.closest('button'); if (!b) return;
+if (b.dataset.lim && limEsp != null) { limEsp = Math.max(2, Math.min(100, limEsp + Number(b.dataset.lim))); desenharLimite(); }
+else if (b.id === 'bLimEsp') {
+b.disabled = true;
+const { data, error } = await sb.rpc('admin_definir_limite_espacos', { p_limite: limEsp });
+b.disabled = false;
+if (error) { alert('Não deu pra salvar: ' + error.message); return; }
+limEsp = limSalvo = data; desenharLimite(); $('limEspTxt').textContent = 'Salvo. O Premium agora pode ter até ' + data + ' espaços.';
+}
 });
 $('usuarios').addEventListener('click', e => { const b = e.target.closest('[data-u]'); if (b) abrirFicha(usuarios.find(x => x.id === b.dataset.u)); });
 iniciar();
