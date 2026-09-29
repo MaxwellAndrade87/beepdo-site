@@ -81,6 +81,7 @@
 <label class="adm-sw"><input type="checkbox" id="c_modo_alarme"> <span>Modo alarme</span></label>
 <label class="adm-sw"><input type="checkbox" id="c_widget_projeto"> <span>Widget de Projeto</span></label>
 <label class="adm-sw"><input type="checkbox" id="c_espacos"> <span>Espaços do Premium</span></label>
+<label class="adm-sw"><input type="checkbox" id="c_troca_automatica"> <span>Troca automática de espaço</span></label>
 </div>
 <h3>Validade</h3>
 <div class="adm-filtros" id="cPrazos"></div>
@@ -204,7 +205,7 @@ async function enviarResposta(id, botao) {
   await carregar(); await carregarConversa(id);
 }
 // ---------- Usuários e cortesias ----------
-const RECS = ['temas', 'recorrencia', 'modo_alarme', 'widget_projeto', 'espacos'];
+const RECS = ['temas', 'recorrencia', 'modo_alarme', 'widget_projeto', 'espacos', 'troca_automatica'];
 const LIMITE_GRATIS = 3;
 let usuarios = [], souDono = false, atual = null, extra = 0, prazo = 'sem', tBusca = null;
 const dataBR = iso => iso ? new Date(iso).toLocaleDateString('pt-BR') : '';
