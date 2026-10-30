@@ -533,7 +533,13 @@ A.setCel = (el) => {
   if (c === '__auto') delete S.ajustes[k]; else S.ajustes[k] = c;
   S.ui.pop = null; S.ui.manterScroll = true; salvar('ajustes'); render();
 };
-A.folgaAqui = () => { const { pid, s } = S.ui.pop, p = S.equipe.find((x) => x.id === pid); if (!p) return; p.inicio = addD(s, -trabBloco(setorDoTurno(turnoEm(p, s)))); S.ui.pop = null; S.ui.manterScroll = true; salvar('equipe'); render(); toast('Folga de ' + p.nome + ' agora começa em ' + br(s)); };
+function botoesFolga(pid, s) {
+  const p = S.equipe.find((x) => x.id === pid); if (!p) return '';
+  const bl = (setorDoTurno(turnoEm(p, s)).ciclo.blocos || []);
+  if (bl.length <= 1) return '<button class="btn sm" data-a="folgaAqui" data-b="0">Folga começa aqui</button>';
+  return bl.map((b, i) => '<button class="btn sm" data-a="folgaAqui" data-b="' + i + '">Folga de ' + b[1] + (b[1] === 1 ? ' dia' : ' dias') + ' começa aqui</button>').join('');
+}
+A.folgaAqui = (el) => { const { pid, s } = S.ui.pop, p = S.equipe.find((x) => x.id === pid); if (!p) return; const bl = setorDoTurno(turnoEm(p, s)).ciclo.blocos || [[6, 2]], k = +((el && el.dataset.b) || 0); let pos = 0; for (let i = 0; i < k; i++) pos += bl[i][0] + bl[i][1]; pos += bl[k][0]; p.inicio = addD(s, -pos); S.ui.pop = null; S.ui.manterScroll = true; salvar('equipe'); render(); toast('Folga de ' + p.nome + ' agora começa em ' + br(s)); };
 A.fecharPop = () => { S.ui.pop = null; S.ui.manterScroll = true; render(); };
 function opcoesCodigo(st) {
   const lista = st ? [st] : setores(), out = [];
@@ -569,7 +575,7 @@ V.escala = () => {
     const p = S.equipe.find((x) => x.id === S.ui.pop.pid);
     pop = '<div class="pop" style="left:' + S.ui.pop.x + 'px;top:' + Math.max(8, S.ui.pop.y) + 'px"><div class="row" style="justify-content:space-between"><b>' + esc(p ? p.nome : '') + ' · ' + SEM[dow(S.ui.pop.s)] + ' ' + br(S.ui.pop.s) + '</b><button class="btn ghost sm" data-a="fecharPop">Fechar</button></div>' +
       '<div class="chips">' + opcoesCodigo(setorDoTurno(diaEscala(S.ui.pop.s).turno[S.ui.pop.pid])).map((c) => '<button data-a="setCel" data-c="' + esc(c) + '" style="' + tagStyle(c) + '">' + esc(c === 'x' ? 'Folga' : c) + '</button>').join('') + '</div>' +
-      '<div class="row" style="gap:6px"><button class="btn sm" data-a="setCel" data-c="__auto">Voltar pro automático</button><button class="btn sm" data-a="folgaAqui">Folga do ciclo começa aqui</button></div><span class="sub" style="font-size:11px">"Folga do ciclo começa aqui" muda o ciclo da pessoa: as folgas passam a seguir a partir deste dia.</span></div>';
+      '<div class="row" style="gap:6px"><button class="btn sm" data-a="setCel" data-c="__auto">Voltar pro automático</button>' + botoesFolga(S.ui.pop.pid, S.ui.pop.s) + '</div><span class="sub" style="font-size:11px">Os botões de folga mudam o ciclo da pessoa: a folga escolhida começa neste dia e as outras seguem a partir dele.</span></div>';
   }
   const regras = S.ui.regras ? '<div class="card grid2" style="gap:18px">' +
     '<div class="col"><b>Ciclo</b><span class="sub">' + setores().map((x) => esc(x.nome) + ': ' + esc(x.ciclo.nome)).join(' · ') + '</span><span class="sub">Cada posto tem o seu ciclo, em Configurações. Cada pessoa entra pela primeira folga dela.</span></div>' +
