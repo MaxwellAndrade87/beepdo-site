@@ -190,6 +190,7 @@ function cfgPadrao() {
       { sigla: 'TC', nome: 'Remanejado p/ turno C', tipo: 'turno', destino: 'C', cor: '#2A2A33' }
     ],
     travas: { interjornada: 11, maxSeguidos: 6, virada: 'sai' },
+    remanejoLinhaDias: 4,
     feriadoModo: 'bh',
     jornada: 8,
     feriadosExtras: [],
@@ -252,7 +253,13 @@ function padraoCiclo() { const r = []; S.cfg.ciclo.blocos.forEach(([t, f]) => { 
 function trabBloco() { return ((S.cfg.ciclo.blocos || [])[0] || [6])[0]; }
 function proximaFolga(p) { const h0 = hojeStr(); for (let i = 0; i < 90; i++) { const s = addD(h0, i); if (!trabalhaCiclo(p, s)) return SEM[dow(s)] + ' ' + br(s); } return '-'; }
 function trabalhaCiclo(p, s) { const pc = padraoCiclo(), L = pc.length; if (!p.inicio) return true; const i = ((diffD(p.inicio, s) % L) + L) % L; return pc[i] === 1; }
-function ausenciaDe(pid, s) { let r = null; for (const a of S.ausencias) if (a.pessoaId === pid && s >= a.de && s <= a.ate) r = a; return r; }
+function ausenciaDe(pid, s) { let r = null; for (const a of S.ausencias) if (a.pessoaId === pid && s >= a.de && (!a.ate || s <= a.ate)) r = a; return r; }
+function turnoEm(p, s) { const hs = (p.historicoTurno || []).slice().sort((a, b) => a.ate.localeCompare(b.ate)); for (const x of hs) if (s <= x.ate) return x.turno; return p.turno; }
+function remanejoLinha(a) { return !a.ate || diffD(a.de, a.ate) + 1 >= (S.cfg.remanejoLinhaDias == null ? 4 : S.cfg.remanejoLinhaDias); }
+function siglaDoTurno(t) { const x = S.cfg.siglas.find((y) => y.tipo === 'turno' && y.destino === t); return x ? x.sigla : 'x'; }
+function localDe(p, s) { return diaEscala(s).turno[p.id] || turnoEm(p, s); }
+function naLinha(p, s, T) { if (turnoEm(p, s) === T) { const r = ausenciaDe(p.id, s); if (!(r && !r.ate && (siglaInfo(r.sigla) || {}).tipo === 'turno')) return true; } if (localDe(p, s) !== T) return false; const a = ausenciaDe(p.id, s); return !!a && remanejoLinha(a); }
+function celula(p, s, T) { const d = diaEscala(s); if (localDe(p, s) !== T) return siglaDoTurno(localDe(p, s)); if (d.posto[p.id]) return d.posto[p.id]; const c = d.cod[p.id] || 'x'; return (siglaInfo(c) || {}).tipo === 'turno' ? 'x' : c; }
 function turnoPorId(id) { return S.cfg.turnos.find((t) => t.id === id); }
 function janela(id) {
   const t = turnoPorId(id); if (!t) return [0, 0];
@@ -277,13 +284,13 @@ function simular(ate) {
     const disp = {}, forc = {};
     S.cfg.turnos.forEach((t) => { disp[t.id] = []; forc[t.id] = []; });
     ativos.forEach((p) => {
-      let cod = null, tReal = p.turno, livre = false;
+      let cod = null, tReal = turnoEm(p, s), livre = false;
       const ov = S.ajustes[p.id + '|' + s];
       const a = ausenciaDe(p.id, s);
       const ciclo = trabalhaCiclo(p, s);
       if (a) {
         const inf = siglaInfo(a.sigla);
-        if (inf.tipo === 'turno') { if (ciclo) { cod = a.sigla; tReal = inf.destino; livre = true; } else cod = 'x'; }
+        if (inf.tipo === 'turno') { tReal = inf.destino; if (ciclo) { cod = a.sigla; livre = true; } else cod = 'x'; }
         else if (inf.tipo === 'treinamento') cod = ciclo ? a.sigla : 'x';
         else cod = a.sigla;
       } else if (!ciclo || (fer && S.cfg.feriadoModo === 'folga')) cod = 'x';
@@ -338,10 +345,10 @@ function escalaMes(a, m) {
   const ativos = S.equipe.filter((p) => p.ativo !== false);
   const alertas = [];
   const turnos = S.cfg.turnos.map((t) => {
-    const pess = ativos.filter((p) => p.turno === t.id).sort((x, y) => x.nome.localeCompare(y.nome));
+    const pess = ativos.filter((p) => dias.some((s) => naLinha(p, s, t.id))).sort((x, y) => ((turnoEm(x, dias[dias.length - 1]) === t.id ? 0 : 1) - (turnoEm(y, dias[dias.length - 1]) === t.id ? 0 : 1)) || x.nome.localeCompare(y.nome));
     const linhas = pess.map((p) => {
       let trab = 0, folgas = 0, fer = 0;
-      const cods = dias.map((s) => { const c = codigo(p.id, s); if (trabalhando(c)) { trab++; if (feriado(s) && S.cfg.feriadoModo === 'bh') fer += S.cfg.jornada; } else if (c === 'x') folgas++; return c; });
+      const cods = dias.map((s) => { const c = celula(p, s, t.id); if (localDe(p, s) !== t.id) return c; if (trabalhando(c)) { trab++; if (feriado(s) && S.cfg.feriadoModo === 'bh') fer += S.cfg.jornada; } else if (c === 'x') folgas++; return c; });
       return { p, cods, trab, folgas, fer };
     });
     const cob = dias.map((s) => {
@@ -461,7 +468,7 @@ V.painel = () => {
     return '<div class="col" style="gap:6px"><div class="row" style="justify-content:space-between"><b>' + esc(t.nome) + '</b><span class="sub">' + t.ini + ' às ' + t.fim + '</span></div>' +
       (pess.length ? pess.map((p) => '<div class="row" style="justify-content:space-between"><span>' + esc(p.nome) + '</span>' + tag(d.posto[p.id] || d.cod[p.id]) + '</div>').join('') : '<span class="vazio">Ninguém escalado</span>') + '</div>';
   }).join('<hr style="border:none;border-top:1px solid #EEEEF3;margin:4px 0">');
-  const aus7 = S.ausencias.filter((x) => x.ate >= hj && x.de <= addD(hj, 7));
+  const aus7 = S.ausencias.filter((x) => (!x.ate || x.ate >= hj) && x.de <= addD(hj, 7));
   const saldos = S.equipe.filter((p) => p.ativo !== false).map((p) => ({ p, v: saldoBH(p.id, hj) })).sort((x, y) => y.v - x.v);
   const criticos = saldos.filter((x) => x.v >= S.cfg.bh.atencao);
   const naoExec = S.tarefas.filter((t) => !t.feita && t.prazo && t.prazo < hj);
@@ -578,6 +585,7 @@ M.pessoa = () => {
     '<label class="f">Nome<input class="i" name="nome" required value="' + esc(p.nome) + '"></label>' +
     '<div class="grid2" style="grid-template-columns:1fr 1fr;gap:10px"><label class="f">Matrícula (opcional)<input class="i" name="matricula" value="' + esc(p.matricula || '') + '"></label>' +
     '<label class="f">Turno<select class="i" name="turno">' + S.cfg.turnos.map((t) => '<option value="' + t.id + '"' + (p.turno === t.id ? ' selected' : '') + '>' + esc(t.nome) + '</option>').join('') + '</select></label></div>' +
+    (p.novo ? '' : '<label class="f">Se mudar o turno, vale a partir de<input class="i" type="date" name="desde" value="' + hojeStr() + '"></label>') +
     '<label class="f">Primeira folga (1º dia de folga do ciclo)<input class="i" type="date" name="folga" required value="' + esc(p.inicio ? addD(p.inicio, trabBloco()) : '') + '"></label>' +
     '<label class="f">Observação<input class="i" name="obs" placeholder="Ex.: novato, padrinho Leandro" value="' + esc(p.obs || '') + '"></label>' +
     '<label class="row" style="gap:8px;font-size:13px"><input type="checkbox" name="ativo"' + (p.ativo !== false ? ' checked' : '') + '> Ativo na escala</label>' +
@@ -585,6 +593,8 @@ M.pessoa = () => {
 };
 function onPessoa(f) {
   const p = S.ui.modal.p, novo = p.novo;
+  const antigo = novo ? null : S.equipe.find((x) => x.id === p.id);
+  if (antigo && antigo.turno !== f.turno.value && f.desde && f.desde.value) { p.historicoTurno = (antigo.historicoTurno || []).concat([{ ate: addD(f.desde.value, -1), turno: antigo.turno }]); }
   Object.assign(p, { nome: f.nome.value.trim(), matricula: f.matricula.value.trim(), turno: f.turno.value, inicio: addD(f.folga.value, -trabBloco()), obs: f.obs.value.trim(), ativo: f.ativo.checked });
   delete p.novo;
   if (novo) S.equipe.push(p); else S.equipe[S.equipe.findIndex((x) => x.id === p.id)] = p;
@@ -618,15 +628,15 @@ function siglasAusencia() { return S.cfg.siglas.filter((x) => x.sigla !== 'x'); 
 V.ausencias = () => {
   const hj = hojeStr(), sig = S.ui.ausSig || 'BH';
   const ativos = S.equipe.filter((p) => p.ativo !== false).sort((a, b) => a.nome.localeCompare(b.nome));
-  const futuras = S.ausencias.filter((x) => x.ate >= hj).sort((a, b) => a.de.localeCompare(b.de));
-  const passadas = S.ausencias.filter((x) => x.ate < hj).sort((a, b) => b.de.localeCompare(a.de)).slice(0, 30);
-  const linha = (x) => { const p = S.equipe.find((y) => y.id === x.pessoaId); const n = diffD(x.de, x.ate) + 1; return '<tr><td>' + tag(x.sigla) + '</td><td><b>' + esc(p ? p.nome : '?') + '</b></td><td>' + (n === 1 ? brA(x.de) : br(x.de) + ' a ' + brA(x.ate)) + ' <span class="sub">(' + n + (n === 1 ? ' dia' : ' dias') + ')</span></td><td class="sub">' + esc(x.obs || '') + '</td><td style="text-align:right"><button class="btn ghost sm danger" data-a="excluirAus" data-id="' + x.id + '">Excluir</button></td></tr>'; };
+  const futuras = S.ausencias.filter((x) => !x.ate || x.ate >= hj).sort((a, b) => a.de.localeCompare(b.de));
+  const passadas = S.ausencias.filter((x) => x.ate && x.ate < hj).sort((a, b) => b.de.localeCompare(a.de)).slice(0, 30);
+  const linha = (x) => { const p = S.equipe.find((y) => y.id === x.pessoaId); const n = x.ate ? diffD(x.de, x.ate) + 1 : 0; return '<tr><td>' + tag(x.sigla) + '</td><td><b>' + esc(p ? p.nome : '?') + '</b></td><td>' + (!x.ate ? 'a partir de ' + brA(x.de) + ' <span class="sub">(sem data de fim)</span>' : (n === 1 ? brA(x.de) : br(x.de) + ' a ' + brA(x.ate)) + ' <span class="sub">(' + n + (n === 1 ? ' dia' : ' dias') + ')</span>') + '</td><td class="sub">' + esc(x.obs || '') + '</td><td style="text-align:right"><button class="btn ghost sm danger" data-a="excluirAus" data-id="' + x.id + '">Excluir</button></td></tr>'; };
   return '<div class="topo"><div><h1>Ausências</h1><div class="sub">O que você lança aqui entra direto na escala, e o app redistribui os postos do dia.</div></div></div>' +
     '<div class="grid2" style="grid-template-columns:minmax(300px,380px) 1fr">' +
     '<div class="card col"><h2>Nova ausência</h2><form class="col" data-f="ausencia">' +
     '<label class="f">Pessoa<select class="i" name="pessoa" required>' + ativos.map((p) => '<option value="' + p.id + '">' + esc(p.nome) + ' · ' + esc((turnoPorId(p.turno) || {}).nome || p.turno) + '</option>').join('') + '</select></label>' +
     '<div class="col" style="gap:6px"><span style="font-size:12px;font-weight:600">Tipo</span><div class="chipsel">' + siglasAusencia().map((x) => '<button type="button" data-a="ausSig" data-s="' + esc(x.sigla) + '" style="' + tagStyle(x.sigla) + ';border:2px solid ' + (sig === x.sigla ? 'var(--ac)' : 'transparent') + '">' + esc(x.nome) + '</button>').join('') + '</div></div>' +
-    '<div class="grid2" style="grid-template-columns:1fr 1fr;gap:10px"><label class="f">De<input class="i" type="date" name="de" required value="' + hj + '"></label><label class="f">Até<input class="i" type="date" name="ate" required value="' + hj + '"></label></div>' +
+    '<div class="grid2" style="grid-template-columns:1fr 1fr;gap:10px"><label class="f">De<input class="i" type="date" name="de" required value="' + hj + '"></label><label class="f">Até (vazio = sem fim)<input class="i" type="date" name="ate" value="' + hj + '"></label></div>' +
     '<label class="f">Observação (opcional)<input class="i" name="obs"></label>' +
     ((siglaInfo(sig) || {}).descontaBH ? '<span class="sub" style="color:var(--in)">Cada dia que a pessoa trabalharia desconta ' + S.cfg.jornada + 'h do banco de horas.</span>' : '') +
     '<button class="btn pri">Lançar e atualizar escala</button></form></div>' +
@@ -635,7 +645,7 @@ V.ausencias = () => {
 };
 A.ausSig = (el) => { S.ui.ausSig = el.dataset.s; const f = $('[data-f=ausencia]'); const keep = f ? { p: f.pessoa.value, de: f.de.value, ate: f.ate.value, obs: f.obs.value } : null; render(); const g = $('[data-f=ausencia]'); if (g && keep) { g.pessoa.value = keep.p; g.de.value = keep.de; g.ate.value = keep.ate; g.obs.value = keep.obs; } };
 function onAusencia(f) {
-  if (f.ate.value < f.de.value) { toast('A data final é antes da inicial'); return; }
+  if (f.ate.value && f.ate.value < f.de.value) { toast('A data final é antes da inicial'); return; }
   S.ausencias.push({ id: uid(), pessoaId: f.pessoa.value, sigla: S.ui.ausSig || 'BH', de: f.de.value, ate: f.ate.value, obs: f.obs.value.trim() });
   salvar('ausencias'); render(); toast('Lançado. A escala já foi atualizada.');
 }
@@ -935,7 +945,8 @@ V.config = () => {
       (x.tipo === 'turno' ? '<select class="i" style="width:70px" data-c="sDest" data-i="' + i + '">' + c.turnos.map((t) => '<option' + (x.destino === t.id ? ' selected' : '') + '>' + t.id + '</option>').join('') + '</select>' : '') +
       (x.tipo === 'ausencia' ? '<label class="row" style="gap:4px;font-size:11px;white-space:nowrap" title="Desconta a jornada do banco de horas"><input type="checkbox" data-c="sBH" data-i="' + i + '"' + (x.descontaBH ? ' checked' : '') + '>-BH</label>' : '') +
       (x.sigla !== 'x' ? '<button class="btn ghost sm danger" data-a="sRem" data-i="' + i + '" aria-label="Remover">✕</button>' : '') + '</div>').join('') +
-    '<button class="btn sm" data-a="sAdd" style="align-self:flex-start">Adicionar sigla</button></div></div>' +
+    '<button class="btn sm" data-a="sAdd" style="align-self:flex-start">Adicionar sigla</button>' +
+    '<div class="regra"><div class="l"><b style="font-weight:500">Remanejamento vira linha no turno de destino</b><small>A partir de quantos dias (sem data de fim, sempre)</small></div><div class="stepper"><button data-a="remLinha" data-d="-1" aria-label="Diminuir">−</button><span>' + (S.cfg.remanejoLinhaDias == null ? 4 : S.cfg.remanejoLinhaDias) + ' dias</span><button data-a="remLinha" data-d="1" aria-label="Aumentar">+</button></div></div></div></div>' +
     '<div class="card col"><h2>Feriados de ' + ano + '</h2><span class="sub">Nacionais já vêm. Desmarque o que não vale e adicione municipais ou pontos facultativos.</span><div class="grid2" style="gap:6px">' +
     nac.map((d) => '<label class="row" style="gap:8px;font-size:13px"><input type="checkbox" checked data-c="ferOff" data-d="' + d + '"> ' + br(d) + ' · ' + esc(fer[d]) + '</label>').join('') +
     (c.feriadosIgnorados || []).filter((d) => d.startsWith(ano + '')).map((d) => '<label class="row" style="gap:8px;font-size:13px;color:var(--mu)"><input type="checkbox" data-c="ferOn" data-d="' + d + '"> ' + br(d) + ' (desligado)</label>').join('') + '</div>' +
@@ -972,6 +983,7 @@ C.sTipo = (el) => { cfgSet((c) => { const x = c.siglas[+el.dataset.i]; x.tipo = 
 C.sDest = (el) => cfgSet((c) => { c.siglas[+el.dataset.i].destino = el.value; });
 C.sBH = (el) => cfgSet((c) => { c.siglas[+el.dataset.i].descontaBH = el.checked; });
 A.sRem = (el) => { const x = S.cfg.siglas[+el.dataset.i]; if (S.ausencias.some((a) => a.sigla === x.sigla)) { toast('Essa sigla está em uso em ausências.'); return; } if (!confirm('Remover a sigla ' + x.sigla + '?')) return; cfgSet((c) => c.siglas.splice(+el.dataset.i, 1)); render(); };
+A.remLinha = (el) => { cfgSet((c) => { c.remanejoLinhaDias = Math.max(1, Math.min(31, (c.remanejoLinhaDias == null ? 4 : c.remanejoLinhaDias) + +el.dataset.d)); }); render(); };
 A.sAdd = () => { cfgSet((c) => c.siglas.push({ sigla: 'N' + c.siglas.length, nome: 'Nova sigla', tipo: 'ausencia', cor: '#E8E8F0' })); render(); };
 C.ferOff = (el) => { cfgSet((c) => { const d = el.dataset.d; const ex = (c.feriadosExtras || []).findIndex((f) => (f.recorrente ? d.slice(4) === f.data.slice(4) : f.data === d)); if (ex >= 0) c.feriadosExtras.splice(ex, 1); else c.feriadosIgnorados = (c.feriadosIgnorados || []).concat([d]); }); render(); };
 C.ferOn = (el) => { cfgSet((c) => { c.feriadosIgnorados = c.feriadosIgnorados.filter((x) => x !== el.dataset.d); }); render(); };
