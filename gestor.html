@@ -1000,13 +1000,13 @@ A.expBaixar = () => {
     rows.push([cel('', '#EFEAFB'), cel('', '#EFEAFB')].concat(em.dias.map((s) => cel(feriado(s) ? 'fer' : SEM[dow(s)], feriado(s) ? '#FBE3EA' : '#EFEAFB')), [cel('', '#EFEAFB'), cel('', '#EFEAFB')], e.bh ? [cel('', '#EFEAFB')] : []));
     turnos.forEach(({ t, linhas, cob }) => {
       linhas.forEach(({ p, cods, trab, folgas }) => {
-        rows.push([cel(t.nome, null, true), cel(p.nome, null, false, 'left')].concat(cods.map((c) => cel(c === 'x' ? '' : c, (siglaInfo(c) || {}).cor, true)), [cel(trab), cel(folgas)], e.bh ? [cel(sh(saldoBH(p.id, fim)))] : []));
+        rows.push([cel(t.nome, null, true), cel(p.nome, null, false, 'left')].concat(cods.map((c) => cel(c, (siglaInfo(c) || {}).cor, true)), [cel(trab), cel(folgas)], e.bh ? [cel(sh(saldoBH(p.id, fim)))] : []));
       });
       rows.push([cel(t.nome, null, false), cel('Cobertura', null, false, 'left')].concat(cob.map((f) => cel(f.length ? 'Falta ' + f.join('/') : 'ok', f.length ? '#FDECEA' : null)), [cel(''), cel('')], e.bh ? [cel('')] : []));
     });
     rows.push([]);
     rows.push([cel('Legenda', null, true, 'left')]);
-    opcoesCodigo().filter((c) => !/3$/.test(c)).forEach((c) => { const i = siglaInfo(c); rows.push([cel(c === 'x' ? 'Folga' : c, i.cor, true), cel(i.nome, null, false, 'left')]); });
+    opcoesCodigo().filter((c) => !/3$/.test(c)).forEach((c) => { const i = siglaInfo(c); rows.push([cel(c, i.cor, true), cel(i.nome, null, false, 'left')]); });
     const ws = XLSX.utils.aoa_to_sheet(rows);
     ws['!cols'] = [{ wch: 10 }, { wch: 18 }].concat(em.dias.map(() => ({ wch: 5.5 })), [{ wch: 6 }, { wch: 7 }, { wch: 9 }]);
     ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 10 } }];
