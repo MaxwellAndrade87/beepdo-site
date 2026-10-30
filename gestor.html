@@ -302,7 +302,7 @@ function simular(ate) {
       const need = Math.max(0, Math.min(n, P.length) - f.filter((x) => P.includes(x)).length);
       const livres = P.filter((x) => !f.includes(x)).slice(0, need);
       const nSup = Math.max(0, d.length - livres.length);
-      const ord = d.slice().sort((a, b) => ((c.ultSup[a] ?? -1e9) - (c.ultSup[b] ?? -1e9)) || String(a).localeCompare(String(b)));
+      const ord = d.slice().sort((a, b) => { const ua = c.ultSup[a] || '', ub = c.ultSup[b] || ''; return ua < ub ? -1 : ua > ub ? 1 : String(a).localeCompare(String(b)); });
       const semOntem = ord.filter((pid) => !ehSup(c.ontem[pid]));
       const supL = semOntem.concat(ord.filter((pid) => !semOntem.includes(pid))).slice(0, nSup);
       const usadosSup = f.filter(ehSup);
