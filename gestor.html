@@ -249,6 +249,8 @@ function tag(c, txt) { return '<span class="tag" style="' + tagStyle(c) + '">' +
 
 /* ============ ciclo ============ */
 function padraoCiclo() { const r = []; S.cfg.ciclo.blocos.forEach(([t, f]) => { for (let i = 0; i < t; i++) r.push(1); for (let j = 0; j < f; j++) r.push(0); }); return r.length ? r : [1]; }
+function trabBloco() { return ((S.cfg.ciclo.blocos || [])[0] || [6])[0]; }
+function proximaFolga(p) { const h0 = hojeStr(); for (let i = 0; i < 90; i++) { const s = addD(h0, i); if (!trabalhaCiclo(p, s)) return SEM[dow(s)] + ' ' + br(s); } return '-'; }
 function trabalhaCiclo(p, s) { const pc = padraoCiclo(), L = pc.length; if (!p.inicio) return true; const i = ((diffD(p.inicio, s) % L) + L) % L; return pc[i] === 1; }
 function ausenciaDe(pid, s) { let r = null; for (const a of S.ausencias) if (a.pessoaId === pid && s >= a.de && s <= a.ate) r = a; return r; }
 function turnoPorId(id) { return S.cfg.turnos.find((t) => t.id === id); }
@@ -449,7 +451,7 @@ V.painel = () => {
   const hj = hojeStr();
   if (!S.equipe.length) return '<div class="topo"><div><h1>Bem-vindo à Área do Gestor</h1><div class="sub">Comece cadastrando a equipe. Depois a escala sai sozinha.</div></div></div>' +
     '<div class="grid2"><div class="card col"><h2>1. Configure turnos, postos e siglas</h2><span class="sub">Horários, cores, ciclo (6x2, 6x1/5x2...) e as travas de descanso. Tudo já vem com um padrão que você muda.</span><button class="btn" data-a="ir" data-v="config">Abrir configurações</button></div>' +
-    '<div class="card col"><h2>2. Cadastre as pessoas</h2><span class="sub">Nome, turno e o dia em que ela começa o ciclo (o índice).</span><button class="btn pri" data-a="ir" data-v="equipe">Cadastrar equipe</button></div></div>';
+    '<div class="card col"><h2>2. Cadastre as pessoas</h2><span class="sub">Nome, turno e o primeiro dia de folga.</span><button class="btn pri" data-a="ir" data-v="equipe">Cadastrar equipe</button></div></div>';
   const [a, m] = hj.split('-').map(Number);
   const em = escalaMes(a, m);
   const alertasProx = em.alertas.filter((x) => x.s >= hj).slice(0, 5);
@@ -541,7 +543,7 @@ V.escala = () => {
   }
   const ciclosBtns = Object.keys(CICLOS_PRONTOS).map((n) => '<button class="' + (S.cfg.ciclo.nome === n && !S.ui.cicloPers ? 'on' : '') + '" data-a="ciclo" data-n="' + n + '">' + n + '</button>').join('') + '<button class="' + (S.ui.cicloPers || !CICLOS_PRONTOS[S.cfg.ciclo.nome] ? 'on' : '') + '" data-a="ciclo" data-n="pers">Personalizado</button>';
   const regras = S.ui.regras ? '<div class="card grid2" style="gap:18px">' +
-    '<div class="col"><b>Ciclo</b><div class="chipsel">' + ciclosBtns + '</div>' + (S.ui.cicloPers || !CICLOS_PRONTOS[S.cfg.ciclo.nome] ? '<input class="i" data-c="cicloPers" placeholder="Ex.: 6x1, 5x2" value="' + esc(S.cfg.ciclo.nome) + '">' : '') + '<span class="sub">Cada pessoa entra no ciclo pelo dia de início dela (Equipe). O mês seguinte continua de onde este parou.</span></div>' +
+    '<div class="col"><b>Ciclo</b><div class="chipsel">' + ciclosBtns + '</div>' + (S.ui.cicloPers || !CICLOS_PRONTOS[S.cfg.ciclo.nome] ? '<input class="i" data-c="cicloPers" placeholder="Ex.: 6x1, 5x2" value="' + esc(S.cfg.ciclo.nome) + '">' : '') + '<span class="sub">Cada pessoa entra no ciclo pela primeira folga dela (Equipe). O mês seguinte continua de onde este parou.</span></div>' +
     '<div class="col"><b>Feriado</b><div class="chipsel">' + [['bh', 'Trabalha e gera BH'], ['sem', 'Trabalha sem BH'], ['folga', 'Folga']].map(([k, l]) => '<button class="' + (S.cfg.feriadoModo === k ? 'on' : '') + '" data-a="feriadoModo" data-m="' + k + '">' + l + '</button>').join('') + '</div><span class="sub">Feriados nacionais já vêm. Municipais e pontos facultativos você coloca em Configurações.</span></div>' +
     '<div class="col"><b>Distribuição</b><span class="sub">Com 2 pessoas: ' + princ().slice(0, 2).join(' e ') + '. Quem segue trabalhando troca de posto todo dia e nunca repete o de ontem. Quem volta de folga entra no posto descoberto. Quem sobra vira ' + S.cfg.sup.prefixo + ', em rodízio, nunca 2 dias seguidos.</span><button class="btn sm" data-a="ir" data-v="config" style="align-self:flex-start">Postos, siglas e cores</button></div>' +
     '<div class="col"><b>Travas</b><span class="sub">Descanso mínimo de ' + S.cfg.travas.interjornada + 'h entre jornadas e no máximo ' + S.cfg.travas.maxSeguidos + ' dias seguidos. O que passar disso vira alerta vermelho.</span></div></div>' : '';
@@ -559,14 +561,14 @@ V.escala = () => {
 V.equipe = () => {
   const hj = hojeStr();
   const lista = S.equipe.slice().sort((a, b) => (a.turno + a.nome).localeCompare(b.turno + b.nome));
-  return '<div class="topo"><div><h1>Equipe</h1><div class="sub">' + S.equipe.filter((p) => p.ativo !== false).length + ' pessoas ativas · o turno e o início do ciclo de cada um alimentam a escala</div></div>' +
+  return '<div class="topo"><div><h1>Equipe</h1><div class="sub">' + S.equipe.filter((p) => p.ativo !== false).length + ' pessoas ativas · o turno e a folga de cada um alimentam a escala</div></div>' +
     '<div class="row"><button class="btn" data-a="importar">Colar lista</button><button class="btn pri" data-a="novaPessoa">Adicionar pessoa</button></div></div>' +
-    '<div class="card flush"><table class="t"><thead><tr><th>Nome</th><th>Matrícula</th><th>Turno</th><th>Início do ciclo</th><th>Hoje</th><th>Saldo BH</th><th>Situação</th></tr></thead><tbody>' +
+    '<div class="card flush"><table class="t"><thead><tr><th>Nome</th><th>Matrícula</th><th>Turno</th><th>Próxima folga</th><th>Hoje</th><th>Saldo BH</th><th>Situação</th></tr></thead><tbody>' +
     (lista.length ? lista.map((p) => {
       const c = codigo(p.id, hj), t = turnoPorId(p.turno), v = saldoBH(p.id, hj), f = faixaBH(v);
-      return '<tr class="click" data-a="editarPessoa" data-p="' + p.id + '"><td><b>' + esc(p.nome) + '</b>' + (p.obs ? '<div class="sub">' + esc(p.obs) + '</div>' : '') + '</td><td class="sub">' + esc(p.matricula || '-') + '</td><td>' + esc(t ? t.nome : p.turno) + '</td><td>' + (p.inicio ? brA(p.inicio) : '-') + '</td><td>' + (p.ativo === false ? '-' : tag(c)) + '</td><td><span class="pill ' + f[1] + '">' + sh(v) + '</span></td><td>' + (p.ativo === false ? '<span class="pill p-mu">Inativo</span>' : '<span class="pill p-ok">Ativo</span>') + '</td></tr>';
+      return '<tr class="click" data-a="editarPessoa" data-p="' + p.id + '"><td><b>' + esc(p.nome) + '</b>' + (p.obs ? '<div class="sub">' + esc(p.obs) + '</div>' : '') + '</td><td class="sub">' + esc(p.matricula || '-') + '</td><td>' + esc(t ? t.nome : p.turno) + '</td><td>' + (p.ativo === false ? '-' : proximaFolga(p)) + '</td><td>' + (p.ativo === false ? '-' : tag(c)) + '</td><td><span class="pill ' + f[1] + '">' + sh(v) + '</span></td><td>' + (p.ativo === false ? '<span class="pill p-mu">Inativo</span>' : '<span class="pill p-ok">Ativo</span>') + '</td></tr>';
     }).join('') : '<tr><td colspan="7" class="vazio" style="padding:20px">Ninguém cadastrado ainda.</td></tr>') + '</tbody></table></div>' +
-    '<div class="card col"><h2>Como funciona o início do ciclo</h2><span class="sub">É o primeiro dia de trabalho de um bloco do ciclo (' + esc(S.cfg.ciclo.nome) + '). A partir dele o app calcula todos os dias de trabalho e folga, em qualquer mês. Pra quem faz o mesmo ciclo junto (ex.: novato com o padrinho), use a mesma data.</span></div>';
+    '<div class="card col"><h2>Como funciona a folga</h2><span class="sub">Você informa o primeiro dia de folga de cada pessoa no ciclo (' + esc(S.cfg.ciclo.nome) + '). A partir dele o app calcula todos os dias de trabalho e folga, em qualquer mês. Pra quem folga junto (ex.: novato com o padrinho), use a mesma data.</span></div>';
 };
 A.novaPessoa = () => { S.ui.modal = { t: 'pessoa', p: { id: uid(), nome: '', turno: S.cfg.turnos[0].id, inicio: hojeStr(), ativo: true, novo: true } }; render(); };
 A.editarPessoa = (el) => { const p = S.equipe.find((x) => x.id === el.dataset.p); S.ui.modal = { t: 'pessoa', p: Object.assign({}, p) }; render(); };
@@ -576,14 +578,14 @@ M.pessoa = () => {
     '<label class="f">Nome<input class="i" name="nome" required value="' + esc(p.nome) + '"></label>' +
     '<div class="grid2" style="grid-template-columns:1fr 1fr;gap:10px"><label class="f">Matrícula (opcional)<input class="i" name="matricula" value="' + esc(p.matricula || '') + '"></label>' +
     '<label class="f">Turno<select class="i" name="turno">' + S.cfg.turnos.map((t) => '<option value="' + t.id + '"' + (p.turno === t.id ? ' selected' : '') + '>' + esc(t.nome) + '</option>').join('') + '</select></label></div>' +
-    '<label class="f">Início do ciclo (primeiro dia de trabalho de um bloco)<input class="i" type="date" name="inicio" required value="' + esc(p.inicio || '') + '"></label>' +
+    '<label class="f">Primeira folga (1º dia de folga do ciclo)<input class="i" type="date" name="folga" required value="' + esc(p.inicio ? addD(p.inicio, trabBloco()) : '') + '"></label>' +
     '<label class="f">Observação<input class="i" name="obs" placeholder="Ex.: novato, padrinho Leandro" value="' + esc(p.obs || '') + '"></label>' +
     '<label class="row" style="gap:8px;font-size:13px"><input type="checkbox" name="ativo"' + (p.ativo !== false ? ' checked' : '') + '> Ativo na escala</label>' +
     '<div class="row" style="justify-content:space-between">' + (p.novo ? '<span></span>' : '<button type="button" class="btn danger" data-a="excluirPessoa">Excluir</button>') + '<div class="row"><button type="button" class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri">Salvar</button></div></div></form>';
 };
 function onPessoa(f) {
   const p = S.ui.modal.p, novo = p.novo;
-  Object.assign(p, { nome: f.nome.value.trim(), matricula: f.matricula.value.trim(), turno: f.turno.value, inicio: f.inicio.value, obs: f.obs.value.trim(), ativo: f.ativo.checked });
+  Object.assign(p, { nome: f.nome.value.trim(), matricula: f.matricula.value.trim(), turno: f.turno.value, inicio: addD(f.folga.value, -trabBloco()), obs: f.obs.value.trim(), ativo: f.ativo.checked });
   delete p.novo;
   if (novo) S.equipe.push(p); else S.equipe[S.equipe.findIndex((x) => x.id === p.id)] = p;
   S.ui.modal = null; salvar('equipe'); render(); toast(novo ? 'Pessoa adicionada' : 'Salvo');
@@ -598,15 +600,15 @@ A.excluirPessoa = () => {
   S.ui.modal = null; ['equipe', 'ausencias', 'ajustes', 'bh'].forEach(salvar); render();
 };
 A.importar = () => { S.ui.modal = { t: 'importar' }; render(); };
-M.importar = () => '<h2>Colar lista da equipe</h2><span class="sub">Uma pessoa por linha: <b>Nome; Turno; início do ciclo</b>. Ex.: <code>Leandro; A; 03/11/2026</code>. Dá pra copiar direto do Excel (colunas separadas por tab também funcionam).</span>' +
-  '<form class="col" data-f="importar"><textarea class="i" name="txt" rows="10" placeholder="Leandro; A; 03/11/2026&#10;Yuri; A; 03/11/2026"></textarea><div class="row" style="justify-content:flex-end"><button type="button" class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri">Importar</button></div></form>';
+M.importar = () => '<h2>Colar lista da equipe</h2><span class="sub">Uma pessoa por linha: <b>Nome; Turno; primeira folga</b>. Ex.: <code>Leandro; A; 05/11/2026</code>. Dá pra copiar direto do Excel (colunas separadas por tab também funcionam).</span>' +
+  '<form class="col" data-f="importar"><textarea class="i" name="txt" rows="10" placeholder="Leandro; A; 05/11/2026&#10;Yuri; A; 05/11/2026"></textarea><div class="row" style="justify-content:flex-end"><button type="button" class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri">Importar</button></div></form>';
 function onImportar(f) {
   let n = 0;
   f.txt.value.split('\n').forEach((l) => {
     const c = l.split(/[;\t]/).map((x) => x.trim()); if (!c[0]) return;
     const t = (c[1] || '').replace(/^turno\s*/i, '').toUpperCase();
     let ini = c[2] || ''; const m = ini.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); if (m) ini = m[3] + '-' + pad(+m[2]) + '-' + pad(+m[1]);
-    S.equipe.push({ id: uid(), nome: c[0], turno: turnoPorId(t) ? t : S.cfg.turnos[0].id, inicio: /^\d{4}-\d{2}-\d{2}$/.test(ini) ? ini : hojeStr(), ativo: true }); n++;
+    S.equipe.push({ id: uid(), nome: c[0], turno: turnoPorId(t) ? t : S.cfg.turnos[0].id, inicio: /^\d{4}-\d{2}-\d{2}$/.test(ini) ? addD(ini, -trabBloco()) : hojeStr(), ativo: true }); n++;
   });
   S.ui.modal = null; salvar('equipe'); render(); toast(n + ' pessoa(s) importada(s)');
 }
