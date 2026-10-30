@@ -1,0 +1,1052 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Área do Gestor - BeepDo</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js" defer></script>
+<style>
+:root{--bg:#F6F6F9;--sf:#FFFFFF;--bd:#E6E6EE;--bd2:#D9D9E3;--tx:#1B1B23;--mu:#5E5E6E;--ac:#5B3FB0;--acs:#EFEAFB;--ok:#1E6B3A;--oks:#E3F4E8;--er:#B3261E;--ers:#FDECEA;--wa:#7A5000;--was:#FFF4D6;--in:#0D5788;--ins:#D6ECFB}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,sans-serif;font-size:14px}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--ac)}
+.app{display:flex;min-height:100vh}
+.side{width:236px;flex:none;background:var(--sf);border-right:1px solid var(--bd);padding:22px 14px;display:flex;flex-direction:column;gap:20px;position:sticky;top:0;height:100vh}
+.brand{display:flex;gap:10px;align-items:center;padding:0 8px}
+.brand b{font-size:16px;display:block}.brand small{color:var(--mu);font-size:12px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:42px;padding:0 12px;border-radius:10px;font-size:14px;font-weight:500;color:#3A3A48}
+.nav button:hover{background:#F4F4F8}
+.nav button.on{background:var(--acs);color:var(--ac);font-weight:600}
+.nav .cnt{margin-left:auto;font-size:11px;font-weight:700;background:var(--ers);color:var(--er);border-radius:999px;padding:2px 7px}
+.side .rodape{margin-top:auto;display:flex;flex-direction:column;gap:6px;padding:0 8px;font-size:12px;color:var(--mu)}
+.main{flex:1;min-width:0;padding:28px 34px 60px;display:flex;flex-direction:column;gap:18px}
+.topo{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px}
+h1{margin:0;font-size:24px;font-weight:700}
+h2{margin:0;font-size:16px;font-weight:600}
+.sub{color:var(--mu);font-size:13px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:18px}
+.card.flush{padding:0;overflow:auto}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.col{display:flex;flex-direction:column;gap:10px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;align-items:start}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.kpi{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:4px}
+.kpi span{font-size:12px;color:var(--mu)}.kpi b{font-size:26px}
+.btn{min-height:40px;padding:0 14px;border-radius:10px;border:1px solid var(--bd2);background:var(--sf);font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--tx)}
+.btn:hover{border-color:#BDBDCB}
+.btn.pri{background:var(--ac);border-color:var(--ac);color:#fff}
+.btn.pri:hover{background:#4C33A0}
+.btn.sm{min-height:32px;padding:0 10px;font-size:12px;border-radius:8px}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--ac)}
+.btn.danger{color:var(--er)}
+.seg{display:inline-flex;gap:4px;background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:4px;flex-wrap:wrap}
+.seg button{all:unset;cursor:pointer;min-height:34px;padding:0 14px;border-radius:8px;font-size:13px;font-weight:600;color:#3A3A48;display:inline-flex;align-items:center}
+.seg button.on{background:var(--ac);color:#fff}
+.chipsel{display:flex;flex-wrap:wrap;gap:6px}
+.chipsel button{min-height:34px;padding:0 12px;border-radius:8px;border:1px solid var(--bd2);background:var(--sf);font-size:13px;font-weight:600;cursor:pointer}
+.chipsel button.on{border-color:var(--ac);background:var(--acs);color:var(--ac)}
+label.f{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:600;color:#3A3A48}
+input.i,select.i,textarea.i{min-height:40px;padding:8px 10px;border:1px solid var(--bd2);border-radius:10px;background:var(--sf);font-size:14px;font-weight:400;width:100%}
+textarea.i{min-height:80px;resize:vertical}
+input[type=color].i{padding:3px;width:44px;min-height:36px}
+.tag{display:inline-flex;align-items:center;justify-content:center;height:24px;min-width:40px;padding:0 8px;border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap}
+.pill{display:inline-flex;align-items:center;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px}
+.p-ok{background:var(--oks);color:var(--ok)}.p-er{background:var(--ers);color:var(--er)}.p-wa{background:var(--was);color:var(--wa)}.p-in{background:var(--ins);color:var(--in)}.p-mu{background:#EEEEF3;color:#3A3A48}
+table.t{width:100%;border-collapse:collapse}
+table.t th{text-align:left;font-size:12px;color:var(--mu);font-weight:600;padding:12px 14px;border-bottom:1px solid #EEEEF3;white-space:nowrap}
+table.t td{padding:10px 14px;border-bottom:1px solid #F3F3F7;vertical-align:middle}
+table.t tr.click{cursor:pointer}table.t tr.click:hover td{background:#FAFAFC}
+.alerta{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:10px;font-size:13px}
+.alerta i{width:8px;height:8px;border-radius:50%;margin-top:5px;flex:none}
+.a-er{background:var(--ers)}.a-er i{background:var(--er)}
+.a-wa{background:var(--was)}.a-wa i{background:#C98A00}
+.a-in{background:#E4F1FB}.a-in i{background:var(--in)}
+.vazio{color:var(--mu);font-size:13px;padding:8px 0}
+/* escala */
+.esc{border-collapse:separate;border-spacing:2px;font-size:11px}
+.esc th{font-weight:600;color:var(--mu);padding:3px 0;min-width:38px;text-align:center}
+.esc th.nm,.esc td.nm{position:sticky;left:0;background:var(--sf);text-align:left;min-width:140px;padding:0 10px;font-size:13px;font-weight:500;z-index:1}
+.esc th .d{display:block;font-size:12px;font-weight:700;color:var(--tx)}
+.esc th.fds{color:var(--er)}.esc th.fer{background:#FBE3EA;color:#8E2347;border-radius:6px}
+.esc td.c{height:30px;border-radius:6px;text-align:center;font-weight:700;cursor:pointer;padding:0 2px}
+.esc td.c.ov{box-shadow:inset 0 0 0 1.5px var(--ac)}
+.esc td.c.sel{outline:2px solid var(--ac);outline-offset:1px}
+.esc td.tot{text-align:center;font-size:12px;color:var(--mu);min-width:44px}
+.esc tr.tit td{padding:14px 10px 4px;font-size:13px;font-weight:700;background:var(--sf);position:sticky;left:0}
+.esc td.cob{text-align:center;font-size:12px;font-weight:700;height:22px;border-radius:6px}
+.legenda{display:flex;flex-wrap:wrap;gap:6px}
+.pop{position:fixed;z-index:50;background:var(--sf);border:1px solid var(--bd);border-radius:12px;box-shadow:0 12px 32px rgba(20,20,40,.18);padding:12px;display:flex;flex-direction:column;gap:8px;max-width:340px}
+.pop .chips{display:flex;flex-wrap:wrap;gap:6px}
+.pop .chips button{border:none;border-radius:8px;min-height:32px;min-width:48px;padding:0 8px;font-size:12px;font-weight:700;cursor:pointer}
+/* bh grade */
+.bhg td.c{min-width:64px;height:44px;border-radius:8px;text-align:center;cursor:pointer;line-height:1.15}
+.bhg td.c b{display:block;font-size:13px}.bhg td.c small{font-size:10px;font-weight:600}
+.stepper{display:flex;align-items:center;gap:6px}
+.stepper button{width:34px;height:34px;border:1px solid var(--bd2);border-radius:8px;background:var(--sf);cursor:pointer;font-size:16px}
+.stepper span{min-width:58px;text-align:center;font-weight:700}
+.regra{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #F3F3F7}
+.regra:last-child{border-bottom:none}
+.regra .l{display:flex;flex-direction:column;gap:2px}.regra .l small{color:var(--mu);font-size:12px}
+.modal-fundo{position:fixed;inset:0;background:rgba(20,20,35,.45);display:flex;align-items:center;justify-content:center;z-index:60;padding:16px}
+.modal{background:var(--sf);border-radius:16px;padding:22px;width:100%;max-width:560px;max-height:92vh;overflow:auto;display:flex;flex-direction:column;gap:14px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#1B1B23;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:80;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+.salvo{font-size:12px;color:var(--mu)}
+.login{max-width:380px;margin:12vh auto;padding:28px}
+.menu-mob{display:none}
+@media (max-width:900px){
+  .app{flex-direction:column}
+  .side{width:auto;height:auto;position:static;padding:12px 14px;gap:10px;border-right:none;border-bottom:1px solid var(--bd)}
+  .side .nav{flex-direction:row;overflow-x:auto;gap:4px}
+  .side .nav button{white-space:nowrap;min-height:38px}
+  .side .rodape{display:none}
+  .main{padding:18px 14px 50px}
+  h1{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div id="raiz"></div>
+<div class="toast" id="toast"></div>
+<script>
+'use strict';
+/* ============ conexão ============ */
+const SB_URL = 'https://kbbclredwktimecdqtwq.supabase.co';
+const SB_KEY = 'sb_publishable_vuSQaDWky4xRYPwCPvbr8g_5AUFizC5';
+const sb = supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, storageKey: 'beepdo-gestor', detectSessionInUrl: true, flowType: 'pkce' } });
+
+/* ============ utilidades ============ */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+const pad = (n) => (n < 10 ? '0' : '') + n;
+function ymd(d) { return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()); }
+function dt(s) { const [a, m, d] = s.split('-').map(Number); return new Date(Date.UTC(a, m - 1, d)); }
+function addD(s, n) { const d = dt(s); d.setUTCDate(d.getUTCDate() + n); return ymd(d); }
+function diffD(a, b) { return Math.round((dt(b) - dt(a)) / 864e5); }
+function hojeStr() { const d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function dow(s) { return dt(s).getUTCDay(); }
+function diasNoMes(a, m) { return new Date(Date.UTC(a, m, 0)).getUTCDate(); }
+const SEM = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+const SEMC = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+function br(s) { const [a, m, d] = s.split('-'); return d + '/' + m; }
+function brA(s) { const [a, m, d] = s.split('-'); return d + '/' + m + '/' + a; }
+function h(v) { const a = Math.abs(v); const t = (Math.round(a * 10) / 10).toString().replace('.', ',') + 'h'; return (v < 0 ? '-' : '') + t; }
+function sh(v) { return (v > 0 ? '+' : '') + h(v); }
+function min2hm(m) { m = ((m % 1440) + 1440) % 1440; return pad(Math.floor(m / 60)) + ':' + pad(m % 60); }
+function hm2min(s) { const [a, b] = (s || '0:0').split(':').map(Number); return a * 60 + (b || 0); }
+function corTexto(hex) { const c = hex.replace('#', ''); const r = parseInt(c.substr(0, 2), 16), g = parseInt(c.substr(2, 2), 16), b = parseInt(c.substr(4, 2), 16); return (r * 299 + g * 587 + b * 114) / 1000 > 150 ? '#1B1B23' : '#FFFFFF'; }
+function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove('on'), 2200); }
+
+/* ============ feriados ============ */
+function pascoa(a) { const f = Math.floor, G = a % 19, C = f(a / 100), H = (C - f(C / 4) - f((8 * C + 13) / 25) + 19 * G + 15) % 30, I = H - f(H / 28) * (1 - f(29 / (H + 1)) * f((21 - G) / 11)), J = (a + f(a / 4) + I + 2 - C + f(C / 4)) % 7, L = I - J, m = 3 + f((L + 40) / 44), d = L + 28 - 31 * f(m / 4); return a + '-' + pad(m) + '-' + pad(d); }
+const _ferCache = {};
+function feriadosDoAno(a) {
+  if (_ferCache[a]) return _ferCache[a];
+  const p = pascoa(a), r = {};
+  [['01-01', 'Confraternização Universal'], ['04-21', 'Tiradentes'], ['05-01', 'Dia do Trabalho'], ['09-07', 'Independência'], ['10-12', 'N. Sra. Aparecida'], ['11-02', 'Finados'], ['11-15', 'Proclamação da República'], ['11-20', 'Consciência Negra'], ['12-25', 'Natal']].forEach(([md, n]) => { r[a + '-' + md] = n; });
+  r[addD(p, -2)] = 'Sexta-feira Santa';
+  (S.cfg.feriadosExtras || []).forEach((f) => { if (f.recorrente) r[a + f.data.slice(4)] = f.nome; else if (f.data.startsWith(a + '-')) r[f.data] = f.nome; });
+  (S.cfg.feriadosIgnorados || []).forEach((d) => { delete r[d]; });
+  return (_ferCache[a] = r);
+}
+function feriado(s) { return feriadosDoAno(+s.slice(0, 4))[s] || null; }
+
+/* ============ padrões (tudo editável) ============ */
+const CICLOS_PRONTOS = { '6x2': [[6, 2]], '6x1 / 5x2': [[6, 1], [5, 2]], '5x2': [[5, 2]], '12x36': [[1, 1]], '6x1': [[6, 1]] };
+function cfgPadrao() {
+  return {
+    v: 1,
+    equipeNome: 'Minha equipe',
+    ciclo: { nome: '6x2', blocos: [[6, 2]] },
+    turnos: [
+      { id: 'A', nome: 'Turno A', ini: '23:00', fim: '06:59' },
+      { id: 'B', nome: 'Turno B', ini: '07:00', fim: '14:59' },
+      { id: 'C', nome: 'Turno C', ini: '15:00', fim: '22:59' }
+    ],
+    postos: [
+      { sigla: 'SB01', nome: 'Sala de brassagem 1', cor: '#E3E8FB' },
+      { sigla: 'SB02', nome: 'Sala de brassagem 2', cor: '#DFF1E1' },
+      { sigla: 'Área', nome: 'Área', cor: '#EDE3FA' }
+    ],
+    sup: { prefixo: 'SUP', nome: 'Suporte', cor: '#FBE3EA' },
+    siglas: [
+      { sigla: 'x', nome: 'Folga do ciclo', tipo: 'folga', cor: '#F3F3F6' },
+      { sigla: 'BH', nome: 'Folga de banco de horas', tipo: 'ausencia', cor: '#D6ECFB', descontaBH: true },
+      { sigla: 'F', nome: 'Férias', tipo: 'ausencia', cor: '#FFF1B8' },
+      { sigla: 'T', nome: 'Treinamento', tipo: 'treinamento', cor: '#E6D6FA' },
+      { sigla: 'CEL', nome: 'Convocação eleitoral', tipo: 'ausencia', cor: '#EFE6C8' },
+      { sigla: 'AT', nome: 'Atestado', tipo: 'ausencia', cor: '#FDE2DC' },
+      { sigla: 'TA', nome: 'Remanejado p/ turno A', tipo: 'turno', destino: 'A', cor: '#5A5A66' },
+      { sigla: 'TB', nome: 'Remanejado p/ turno B', tipo: 'turno', destino: 'B', cor: '#44444F' },
+      { sigla: 'TC', nome: 'Remanejado p/ turno C', tipo: 'turno', destino: 'C', cor: '#2A2A33' }
+    ],
+    travas: { interjornada: 11, maxSeguidos: 6, virada: 'sai' },
+    feriadoModo: 'bh',
+    jornada: 8,
+    feriadosExtras: [],
+    feriadosIgnorados: [],
+    bh: { inicio: hojeStr().slice(0, 8) + '01', heDia: 2, heSemana: 10, atencao: 24, critico: 40, minimo: -16, prazoMeses: 6, excecoes: {} },
+    exportar: { cores: true, bh: true, abas: false }
+  };
+}
+
+/* ============ estado e gravação ============ */
+const S = { user: null, cfg: cfgPadrao(), equipe: [], ausencias: [], ajustes: {}, bh: { saldoInicial: {}, lanc: {} }, tarefas: [], reunioes: [], view: 'painel', ui: {} };
+const CHAVES = ['config', 'equipe', 'ausencias', 'ajustes', 'bh', 'tarefas', 'reunioes'];
+const MAPA = { config: 'cfg', equipe: 'equipe', ausencias: 'ausencias', ajustes: 'ajustes', bh: 'bh', tarefas: 'tarefas', reunioes: 'reunioes' };
+const _pend = {};
+let _salvando = 0;
+function salvar(chave) {
+  _escCache = {};
+  if (chave === 'config') Object.keys(_ferCache).forEach((k) => delete _ferCache[k]);
+  clearTimeout(_pend[chave]);
+  marcaSalvo('Salvando…');
+  _pend[chave] = setTimeout(async () => {
+    _salvando++;
+    const { error } = await sb.from('gestor_docs').upsert({ user_id: S.user.id, chave, dados: S[MAPA[chave]] });
+    _salvando--;
+    if (error) { marcaSalvo('Erro ao salvar'); toast('Não consegui salvar: ' + error.message); } else if (!_salvando) marcaSalvo('Tudo salvo');
+  }, 600);
+}
+function marcaSalvo(t) { const el = $('#salvo'); if (el) el.textContent = t; }
+async function carregar() {
+  const { data, error } = await sb.from('gestor_docs').select('chave,dados');
+  if (error) throw error;
+  (data || []).forEach((r) => { if (MAPA[r.chave]) S[MAPA[r.chave]] = r.dados; });
+  const base = cfgPadrao();
+  S.cfg = Object.assign(base, S.cfg || {});
+  S.cfg.bh = Object.assign(cfgPadrao().bh, S.cfg.bh || {});
+  S.cfg.travas = Object.assign(cfgPadrao().travas, S.cfg.travas || {});
+  S.cfg.exportar = Object.assign(cfgPadrao().exportar, S.cfg.exportar || {});
+  S.bh = Object.assign({ saldoInicial: {}, lanc: {} }, S.bh || {});
+  ['equipe', 'ausencias', 'tarefas', 'reunioes'].forEach((k) => { if (!Array.isArray(S[k])) S[k] = []; });
+  if (!S.ajustes || typeof S.ajustes !== 'object') S.ajustes = {};
+  return (data || []).length;
+}
+
+/* ============ siglas e cores ============ */
+function princ() { return S.cfg.postos.map((p) => p.sigla); }
+function ehSup(c) { return !!c && c.startsWith(S.cfg.sup.prefixo) && /\d+$/.test(c.slice(S.cfg.sup.prefixo.length)); }
+function ehPosto(c) { return princ().includes(c) || ehSup(c); }
+function siglaInfo(c) {
+  if (!c) return null;
+  const p = S.cfg.postos.find((x) => x.sigla === c); if (p) return { sigla: c, nome: p.nome, tipo: 'posto', cor: p.cor };
+  if (ehSup(c)) return { sigla: c, nome: S.cfg.sup.nome + ' ' + c.slice(S.cfg.sup.prefixo.length), tipo: 'posto', cor: S.cfg.sup.cor };
+  return S.cfg.siglas.find((x) => x.sigla === c) || { sigla: c, nome: c, tipo: 'ausencia', cor: '#EEEEF3' };
+}
+function trabalhando(c) { const i = siglaInfo(c); return !!i && (i.tipo === 'posto' || i.tipo === 'treinamento' || i.tipo === 'turno'); }
+function tagStyle(c) { const i = siglaInfo(c) || { cor: '#EEEEF3' }; return 'background:' + i.cor + ';color:' + corTexto(i.cor); }
+function tag(c, txt) { return '<span class="tag" style="' + tagStyle(c) + '">' + esc(txt == null ? (c === 'x' ? 'Folga' : c) : txt) + '</span>'; }
+
+/* ============ ciclo ============ */
+function padraoCiclo() { const r = []; S.cfg.ciclo.blocos.forEach(([t, f]) => { for (let i = 0; i < t; i++) r.push(1); for (let j = 0; j < f; j++) r.push(0); }); return r.length ? r : [1]; }
+function trabalhaCiclo(p, s) { const pc = padraoCiclo(), L = pc.length; if (!p.inicio) return true; const i = ((diffD(p.inicio, s) % L) + L) % L; return pc[i] === 1; }
+function ausenciaDe(pid, s) { let r = null; for (const a of S.ausencias) if (a.pessoaId === pid && s >= a.de && s <= a.ate) r = a; return r; }
+function turnoPorId(id) { return S.cfg.turnos.find((t) => t.id === id); }
+function janela(id) {
+  const t = turnoPorId(id); if (!t) return [0, 0];
+  let ini = hm2min(t.ini), d = hm2min(t.fim) - ini + 1; if (d <= 0) d += 1440;
+  let fim = ini + d; if (fim > 1440 && S.cfg.travas.virada === 'sai') { ini -= 1440; fim -= 1440; }
+  return [ini, fim];
+}
+function descansoEntre(t1, t2) { return (1440 + janela(t2)[0] - janela(t1)[1]) / 60; }
+
+/* ============ motor da escala ============ */
+let _escCache = {};
+function ancora() { const h = hojeStr(); return (+h.slice(0, 4) - 1) + '-' + h.slice(5, 7) + '-01'; }
+function simular(ate) {
+  const c = _escCache;
+  const ini = c.ini || addD(ancora(), 0);
+  if (c.ate && ate <= c.ate) return c;
+  if (!c.dias) { c.ini = ini; c.dias = {}; c.ontem = {}; c.ultSup = {}; c.ate = addD(ini, -1); }
+  const P = princ(), pref = S.cfg.sup.prefixo;
+  const ativos = S.equipe.filter((p) => p.ativo !== false);
+  for (let s = addD(c.ate, 1); s <= ate; s = addD(s, 1)) {
+    const fer = feriado(s), dia = { cod: {}, posto: {}, turno: {} };
+    const disp = {}, forc = {};
+    S.cfg.turnos.forEach((t) => { disp[t.id] = []; forc[t.id] = []; });
+    ativos.forEach((p) => {
+      let cod = null, tReal = p.turno, livre = false;
+      const ov = S.ajustes[p.id + '|' + s];
+      const a = ausenciaDe(p.id, s);
+      const ciclo = trabalhaCiclo(p, s);
+      if (a) {
+        const inf = siglaInfo(a.sigla);
+        if (inf.tipo === 'turno') { if (ciclo) { cod = a.sigla; tReal = inf.destino; livre = true; } else cod = 'x'; }
+        else if (inf.tipo === 'treinamento') cod = ciclo ? a.sigla : 'x';
+        else cod = a.sigla;
+      } else if (!ciclo || (fer && S.cfg.feriadoModo === 'folga')) cod = 'x';
+      else livre = true;
+      if (ov) {
+        if (ehPosto(ov)) { dia.cod[p.id] = cod && siglaInfo(cod).tipo === 'turno' ? cod : ov; dia.posto[p.id] = ov; dia.turno[p.id] = tReal; if (disp[tReal]) forc[tReal].push(ov); return; }
+        cod = ov; livre = false;
+      }
+      dia.turno[p.id] = tReal;
+      if (livre && disp[tReal]) { disp[tReal].push(p.id); dia.cod[p.id] = cod || '?'; }
+      else { dia.cod[p.id] = cod; dia.posto[p.id] = null; }
+    });
+    S.cfg.turnos.forEach((t) => {
+      const d = disp[t.id], f = forc[t.id];
+      const n = d.length + f.length;
+      const need = Math.max(0, Math.min(n, P.length) - f.filter((x) => P.includes(x)).length);
+      const livres = P.filter((x) => !f.includes(x)).slice(0, need);
+      const nSup = Math.max(0, d.length - livres.length);
+      const ord = d.slice().sort((a, b) => ((c.ultSup[a] ?? -1e9) - (c.ultSup[b] ?? -1e9)) || String(a).localeCompare(String(b)));
+      const semOntem = ord.filter((pid) => !ehSup(c.ontem[pid]));
+      const supL = semOntem.concat(ord.filter((pid) => !semOntem.includes(pid))).slice(0, nSup);
+      const usadosSup = f.filter(ehSup);
+      let k = 1;
+      supL.forEach((pid) => { while (usadosSup.includes(pref + k)) k++; dia.posto[pid] = pref + k; usadosSup.push(pref + k); c.ultSup[pid] = s; });
+      const resto = d.filter((pid) => !supL.includes(pid));
+      let melhor = null, nota = 1e9;
+      (function perm(arr, acc) {
+        if (!arr.length) {
+          let sc = 0;
+          resto.forEach((pid, j) => { const cc = acc[j], i = P.indexOf(c.ontem[pid]); if (cc === c.ontem[pid]) sc += 100; else if (i >= 0 && cc !== P[(i + 1) % P.length]) sc += 1; });
+          if (sc < nota) { nota = sc; melhor = acc.slice(); }
+          return;
+        }
+        arr.forEach((x, i) => perm(arr.slice(0, i).concat(arr.slice(i + 1)), acc.concat([x])));
+      })(livres, []);
+      resto.forEach((pid, j) => { dia.posto[pid] = melhor ? melhor[j] : null; });
+      d.forEach((pid) => { if (siglaInfo(dia.cod[pid]).tipo !== 'turno') dia.cod[pid] = dia.posto[pid]; });
+    });
+    ativos.forEach((p) => { c.ontem[p.id] = dia.posto[p.id] || dia.cod[p.id]; });
+    c.dias[s] = dia;
+    c.ate = s;
+  }
+  return c;
+}
+function diaEscala(s) { if (s < ancora()) return { cod: {}, posto: {}, turno: {} }; return simular(s).dias[s]; }
+function codigo(pid, s) { const d = diaEscala(s); return d.cod[pid] || 'x'; }
+
+function escalaMes(a, m) {
+  const n = diasNoMes(a, m), dias = [];
+  for (let i = 1; i <= n; i++) dias.push(a + '-' + pad(m) + '-' + pad(i));
+  simular(dias[n - 1]);
+  const ativos = S.equipe.filter((p) => p.ativo !== false);
+  const alertas = [];
+  const turnos = S.cfg.turnos.map((t) => {
+    const pess = ativos.filter((p) => p.turno === t.id).sort((x, y) => x.nome.localeCompare(y.nome));
+    const linhas = pess.map((p) => {
+      let trab = 0, folgas = 0, fer = 0;
+      const cods = dias.map((s) => { const c = codigo(p.id, s); if (trabalhando(c)) { trab++; if (feriado(s) && S.cfg.feriadoModo === 'bh') fer += S.cfg.jornada; } else if (c === 'x') folgas++; return c; });
+      return { p, cods, trab, folgas, fer };
+    });
+    const cob = dias.map((s) => {
+      const d = diaEscala(s);
+      const tem = Object.keys(d.posto).filter((pid) => d.turno[pid] === t.id && d.posto[pid]).map((pid) => d.posto[pid]);
+      const falta = princ().filter((x) => !tem.includes(x));
+      if (falta.length) alertas.push({ g: 'er', s, txt: br(s) + ' · ' + t.nome + ': ' + falta.join(', ') + (falta.length === 1 && falta[0] === princ()[princ().length - 1] && tem.length === princ().length - 1 ? ' descoberta' : ' sem ninguém') });
+      return falta;
+    });
+    return { t, linhas, cob };
+  });
+  // dias seguidos e interjornada (olha 14 dias antes pra pegar sequência que vem do mês anterior)
+  ativos.forEach((p) => {
+    let seq = 0, ini = null, ant = null, avisado = false;
+    for (let s = addD(dias[0], -14); s <= dias[n - 1]; s = addD(s, 1)) {
+      const c = codigo(p.id, s), tr = trabalhando(c);
+      if (tr) {
+        if (!seq) ini = s; seq++;
+        const tH = diaEscala(s).turno[p.id];
+        if (ant && ant.t !== tH && s >= dias[0]) { const dsc = descansoEntre(ant.t, tH); if (dsc < S.cfg.travas.interjornada) alertas.push({ g: 'er', s, txt: p.nome + ': ' + br(ant.s) + ' no ' + ant.t + ' e ' + br(s) + ' no ' + tH + ' = ' + h(dsc) + ' de descanso (mínimo ' + S.cfg.travas.interjornada + 'h)' }); }
+        ant = { t: tH, s };
+        if (seq > S.cfg.travas.maxSeguidos && !avisado && s >= dias[0]) { alertas.push({ g: 'er', s, txt: p.nome + ': ' + seq + '+ dias seguidos a partir de ' + br(ini) + ' (máximo ' + S.cfg.travas.maxSeguidos + ')' }); avisado = true; }
+      } else { seq = 0; avisado = false; ant = null; }
+    }
+  });
+  alertas.sort((x, y) => x.s.localeCompare(y.s));
+  return { dias, turnos, alertas };
+}
+
+/* ============ banco de horas ============ */
+function excBH(pid) { return (S.cfg.bh.excecoes || {})[pid] || {}; }
+function limDia(pid) { const e = excBH(pid); return e.heDia != null ? e.heDia : S.cfg.bh.heDia; }
+function diaBH(pid, s) {
+  const c = codigo(pid, s), inf = siglaInfo(c) || {}, J = S.cfg.jornada;
+  const prev = trabalhando(c) ? J : 0;
+  const lanc = S.bh.lanc[pid + '|' + s];
+  const real = lanc != null ? lanc : prev;
+  let delta = real - prev;
+  if (inf.descontaBH) delta -= J;
+  if (feriado(s) && S.cfg.feriadoModo === 'bh' && real > 0 && prev > 0) delta += J;
+  return { c, prev, real, he: real - prev, delta, lancado: lanc != null };
+}
+function saldoBH(pid, ate) {
+  let s0 = S.cfg.bh.inicio, v = +(S.bh.saldoInicial[pid] || 0);
+  if (ate < s0) return v;
+  for (let s = s0; s <= ate; s = addD(s, 1)) v += diaBH(pid, s).delta;
+  return Math.round(v * 10) / 10;
+}
+function segundaDe(s) { const d = dow(s); return addD(s, d === 0 ? -6 : 1 - d); }
+function heSemana(pid, seg) { let t = 0; for (let i = 0; i < 7; i++) { const s = addD(seg, i); if (s < S.cfg.bh.inicio) continue; t += diaBH(pid, s).delta; } return Math.round(t * 10) / 10; }
+function faixaBH(v) { const b = S.cfg.bh; if (v >= b.critico) return ['Crítico', 'p-er']; if (v >= b.atencao) return ['Atenção', 'p-wa']; if (v < b.minimo) return ['Abaixo do mínimo', 'p-er']; if (v < 0) return ['Negativo', 'p-mu']; return ['Ok', 'p-ok']; }
+function sugerirBH(p, qtd) {
+  const out = []; const t0 = hojeStr();
+  for (let i = 1; i <= 45 && out.length < qtd; i++) {
+    const s = addD(t0, i), d = diaEscala(s);
+    if (!princ().includes(d.posto[p.id]) && !ehSup(d.posto[p.id])) continue;
+    const noTurno = Object.keys(d.posto).filter((pid) => d.turno[pid] === d.turno[p.id] && d.posto[pid]).length;
+    if (noTurno - 1 >= princ().length) out.push(s);
+  }
+  return out;
+}
+
+/* ============ casca ============ */
+const VIEWS = [
+  ['painel', 'Painel'], ['escala', 'Escala do mês'], ['equipe', 'Equipe'], ['ausencias', 'Ausências'],
+  ['bh', 'Banco de horas'], ['reunioes', 'Reuniões'], ['tarefas', 'Tarefas da equipe'], ['config', 'Configurações']
+];
+const A = {}, C = {};
+function render() {
+  const raiz = $('#raiz');
+  if (!S.user) { raiz.innerHTML = telaLogin(); return; }
+  const naoExec = S.tarefas.filter((t) => !t.feita && t.prazo && t.prazo < hojeStr()).length;
+  const sx = window.scrollX, sy = window.scrollY;
+  const scr = document.querySelector('[data-scroll]'); const sl = scr ? scr.scrollLeft : 0;
+  raiz.innerHTML = '<div class="app"><aside class="side">' +
+    '<div class="brand"><svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="#5B3FB0" stroke-width="3"/><path d="M10 16.5l4 4 8-9" fill="none" stroke="#5B3FB0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>BeepDo</b><small>Área do Gestor</small></div></div>' +
+    '<nav class="nav" aria-label="Área do Gestor">' + VIEWS.map(([k, l]) => '<button data-a="ir" data-v="' + k + '" class="' + (S.view === k ? 'on' : '') + '">' + l + (k === 'tarefas' && naoExec ? '<span class="cnt">' + naoExec + '</span>' : '') + '</button>').join('') + '</nav>' +
+    '<div class="rodape"><span>' + esc(S.cfg.equipeNome) + '</span><span id="salvo" class="salvo">Tudo salvo</span><span>' + esc(S.user.email || '') + '</span><a href="#" data-a="sair">Sair</a></div>' +
+    '</aside><main class="main">' + (V[S.view] || V.painel)() + '</main></div>' + (S.ui.modal ? '<div class="modal-fundo" data-a="fecharModal"><div class="modal" role="dialog" aria-modal="true" data-stop>' + M[S.ui.modal.t]() + '</div></div>' : '');
+  const scr2 = document.querySelector('[data-scroll]'); if (scr2 && S.ui.manterScroll) scr2.scrollLeft = sl;
+  S.ui.manterScroll = false;
+  window.scrollTo(sx, sy);
+}
+const V = {}, M = {};
+A.fecharModal = (el, ev) => { if (ev && ev.target.closest('[data-stop]') && el.classList.contains('modal-fundo')) return; S.ui.modal = null; render(); };
+A.ir = (el) => { S.view = el.dataset.v; S.ui.pop = null; S.ui.sel = null; render(); window.scrollTo(0, 0); };
+A.sair = async (el, ev) => { ev.preventDefault(); await sb.auth.signOut(); S.user = null; render(); };
+
+function telaLogin() {
+  return '<div class="card login col">' +
+    '<div class="brand" style="padding:0"><svg width="34" height="34" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="#5B3FB0" stroke-width="3"/><path d="M10 16.5l4 4 8-9" fill="none" stroke="#5B3FB0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>BeepDo</b><small>Área do Gestor</small></div></div>' +
+    '<p class="sub" style="margin:0">Entre com a mesma conta do app BeepDo.</p>' +
+    '<button class="btn" data-a="google" style="justify-content:center"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Entrar com Google</button>' +
+    '<div class="row" style="gap:8px;color:var(--mu);font-size:12px"><span style="flex:1;height:1px;background:var(--bd)"></span>ou<span style="flex:1;height:1px;background:var(--bd)"></span></div>' +
+    '<form class="col" data-f="login"><label class="f">E-mail<input class="i" type="email" name="email" autocomplete="email" required></label>' +
+    '<label class="f">Senha<input class="i" type="password" name="senha" autocomplete="current-password" required></label>' +
+    '<button class="btn pri" style="justify-content:center">Entrar</button><span class="sub" id="erroLogin"></span></form></div>';
+}
+A.google = async () => { const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + location.pathname } }); if (error) toast(error.message); };
+async function onLogin(f) {
+  const { error } = await sb.auth.signInWithPassword({ email: f.email.value.trim(), password: f.senha.value });
+  if (error) { $('#erroLogin').textContent = 'E-mail ou senha incorretos.'; return; }
+}
+
+/* ============ PAINEL ============ */
+V.painel = () => {
+  const hj = hojeStr();
+  if (!S.equipe.length) return '<div class="topo"><div><h1>Bem-vindo à Área do Gestor</h1><div class="sub">Comece cadastrando a equipe. Depois a escala sai sozinha.</div></div></div>' +
+    '<div class="grid2"><div class="card col"><h2>1. Configure turnos, postos e siglas</h2><span class="sub">Horários, cores, ciclo (6x2, 6x1/5x2...) e as travas de descanso. Tudo já vem com um padrão que você muda.</span><button class="btn" data-a="ir" data-v="config">Abrir configurações</button></div>' +
+    '<div class="card col"><h2>2. Cadastre as pessoas</h2><span class="sub">Nome, turno e o dia em que ela começa o ciclo (o índice).</span><button class="btn pri" data-a="ir" data-v="equipe">Cadastrar equipe</button></div></div>';
+  const [a, m] = hj.split('-').map(Number);
+  const em = escalaMes(a, m);
+  const alertasProx = em.alertas.filter((x) => x.s >= hj).slice(0, 5);
+  const d = diaEscala(hj);
+  const agora = S.cfg.turnos.map((t) => {
+    const pess = S.equipe.filter((p) => p.ativo !== false && d.turno[p.id] === t.id && trabalhando(d.cod[p.id]));
+    return '<div class="col" style="gap:6px"><div class="row" style="justify-content:space-between"><b>' + esc(t.nome) + '</b><span class="sub">' + t.ini + ' às ' + t.fim + '</span></div>' +
+      (pess.length ? pess.map((p) => '<div class="row" style="justify-content:space-between"><span>' + esc(p.nome) + '</span>' + tag(d.posto[p.id] || d.cod[p.id]) + '</div>').join('') : '<span class="vazio">Ninguém escalado</span>') + '</div>';
+  }).join('<hr style="border:none;border-top:1px solid #EEEEF3;margin:4px 0">');
+  const aus7 = S.ausencias.filter((x) => x.ate >= hj && x.de <= addD(hj, 7));
+  const saldos = S.equipe.filter((p) => p.ativo !== false).map((p) => ({ p, v: saldoBH(p.id, hj) })).sort((x, y) => y.v - x.v);
+  const criticos = saldos.filter((x) => x.v >= S.cfg.bh.atencao);
+  const naoExec = S.tarefas.filter((t) => !t.feita && t.prazo && t.prazo < hj);
+  const prox = proximasReunioes(hj, 7).slice(0, 4);
+  return '<div class="topo"><div><div class="sub">' + SEMC[dow(hj)] + ', ' + br(hj) + '</div><h1>Painel</h1></div><div class="row"><button class="btn" data-a="exportar">Exportar .xlsx</button><button class="btn pri" data-a="ir" data-v="escala">Abrir escala</button></div></div>' +
+    '<div class="kpis">' +
+    kpi('Alertas da escala', em.alertas.filter((x) => x.s >= hj).length, 'de hoje até o fim do mês', em.alertas.length ? 'var(--er)' : 'var(--ok)') +
+    kpi('Ausências em 7 dias', aus7.length, 'férias, BH, treinamento...') +
+    kpi('BH em atenção', criticos.length, 'a partir de ' + S.cfg.bh.atencao + 'h', criticos.length ? 'var(--wa)' : '') +
+    kpi('Tarefas não executadas', naoExec.length, 'passaram do prazo', naoExec.length ? 'var(--er)' : '') + '</div>' +
+    '<div class="grid2"><div class="card col"><h2>Hoje na escala</h2>' + agora + '</div>' +
+    '<div class="col"><div class="card col"><div class="row" style="justify-content:space-between"><h2>Alertas</h2><button class="btn ghost sm" data-a="ir" data-v="escala">Ver escala</button></div>' +
+    (alertasProx.length ? alertasProx.map((x) => '<div class="alerta a-' + x.g + '"><i></i><span>' + esc(x.txt) + '</span></div>').join('') : '<span class="vazio">Nenhum alerta daqui até o fim do mês.</span>') + '</div>' +
+    '<div class="card col"><div class="row" style="justify-content:space-between"><h2>Programar BH</h2><button class="btn ghost sm" data-a="ir" data-v="bh">Banco de horas</button></div>' +
+    (criticos.length ? criticos.slice(0, 5).map((x) => { const f = faixaBH(x.v); return '<div class="row" style="justify-content:space-between"><span>' + esc(x.p.nome) + ' <span class="pill ' + f[1] + '">' + sh(x.v) + '</span></span><button class="btn sm" data-a="programarBH" data-p="' + x.p.id + '">Programar</button></div>'; }).join('') : '<span class="vazio">Ninguém acima de ' + S.cfg.bh.atencao + 'h.</span>') + '</div>' +
+    '<div class="card col"><div class="row" style="justify-content:space-between"><h2>Próximas reuniões</h2><button class="btn ghost sm" data-a="ir" data-v="reunioes">Reuniões</button></div>' +
+    (prox.length ? prox.map((o) => '<div class="row" style="justify-content:space-between"><span><b>' + esc(o.r.titulo) + '</b> <span class="sub">' + SEM[dow(o.s)] + ' ' + br(o.s) + ' ' + o.r.hora + '</span></span></div>').join('') : '<span class="vazio">Nada nos próximos 7 dias.</span>') + '</div></div></div>';
+};
+function kpi(l, v, s, cor) { return '<div class="kpi"><span>' + l + '</span><b style="color:' + (cor || 'var(--tx)') + '">' + v + '</b><span>' + s + '</span></div>'; }
+
+/* ============ ESCALA ============ */
+function mesAtual() { if (!S.ui.mes) S.ui.mes = hojeStr().slice(0, 7); return S.ui.mes.split('-').map(Number); }
+A.mes = (el) => { let [a, m] = mesAtual(); m += +el.dataset.d; if (m < 1) { m = 12; a--; } if (m > 12) { m = 1; a++; } S.ui.mes = a + '-' + pad(m); S.ui.pop = null; render(); };
+A.filtroT = (el) => { S.ui.filtroT = el.dataset.t; render(); };
+A.togRegras = () => { S.ui.regras = !S.ui.regras; render(); };
+A.ciclo = (el) => { const n = el.dataset.n; if (n === 'pers') { S.ui.cicloPers = true; render(); return; } S.cfg.ciclo = { nome: n, blocos: CICLOS_PRONTOS[n] }; S.ui.cicloPers = false; salvar('config'); render(); };
+A.feriadoModo = (el) => { S.cfg.feriadoModo = el.dataset.m; salvar('config'); render(); };
+C.cicloPers = (el) => {
+  const blocos = el.value.split(/[,/;]/).map((x) => x.trim().match(/^(\d+)\s*x\s*(\d+)$/i)).filter(Boolean).map((m) => [+m[1], +m[2]]);
+  if (!blocos.length) { toast('Use o formato 6x2 ou 6x1, 5x2'); return; }
+  S.cfg.ciclo = { nome: blocos.map((b) => b[0] + 'x' + b[1]).join(' / '), blocos }; salvar('config'); render();
+};
+A.desfazer = () => {
+  const [a, m] = mesAtual(), pre = a + '-' + pad(m);
+  const ks = Object.keys(S.ajustes).filter((k) => k.split('|')[1].startsWith(pre));
+  if (!ks.length) { toast('Nenhum ajuste manual neste mês'); return; }
+  if (!confirm('Desfazer ' + ks.length + ' ajuste(s) manuais deste mês?')) return;
+  ks.forEach((k) => delete S.ajustes[k]); salvar('ajustes'); render();
+};
+A.cel = (el, ev) => { const r = el.getBoundingClientRect(); S.ui.pop = { pid: el.dataset.p, s: el.dataset.s, x: Math.min(r.left, innerWidth - 350), y: r.bottom + 6 > innerHeight - 220 ? r.top - 230 : r.bottom + 6 }; S.ui.manterScroll = true; render(); ev.stopPropagation(); };
+A.setCel = (el) => {
+  const { pid, s } = S.ui.pop, c = el.dataset.c, k = pid + '|' + s;
+  if (c === '__auto') delete S.ajustes[k]; else S.ajustes[k] = c;
+  S.ui.pop = null; S.ui.manterScroll = true; salvar('ajustes'); render();
+};
+A.fecharPop = () => { S.ui.pop = null; S.ui.manterScroll = true; render(); };
+function opcoesCodigo() {
+  const sups = [1, 2, 3].map((i) => S.cfg.sup.prefixo + i);
+  return princ().concat(sups, S.cfg.siglas.map((x) => x.sigla));
+}
+V.escala = () => {
+  if (!S.equipe.length) return V.painel();
+  const [a, m] = mesAtual();
+  const em = escalaMes(a, m), hj = hojeStr();
+  const filtro = S.ui.filtroT || 'todos';
+  const nAj = Object.keys(S.ajustes).filter((k) => k.split('|')[1].startsWith(a + '-' + pad(m))).length;
+  let thead = '<tr><th class="nm"></th>' + em.dias.map((s) => { const f = feriado(s), d = dow(s); return '<th class="' + (f ? 'fer' : (d === 0 || d === 6) ? 'fds' : '') + '" title="' + esc(f || '') + '"><span class="d">' + +s.slice(8) + '</span>' + (f ? 'fer.' : SEM[d]) + '</th>'; }).join('') + '<th>Trab.</th><th>Folgas</th>' + (S.cfg.feriadoModo === 'bh' ? '<th>BH fer.</th>' : '') + '</tr>';
+  let corpo = '';
+  em.turnos.filter((x) => filtro === 'todos' || x.t.id === filtro).forEach(({ t, linhas, cob }) => {
+    corpo += '<tr class="tit"><td colspan="3">' + esc(t.nome) + ' <span class="sub" style="font-weight:500">' + t.ini + ' às ' + t.fim + '</span></td></tr>';
+    if (!linhas.length) corpo += '<tr><td class="nm sub">Ninguém neste turno</td></tr>';
+    linhas.forEach(({ p, cods, trab, folgas, fer }) => {
+      corpo += '<tr><td class="nm">' + esc(p.nome) + '</td>' + cods.map((c, i) => {
+        const s = em.dias[i], k = p.id + '|' + s, d = diaEscala(s);
+        const sel = S.ui.pop && S.ui.pop.pid === p.id && S.ui.pop.s === s;
+        const txt = c === 'x' ? '·' : c;
+        const tit = p.nome + ' · ' + br(s) + ': ' + (siglaInfo(c) || {}).nome + (d.posto[p.id] && d.posto[p.id] !== c ? ' (' + d.posto[p.id] + ' no turno ' + d.turno[p.id] + ')' : '');
+        return '<td class="c' + (S.ajustes[k] ? ' ov' : '') + (sel ? ' sel' : '') + '" style="' + tagStyle(c) + (c === 'x' && (dow(s) === 0 || dow(s) === 6) ? ';background:#ECECF1' : '') + '" data-a="cel" data-p="' + p.id + '" data-s="' + s + '" title="' + esc(tit) + '">' + esc(txt) + '</td>';
+      }).join('') + '<td class="tot"><b>' + trab + '</b></td><td class="tot">' + folgas + '</td>' + (S.cfg.feriadoModo === 'bh' ? '<td class="tot" style="color:var(--in);font-weight:600">' + (fer ? '+' + fer + 'h' : '-') + '</td>' : '') + '</tr>';
+    });
+    corpo += '<tr><td class="nm sub" style="font-size:12px">Cobertura</td>' + cob.map((f) => '<td class="cob" style="' + (f.length ? 'background:var(--ers);color:var(--er)' : 'color:var(--ok)') + '" title="' + (f.length ? 'Falta: ' + f.join(', ') : 'Postos cobertos') + '">' + (f.length ? '!' : '✓') + '</td>').join('') + '</tr>';
+  });
+  let pop = '';
+  if (S.ui.pop) {
+    const p = S.equipe.find((x) => x.id === S.ui.pop.pid);
+    pop = '<div class="pop" style="left:' + S.ui.pop.x + 'px;top:' + Math.max(8, S.ui.pop.y) + 'px"><div class="row" style="justify-content:space-between"><b>' + esc(p ? p.nome : '') + ' · ' + SEM[dow(S.ui.pop.s)] + ' ' + br(S.ui.pop.s) + '</b><button class="btn ghost sm" data-a="fecharPop">Fechar</button></div>' +
+      '<div class="chips">' + opcoesCodigo().map((c) => '<button data-a="setCel" data-c="' + esc(c) + '" style="' + tagStyle(c) + '">' + esc(c === 'x' ? 'Folga' : c) + '</button>').join('') + '</div>' +
+      '<button class="btn sm" data-a="setCel" data-c="__auto">Voltar pro automático</button></div>';
+  }
+  const ciclosBtns = Object.keys(CICLOS_PRONTOS).map((n) => '<button class="' + (S.cfg.ciclo.nome === n && !S.ui.cicloPers ? 'on' : '') + '" data-a="ciclo" data-n="' + n + '">' + n + '</button>').join('') + '<button class="' + (S.ui.cicloPers || !CICLOS_PRONTOS[S.cfg.ciclo.nome] ? 'on' : '') + '" data-a="ciclo" data-n="pers">Personalizado</button>';
+  const regras = S.ui.regras ? '<div class="card grid2" style="gap:18px">' +
+    '<div class="col"><b>Ciclo</b><div class="chipsel">' + ciclosBtns + '</div>' + (S.ui.cicloPers || !CICLOS_PRONTOS[S.cfg.ciclo.nome] ? '<input class="i" data-c="cicloPers" placeholder="Ex.: 6x1, 5x2" value="' + esc(S.cfg.ciclo.nome) + '">' : '') + '<span class="sub">Cada pessoa entra no ciclo pelo dia de início dela (Equipe). O mês seguinte continua de onde este parou.</span></div>' +
+    '<div class="col"><b>Feriado</b><div class="chipsel">' + [['bh', 'Trabalha e gera BH'], ['sem', 'Trabalha sem BH'], ['folga', 'Folga']].map(([k, l]) => '<button class="' + (S.cfg.feriadoModo === k ? 'on' : '') + '" data-a="feriadoModo" data-m="' + k + '">' + l + '</button>').join('') + '</div><span class="sub">Feriados nacionais já vêm. Municipais e pontos facultativos você coloca em Configurações.</span></div>' +
+    '<div class="col"><b>Distribuição</b><span class="sub">Com 2 pessoas: ' + princ().slice(0, 2).join(' e ') + '. Quem segue trabalhando troca de posto todo dia e nunca repete o de ontem. Quem volta de folga entra no posto descoberto. Quem sobra vira ' + S.cfg.sup.prefixo + ', em rodízio, nunca 2 dias seguidos.</span><button class="btn sm" data-a="ir" data-v="config" style="align-self:flex-start">Postos, siglas e cores</button></div>' +
+    '<div class="col"><b>Travas</b><span class="sub">Descanso mínimo de ' + S.cfg.travas.interjornada + 'h entre jornadas e no máximo ' + S.cfg.travas.maxSeguidos + ' dias seguidos. O que passar disso vira alerta vermelho.</span></div></div>' : '';
+  const leg = opcoesCodigo().filter((c) => !/3$/.test(c)).map((c) => tag(c, c === 'x' ? 'Folga' : c + (siglaInfo(c).tipo !== 'posto' && siglaInfo(c).nome ? ' ' + siglaInfo(c).nome : ''))).join('');
+  return '<div class="topo"><div class="row"><button class="btn" data-a="mes" data-d="-1" aria-label="Mês anterior">‹</button><div><h1>Escala · ' + MESES[m - 1] + ' ' + a + '</h1><div class="sub">Gerada automaticamente · ' + nAj + ' ajuste(s) manuais · ciclo ' + esc(S.cfg.ciclo.nome) + '</div></div><button class="btn" data-a="mes" data-d="1" aria-label="Próximo mês">›</button></div>' +
+    '<div class="row"><button class="btn' + (S.ui.regras ? ' pri' : '') + '" data-a="togRegras">Regras da escala</button><button class="btn" data-a="desfazer">Desfazer ajustes</button><button class="btn pri" data-a="exportar">Exportar .xlsx</button></div></div>' +
+    regras +
+    '<div class="row" style="justify-content:space-between"><div class="seg">' + [['todos', 'Todos os turnos']].concat(S.cfg.turnos.map((t) => [t.id, t.nome])).map(([k, l]) => '<button class="' + (filtro === k ? 'on' : '') + '" data-a="filtroT" data-t="' + k + '">' + esc(l) + '</button>').join('') + '</div><div class="legenda">' + leg + '</div></div>' +
+    '<div class="card flush" data-scroll><table class="esc">' + thead + corpo + '</table></div>' + pop +
+    '<div class="card col"><div class="row" style="justify-content:space-between"><h2>Alertas da escala (' + em.alertas.length + ')</h2><span class="sub">Clique numa célula pra trocar. Ajuste manual fica com borda roxa.</span></div>' +
+    (em.alertas.length ? '<div class="grid2" style="gap:8px">' + em.alertas.slice(0, 40).map((x) => '<div class="alerta a-' + x.g + '"><i></i><span>' + esc(x.txt) + '</span></div>').join('') + '</div>' : '<span style="color:var(--ok)">Tudo coberto e dentro das travas.</span>') + '</div>';
+};
+
+/* ============ EQUIPE ============ */
+V.equipe = () => {
+  const hj = hojeStr();
+  const lista = S.equipe.slice().sort((a, b) => (a.turno + a.nome).localeCompare(b.turno + b.nome));
+  return '<div class="topo"><div><h1>Equipe</h1><div class="sub">' + S.equipe.filter((p) => p.ativo !== false).length + ' pessoas ativas · o turno e o início do ciclo de cada um alimentam a escala</div></div>' +
+    '<div class="row"><button class="btn" data-a="importar">Colar lista</button><button class="btn pri" data-a="novaPessoa">Adicionar pessoa</button></div></div>' +
+    '<div class="card flush"><table class="t"><thead><tr><th>Nome</th><th>Matrícula</th><th>Turno</th><th>Início do ciclo</th><th>Hoje</th><th>Saldo BH</th><th>Situação</th></tr></thead><tbody>' +
+    (lista.length ? lista.map((p) => {
+      const c = codigo(p.id, hj), t = turnoPorId(p.turno), v = saldoBH(p.id, hj), f = faixaBH(v);
+      return '<tr class="click" data-a="editarPessoa" data-p="' + p.id + '"><td><b>' + esc(p.nome) + '</b>' + (p.obs ? '<div class="sub">' + esc(p.obs) + '</div>' : '') + '</td><td class="sub">' + esc(p.matricula || '-') + '</td><td>' + esc(t ? t.nome : p.turno) + '</td><td>' + (p.inicio ? brA(p.inicio) : '-') + '</td><td>' + (p.ativo === false ? '-' : tag(c)) + '</td><td><span class="pill ' + f[1] + '">' + sh(v) + '</span></td><td>' + (p.ativo === false ? '<span class="pill p-mu">Inativo</span>' : '<span class="pill p-ok">Ativo</span>') + '</td></tr>';
+    }).join('') : '<tr><td colspan="7" class="vazio" style="padding:20px">Ninguém cadastrado ainda.</td></tr>') + '</tbody></table></div>' +
+    '<div class="card col"><h2>Como funciona o início do ciclo</h2><span class="sub">É o primeiro dia de trabalho de um bloco do ciclo (' + esc(S.cfg.ciclo.nome) + '). A partir dele o app calcula todos os dias de trabalho e folga, em qualquer mês. Pra quem faz o mesmo ciclo junto (ex.: novato com o padrinho), use a mesma data.</span></div>';
+};
+A.novaPessoa = () => { S.ui.modal = { t: 'pessoa', p: { id: uid(), nome: '', turno: S.cfg.turnos[0].id, inicio: hojeStr(), ativo: true, novo: true } }; render(); };
+A.editarPessoa = (el) => { const p = S.equipe.find((x) => x.id === el.dataset.p); S.ui.modal = { t: 'pessoa', p: Object.assign({}, p) }; render(); };
+M.pessoa = () => {
+  const p = S.ui.modal.p;
+  return '<h2>' + (p.novo ? 'Adicionar pessoa' : 'Editar ' + esc(p.nome)) + '</h2><form class="col" data-f="pessoa">' +
+    '<label class="f">Nome<input class="i" name="nome" required value="' + esc(p.nome) + '"></label>' +
+    '<div class="grid2" style="grid-template-columns:1fr 1fr;gap:10px"><label class="f">Matrícula (opcional)<input class="i" name="matricula" value="' + esc(p.matricula || '') + '"></label>' +
+    '<label class="f">Turno<select class="i" name="turno">' + S.cfg.turnos.map((t) => '<option value="' + t.id + '"' + (p.turno === t.id ? ' selected' : '') + '>' + esc(t.nome) + '</option>').join('') + '</select></label></div>' +
+    '<label class="f">Início do ciclo (primeiro dia de trabalho de um bloco)<input class="i" type="date" name="inicio" required value="' + esc(p.inicio || '') + '"></label>' +
+    '<label class="f">Observação<input class="i" name="obs" placeholder="Ex.: novato, padrinho Leandro" value="' + esc(p.obs || '') + '"></label>' +
+    '<label class="row" style="gap:8px;font-size:13px"><input type="checkbox" name="ativo"' + (p.ativo !== false ? ' checked' : '') + '> Ativo na escala</label>' +
+    '<div class="row" style="justify-content:space-between">' + (p.novo ? '<span></span>' : '<button type="button" class="btn danger" data-a="excluirPessoa">Excluir</button>') + '<div class="row"><button type="button" class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri">Salvar</button></div></div></form>';
+};
+function onPessoa(f) {
+  const p = S.ui.modal.p, novo = p.novo;
+  Object.assign(p, { nome: f.nome.value.trim(), matricula: f.matricula.value.trim(), turno: f.turno.value, inicio: f.inicio.value, obs: f.obs.value.trim(), ativo: f.ativo.checked });
+  delete p.novo;
+  if (novo) S.equipe.push(p); else S.equipe[S.equipe.findIndex((x) => x.id === p.id)] = p;
+  S.ui.modal = null; salvar('equipe'); render(); toast(novo ? 'Pessoa adicionada' : 'Salvo');
+}
+A.excluirPessoa = () => {
+  const p = S.ui.modal.p;
+  if (!confirm('Excluir ' + p.nome + '? As ausências e lançamentos dele também saem. Se ele só saiu da escala, prefira desmarcar "Ativo".')) return;
+  S.equipe = S.equipe.filter((x) => x.id !== p.id);
+  S.ausencias = S.ausencias.filter((x) => x.pessoaId !== p.id);
+  Object.keys(S.ajustes).forEach((k) => { if (k.startsWith(p.id + '|')) delete S.ajustes[k]; });
+  Object.keys(S.bh.lanc).forEach((k) => { if (k.startsWith(p.id + '|')) delete S.bh.lanc[k]; });
+  S.ui.modal = null; ['equipe', 'ausencias', 'ajustes', 'bh'].forEach(salvar); render();
+};
+A.importar = () => { S.ui.modal = { t: 'importar' }; render(); };
+M.importar = () => '<h2>Colar lista da equipe</h2><span class="sub">Uma pessoa por linha: <b>Nome; Turno; início do ciclo</b>. Ex.: <code>Leandro; A; 03/11/2026</code>. Dá pra copiar direto do Excel (colunas separadas por tab também funcionam).</span>' +
+  '<form class="col" data-f="importar"><textarea class="i" name="txt" rows="10" placeholder="Leandro; A; 03/11/2026&#10;Yuri; A; 03/11/2026"></textarea><div class="row" style="justify-content:flex-end"><button type="button" class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri">Importar</button></div></form>';
+function onImportar(f) {
+  let n = 0;
+  f.txt.value.split('\n').forEach((l) => {
+    const c = l.split(/[;\t]/).map((x) => x.trim()); if (!c[0]) return;
+    const t = (c[1] || '').replace(/^turno\s*/i, '').toUpperCase();
+    let ini = c[2] || ''; const m = ini.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); if (m) ini = m[3] + '-' + pad(+m[2]) + '-' + pad(+m[1]);
+    S.equipe.push({ id: uid(), nome: c[0], turno: turnoPorId(t) ? t : S.cfg.turnos[0].id, inicio: /^\d{4}-\d{2}-\d{2}$/.test(ini) ? ini : hojeStr(), ativo: true }); n++;
+  });
+  S.ui.modal = null; salvar('equipe'); render(); toast(n + ' pessoa(s) importada(s)');
+}
+
+/* ============ AUSÊNCIAS ============ */
+function siglasAusencia() { return S.cfg.siglas.filter((x) => x.sigla !== 'x'); }
+V.ausencias = () => {
+  const hj = hojeStr(), sig = S.ui.ausSig || 'BH';
+  const ativos = S.equipe.filter((p) => p.ativo !== false).sort((a, b) => a.nome.localeCompare(b.nome));
+  const futuras = S.ausencias.filter((x) => x.ate >= hj).sort((a, b) => a.de.localeCompare(b.de));
+  const passadas = S.ausencias.filter((x) => x.ate < hj).sort((a, b) => b.de.localeCompare(a.de)).slice(0, 30);
+  const linha = (x) => { const p = S.equipe.find((y) => y.id === x.pessoaId); const n = diffD(x.de, x.ate) + 1; return '<tr><td>' + tag(x.sigla) + '</td><td><b>' + esc(p ? p.nome : '?') + '</b></td><td>' + (n === 1 ? brA(x.de) : br(x.de) + ' a ' + brA(x.ate)) + ' <span class="sub">(' + n + (n === 1 ? ' dia' : ' dias') + ')</span></td><td class="sub">' + esc(x.obs || '') + '</td><td style="text-align:right"><button class="btn ghost sm danger" data-a="excluirAus" data-id="' + x.id + '">Excluir</button></td></tr>'; };
+  return '<div class="topo"><div><h1>Ausências</h1><div class="sub">O que você lança aqui entra direto na escala, e o app redistribui os postos do dia.</div></div></div>' +
+    '<div class="grid2" style="grid-template-columns:minmax(300px,380px) 1fr">' +
+    '<div class="card col"><h2>Nova ausência</h2><form class="col" data-f="ausencia">' +
+    '<label class="f">Pessoa<select class="i" name="pessoa" required>' + ativos.map((p) => '<option value="' + p.id + '">' + esc(p.nome) + ' · ' + esc((turnoPorId(p.turno) || {}).nome || p.turno) + '</option>').join('') + '</select></label>' +
+    '<div class="col" style="gap:6px"><span style="font-size:12px;font-weight:600">Tipo</span><div class="chipsel">' + siglasAusencia().map((x) => '<button type="button" data-a="ausSig" data-s="' + esc(x.sigla) + '" style="' + tagStyle(x.sigla) + ';border:2px solid ' + (sig === x.sigla ? 'var(--ac)' : 'transparent') + '">' + esc(x.nome) + '</button>').join('') + '</div></div>' +
+    '<div class="grid2" style="grid-template-columns:1fr 1fr;gap:10px"><label class="f">De<input class="i" type="date" name="de" required value="' + hj + '"></label><label class="f">Até<input class="i" type="date" name="ate" required value="' + hj + '"></label></div>' +
+    '<label class="f">Observação (opcional)<input class="i" name="obs"></label>' +
+    ((siglaInfo(sig) || {}).descontaBH ? '<span class="sub" style="color:var(--in)">Cada dia que a pessoa trabalharia desconta ' + S.cfg.jornada + 'h do banco de horas.</span>' : '') +
+    '<button class="btn pri">Lançar e atualizar escala</button></form></div>' +
+    '<div class="col"><div class="card flush"><table class="t"><thead><tr><th colspan="5">Hoje e próximas (' + futuras.length + ')</th></tr></thead><tbody>' + (futuras.length ? futuras.map(linha).join('') : '<tr><td class="vazio" style="padding:16px">Nenhuma ausência marcada.</td></tr>') + '</tbody></table></div>' +
+    (passadas.length ? '<div class="card flush"><table class="t"><thead><tr><th colspan="5">Anteriores</th></tr></thead><tbody>' + passadas.map(linha).join('') + '</tbody></table></div>' : '') + '</div></div>';
+};
+A.ausSig = (el) => { S.ui.ausSig = el.dataset.s; const f = $('[data-f=ausencia]'); const keep = f ? { p: f.pessoa.value, de: f.de.value, ate: f.ate.value, obs: f.obs.value } : null; render(); const g = $('[data-f=ausencia]'); if (g && keep) { g.pessoa.value = keep.p; g.de.value = keep.de; g.ate.value = keep.ate; g.obs.value = keep.obs; } };
+function onAusencia(f) {
+  if (f.ate.value < f.de.value) { toast('A data final é antes da inicial'); return; }
+  S.ausencias.push({ id: uid(), pessoaId: f.pessoa.value, sigla: S.ui.ausSig || 'BH', de: f.de.value, ate: f.ate.value, obs: f.obs.value.trim() });
+  salvar('ausencias'); render(); toast('Lançado. A escala já foi atualizada.');
+}
+A.excluirAus = (el) => { if (!confirm('Excluir esta ausência?')) return; S.ausencias = S.ausencias.filter((x) => x.id !== el.dataset.id); salvar('ausencias'); render(); };
+
+/* ============ BANCO DE HORAS ============ */
+V.bh = () => {
+  const aba = S.ui.bhAba || 'lancar';
+  const hj = hojeStr();
+  const ativos = S.equipe.filter((p) => p.ativo !== false).sort((a, b) => (a.turno + a.nome).localeCompare(b.turno + b.nome));
+  const saldos = ativos.map((p) => saldoBH(p.id, hj));
+  const total = saldos.reduce((a, b) => a + b, 0);
+  const crit = saldos.filter((v) => v >= S.cfg.bh.critico).length, aten = saldos.filter((v) => v >= S.cfg.bh.atencao && v < S.cfg.bh.critico).length;
+  const segAt = segundaDe(hj);
+  const heSemAt = ativos.reduce((a, p) => a + Math.max(0, heSemana(p.id, segAt)), 0);
+  let corpo = '';
+  if (aba === 'lancar') corpo = bhLancar(ativos);
+  else if (aba === 'saldos') corpo = bhSaldos(ativos);
+  else corpo = bhRegras(ativos);
+  return '<div class="topo"><div><h1>Banco de horas</h1><div class="sub">A escala diz o previsto, você lança o realizado e o BeepDo recalcula saldo, média e avisos. Controle gerencial: o oficial segue sendo o ponto da empresa.</div></div>' +
+    '<div class="seg">' + [['lancar', 'Lançar semana'], ['saldos', 'Saldos e médias'], ['regras', 'Regras e alertas']].map(([k, l]) => '<button class="' + (aba === k ? 'on' : '') + '" data-a="bhAba" data-k="' + k + '">' + l + '</button>').join('') + '</div></div>' +
+    '<div class="kpis">' + kpi('Saldo da equipe', sh(Math.round(total * 10) / 10), ativos.length + ' pessoas') + kpi('HE nesta semana', sh(heSemAt), 'teto por pessoa: ' + h(S.cfg.bh.heSemana), 'var(--in)') + kpi('Em atenção', aten, 'a partir de ' + S.cfg.bh.atencao + 'h', aten ? 'var(--wa)' : '') + kpi('Críticos', crit, 'a partir de ' + S.cfg.bh.critico + 'h', crit ? 'var(--er)' : '') + '</div>' + corpo;
+};
+A.bhAba = (el) => { S.ui.bhAba = el.dataset.k; render(); };
+A.semana = (el) => { S.ui.semana = addD(S.ui.semana || segundaDe(hojeStr()), 7 * +el.dataset.d); S.ui.bhSel = null; render(); };
+function bhLancar(ativos) {
+  const seg = S.ui.semana || segundaDe(hojeStr());
+  const dias = [0, 1, 2, 3, 4, 5, 6].map((i) => addD(seg, i));
+  const avisos = [];
+  let linhas = '';
+  let turnoAnt = null;
+  ativos.forEach((p) => {
+    if (p.turno !== turnoAnt) { turnoAnt = p.turno; linhas += '<tr class="tit"><td colspan="11">' + esc((turnoPorId(p.turno) || {}).nome || p.turno) + '</td></tr>'; }
+    const L = limDia(p.id);
+    let prevT = 0, heT = 0;
+    const cels = dias.map((s) => {
+      const d = diaBH(p.id, s); prevT += d.prev; heT += d.he;
+      const est = d.he === 0 ? 'ok' : d.he < 0 ? 'neg' : d.he > L ? 'alto' : 'he';
+      if (est === 'alto') avisos.push({ g: 'er', txt: p.nome + ' · ' + SEM[dow(s)] + ' ' + br(s) + ': ' + (d.prev === 0 ? 'trabalhou na folga (' + h(d.real) + ')' : h(d.real) + ', ' + sh(d.he) + ' de HE') + '. Limite: ' + h(L) + '/dia.' });
+      const bg = { ok: '#F6F6F9', he: '#D6ECFB', alto: '#FDECEA', neg: '#EEEEF3' }[est], fg = { ok: '#3A3A48', he: '#0D5788', alto: '#B3261E', neg: '#5E5E6E' }[est];
+      const sel = S.ui.bhSel && S.ui.bhSel.pid === p.id && S.ui.bhSel.s === s;
+      return '<td class="c" data-a="bhCel" data-p="' + p.id + '" data-s="' + s + '" style="background:' + bg + ';color:' + fg + ';' + (sel ? 'outline:2px solid var(--ac)' : '') + (d.lancado ? ';box-shadow:inset 0 0 0 1.5px #9A8BD0' : '') + '"><b>' + (d.real === 0 && d.prev === 0 ? (d.c === 'x' ? '-' : esc(d.c)) : h(d.real)) + '</b><small>' + (d.he ? sh(d.he) : d.prev === 0 ? (d.c === 'x' ? 'folga' : '') : '') + '</small></td>';
+    }).join('');
+    if (heT > S.cfg.bh.heSemana) avisos.push({ g: 'er', txt: p.nome + ': ' + sh(heT) + ' na semana, teto é ' + h(S.cfg.bh.heSemana) + '.' });
+    const sd = saldoBH(p.id, dias[6]), f = faixaBH(sd);
+    if (sd >= S.cfg.bh.atencao) avisos.push({ g: 'wa', txt: p.nome + ': saldo ' + sh(sd) + ' (' + f[0].toLowerCase() + '). Programe folga BH.' });
+    linhas += '<tr><td class="nm">' + esc(p.nome) + '</td>' + cels + '<td class="tot">' + h(prevT) + '</td><td class="tot" style="font-weight:700;color:' + (heT > S.cfg.bh.heSemana ? 'var(--er)' : heT > 0 ? 'var(--in)' : 'var(--mu)') + '">' + sh(heT) + '</td><td class="tot"><span class="pill ' + f[1] + '">' + sh(sd) + '</span></td></tr>';
+  });
+  let ed = '<div class="card col"><h2>Lançar horas</h2><span class="sub">Clique num dia da grade. Em branco, vale o que está na escala.</span></div>';
+  if (S.ui.bhSel) {
+    const { pid, s } = S.ui.bhSel, p = S.equipe.find((x) => x.id === pid), d = diaBH(pid, s), L = limDia(pid), J = S.cfg.jornada;
+    const alto = d.he > L;
+    ed = '<div class="card col"><div><div class="sub">' + SEMC[dow(s)] + ', ' + br(s) + (feriado(s) ? ' · ' + esc(feriado(s)) : '') + '</div><h2 style="font-size:18px">' + esc(p.nome) + '</h2><div class="sub">Na escala: ' + esc((siglaInfo(d.c) || {}).nome || d.c) + ' (' + (d.prev ? h(d.prev) : 'sem jornada') + ') · limite de HE ' + h(L) + '/dia' + (excBH(pid).heDia != null ? ' (exceção)' : '') + '</div></div>' +
+      '<div class="row" style="justify-content:space-between;background:#F6F6F9;border-radius:12px;padding:10px"><button class="btn" data-a="bhStep" data-d="-0.5" aria-label="Menos meia hora">−</button><div style="text-align:center"><div style="font-size:30px;font-weight:700">' + h(d.real) + '</div><div class="sub">trabalhadas</div></div><button class="btn" data-a="bhStep" data-d="0.5" aria-label="Mais meia hora">+</button></div>' +
+      '<div class="chipsel">' + [[0, d.prev ? 'Faltou' : 'Folga'], [J, h(J)], [J + 1, h(J + 1)], [J + 2, h(J + 2)], [12, '12h']].map(([v, l]) => '<button class="' + (d.real === v ? 'on' : '') + '" data-a="bhSet" data-v="' + v + '">' + l + '</button>').join('') + (d.lancado ? '<button data-a="bhSet" data-v="auto">Igual à escala</button>' : '') + '</div>' +
+      '<div class="alerta ' + (alto ? 'a-er' : d.he > 0 ? 'a-in' : 'a-wa') + '" style="' + (d.he === 0 ? 'background:#F6F6F9' : '') + '"><i style="' + (d.he === 0 ? 'background:#9A9AAA' : '') + '"></i><span>' + (d.he === 0 ? 'Igual à escala, nada muda no banco.' : d.he < 0 ? 'Desconta ' + h(-d.he) + ' do banco.' : alto ? sh(d.he) + ' de HE, acima do limite de ' + h(L) + '. Fica marcado e gera aviso.' : sh(d.he) + ' de HE, dentro do limite. Entra no banco.') + (feriado(s) && S.cfg.feriadoModo === 'bh' && d.real > 0 && d.prev > 0 ? ' Feriado trabalhado: +' + h(J) + ' no banco.' : '') + '</span></div>' +
+      (alto ? '<label class="f">Justificativa<input class="i" data-c="bhJust" value="' + esc(S.bh.just && S.bh.just[pid + '|' + s] || '') + '" placeholder="Ex.: cobriu falta, parada de equipamento"></label>' : '') + '</div>';
+  }
+  return '<div class="grid2" style="grid-template-columns:1fr minmax(280px,340px)"><div class="card flush" data-scroll>' +
+    '<div class="row" style="justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EEEEF3"><div class="row"><button class="btn sm" data-a="semana" data-d="-1" aria-label="Semana anterior">‹</button><b>Semana ' + br(dias[0]) + ' a ' + br(dias[6]) + '</b><button class="btn sm" data-a="semana" data-d="1" aria-label="Próxima semana">›</button></div><span class="sub">Dá pra lançar em qualquer dia, quando quiser.</span></div>' +
+    '<table class="esc bhg" style="margin:6px"><tr><th class="nm"></th>' + dias.map((s) => '<th class="' + (feriado(s) ? 'fer' : (dow(s) === 0 || dow(s) === 6) ? 'fds' : '') + '"><span class="d">' + SEM[dow(s)] + '</span>' + br(s) + '</th>').join('') + '<th>Previsto</th><th>HE sem.</th><th>Saldo</th></tr>' + linhas + '</table></div>' +
+    '<div class="col">' + ed + '<div class="card col"><h2>Avisos da semana (' + avisos.length + ')</h2>' + (avisos.length ? avisos.slice(0, 12).map((x) => '<div class="alerta a-' + x.g + '"><i></i><span>' + esc(x.txt) + '</span></div>').join('') : '<span style="color:var(--ok);font-size:13px">Tudo dentro das regras nesta semana.</span>') + '</div></div></div>';
+}
+A.bhCel = (el) => { S.ui.bhSel = { pid: el.dataset.p, s: el.dataset.s }; S.ui.manterScroll = true; render(); };
+function bhGrava(v) { const { pid, s } = S.ui.bhSel, k = pid + '|' + s; if (v === 'auto') delete S.bh.lanc[k]; else S.bh.lanc[k] = Math.max(0, Math.min(24, v)); S.ui.manterScroll = true; salvar('bh'); render(); }
+A.bhStep = (el) => { const d = diaBH(S.ui.bhSel.pid, S.ui.bhSel.s); bhGrava(d.real + +el.dataset.d); };
+A.bhSet = (el) => bhGrava(el.dataset.v === 'auto' ? 'auto' : +el.dataset.v);
+C.bhJust = (el) => { S.bh.just = S.bh.just || {}; S.bh.just[S.ui.bhSel.pid + '|' + S.ui.bhSel.s] = el.value; salvar('bh'); };
+function bhSaldos(ativos) {
+  const hj = hojeStr(), seg = segundaDe(hj);
+  return '<div class="card flush"><table class="t"><thead><tr><th>Pessoa</th><th>Turno</th><th style="text-align:right">Saldo</th><th style="text-align:right">HE esta semana</th><th style="text-align:right">Média HE/sem. (4 sem.)</th><th>Últimas 4 semanas</th><th>Situação</th><th></th></tr></thead><tbody>' +
+    ativos.map((p) => {
+      const v = saldoBH(p.id, hj), f = faixaBH(v);
+      const sems = [3, 2, 1, 0].map((i) => heSemana(p.id, addD(seg, -7 * i)));
+      const media = sems.reduce((a, b) => a + b, 0) / 4;
+      const mx = Math.max(S.cfg.bh.heSemana, 8, ...sems.map(Math.abs));
+      const barras = sems.map((x, i) => '<span title="' + sh(x) + '" style="display:inline-block;width:12px;margin-right:3px;vertical-align:bottom;border-radius:3px 3px 0 0;height:' + Math.max(3, Math.round(Math.abs(x) / mx * 26)) + 'px;background:' + (x > S.cfg.bh.heSemana ? '#B3261E' : x < 0 ? '#9A9AAA' : i === 3 ? '#5B3FB0' : '#C9BFEA') + '"></span>').join('');
+      return '<tr><td><b>' + esc(p.nome) + '</b></td><td class="sub">' + esc((turnoPorId(p.turno) || {}).nome || p.turno) + '</td><td style="text-align:right;font-weight:700">' + sh(v) + '</td><td style="text-align:right">' + sh(sems[3]) + '</td><td style="text-align:right">' + sh(Math.round(media * 10) / 10) + '</td><td style="height:34px">' + barras + '</td><td><span class="pill ' + f[1] + '">' + f[0] + '</span></td><td style="text-align:right"><button class="btn sm" data-a="programarBH" data-p="' + p.id + '">Programar BH</button></td></tr>';
+    }).join('') + '</tbody></table></div><span class="sub">Saldo contado desde ' + brA(S.cfg.bh.inicio) + ' (muda em Regras e alertas). Prazo de compensação configurado: ' + S.cfg.bh.prazoMeses + ' meses.</span>';
+}
+function stepper(chave, label, hint, passo, min, max, fmt) {
+  const v = S.cfg.bh[chave] != null ? S.cfg.bh[chave] : S.cfg[chave];
+  return '<div class="regra"><div class="l"><b style="font-weight:500">' + label + '</b><small>' + hint + '</small></div><div class="stepper"><button data-a="bhRegra" data-k="' + chave + '" data-d="' + (-passo) + '" data-min="' + min + '" data-max="' + max + '" aria-label="Diminuir ' + label + '">−</button><span>' + fmt(v) + '</span><button data-a="bhRegra" data-k="' + chave + '" data-d="' + passo + '" data-min="' + min + '" data-max="' + max + '" aria-label="Aumentar ' + label + '">+</button></div></div>';
+}
+A.bhRegra = (el) => {
+  const k = el.dataset.k, alvo = k === 'jornada' ? S.cfg : S.cfg.bh;
+  alvo[k] = Math.max(+el.dataset.min, Math.min(+el.dataset.max, Math.round((alvo[k] + +el.dataset.d) * 10) / 10));
+  salvar('config'); render();
+};
+function bhRegras(ativos) {
+  return '<div class="grid2"><div class="card col"><h2>Limites e alertas</h2>' +
+    stepper('jornada', 'Jornada do dia', 'Horas previstas em cada dia de escala', 0.5, 4, 12, h) +
+    stepper('heDia', 'Hora extra por dia', 'De 0 até o limite. A CLT permite até 2h', 0.5, 0, 6, h) +
+    stepper('heSemana', 'Teto de HE na semana', 'Soma da semana. Passou, avisa', 1, 0, 40, h) +
+    stepper('atencao', 'Alerta de atenção', 'Saldo a partir daqui fica amarelo', 2, 0, 200, sh) +
+    stepper('critico', 'Alerta crítico', 'Saldo a partir daqui fica vermelho e pede folga BH', 2, 0, 300, sh) +
+    stepper('minimo', 'Saldo mínimo', 'Quanto pode ficar devendo', 2, -100, 0, sh) +
+    '<div class="regra"><div class="l"><b style="font-weight:500">Prazo pra compensar</b><small>Acordo individual: até 6 meses. Coletivo: até 12</small></div><div class="chipsel">' + [3, 6, 12].map((m) => '<button class="' + (S.cfg.bh.prazoMeses === m ? 'on' : '') + '" data-a="bhPrazo" data-m="' + m + '">' + m + ' meses</button>').join('') + '</div></div>' +
+    '<div class="regra"><div class="l"><b style="font-weight:500">Contar saldo a partir de</b><small>Antes disso vale o saldo inicial de cada um</small></div><input class="i" style="width:auto" type="date" data-c="bhInicio" value="' + S.cfg.bh.inicio + '"></div></div>' +
+    '<div class="card col"><h2>Por pessoa</h2><span class="sub">Saldo inicial (o que cada um já tinha em ' + brA(S.cfg.bh.inicio) + ') e limite de HE por dia diferente do padrão (ex.: novato com 0h).</span>' +
+    '<table class="t"><thead><tr><th>Pessoa</th><th>Saldo inicial</th><th>HE/dia</th></tr></thead><tbody>' + ativos.map((p) => '<tr><td>' + esc(p.nome) + '</td><td><input class="i" style="width:90px" type="number" step="0.5" data-c="bhIni" data-p="' + p.id + '" value="' + (S.bh.saldoInicial[p.id] || 0) + '"></td><td><input class="i" style="width:90px" type="number" step="0.5" min="0" placeholder="' + S.cfg.bh.heDia + '" data-c="bhExc" data-p="' + p.id + '" value="' + (excBH(p.id).heDia != null ? excBH(p.id).heDia : '') + '"></td></tr>').join('') + '</tbody></table></div></div>';
+}
+A.bhPrazo = (el) => { S.cfg.bh.prazoMeses = +el.dataset.m; salvar('config'); render(); };
+C.bhInicio = (el) => { if (!el.value) return; S.cfg.bh.inicio = el.value; salvar('config'); render(); };
+C.bhIni = (el) => { S.bh.saldoInicial[el.dataset.p] = +el.value || 0; salvar('bh'); };
+C.bhExc = (el) => { S.cfg.bh.excecoes = S.cfg.bh.excecoes || {}; if (el.value === '') delete S.cfg.bh.excecoes[el.dataset.p]; else S.cfg.bh.excecoes[el.dataset.p] = { heDia: +el.value }; salvar('config'); };
+A.programarBH = (el) => { const p = S.equipe.find((x) => x.id === el.dataset.p); S.ui.modal = { t: 'progBH', pid: p.id, sel: {} }; render(); };
+M.progBH = () => {
+  const p = S.equipe.find((x) => x.id === S.ui.modal.pid), v = saldoBH(p.id, hojeStr()), sug = sugerirBH(p, 8), J = S.cfg.jornada;
+  const n = Object.keys(S.ui.modal.sel).filter((k) => S.ui.modal.sel[k]).length;
+  return '<h2>Programar folga BH · ' + esc(p.nome) + '</h2><span class="sub">Saldo hoje: <b>' + sh(v) + '</b>. Estes são os próximos dias em que ele está escalado e o turno continua coberto sem ele:</span>' +
+    (sug.length ? '<div class="chipsel">' + sug.map((s) => '<button class="' + (S.ui.modal.sel[s] ? 'on' : '') + '" data-a="progSel" data-s="' + s + '">' + SEM[dow(s)] + ' ' + br(s) + '</button>').join('') + '</div>' : '<span class="vazio">Nos próximos 45 dias não há dia em que o turno fique coberto sem ele. Dá pra lançar manualmente em Ausências.</span>') +
+    '<span class="sub">' + (n ? n + ' dia(s) = ' + h(n * J) + '. Saldo fica ' + sh(v - n * J) + '.' : 'Escolha os dias.') + '</span>' +
+    '<div class="row" style="justify-content:flex-end"><button class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri" data-a="progOk"' + (n ? '' : ' disabled') + '>Lançar folga BH</button></div>';
+};
+A.progSel = (el) => { const s = el.dataset.s; S.ui.modal.sel[s] = !S.ui.modal.sel[s]; render(); };
+A.progOk = () => { const m = S.ui.modal; Object.keys(m.sel).filter((s) => m.sel[s]).forEach((s) => S.ausencias.push({ id: uid(), pessoaId: m.pid, sigla: (S.cfg.siglas.find((x) => x.descontaBH) || { sigla: 'BH' }).sigla, de: s, ate: s, obs: 'Programada pelo banco de horas' })); S.ui.modal = null; salvar('ausencias'); render(); toast('Folga BH lançada na escala'); };
+
+/* ============ TAREFAS ============ */
+V.tarefas = () => {
+  const hj = hojeStr(), aba = S.ui.tAba || (S.tarefas.some((t) => !t.feita && t.prazo && t.prazo < hj) ? 'nao' : 'abertas');
+  const nao = S.tarefas.filter((t) => !t.feita && t.prazo && t.prazo < hj);
+  const abertas = S.tarefas.filter((t) => !t.feita && !(t.prazo && t.prazo < hj));
+  const feitas = S.tarefas.filter((t) => t.feita).sort((a, b) => (b.feitaEm || '').localeCompare(a.feitaEm || '')).slice(0, 50);
+  const lista = aba === 'nao' ? nao : aba === 'feitas' ? feitas : abertas.sort((a, b) => (a.prazo || '9999').localeCompare(b.prazo || '9999'));
+  const linha = (t) => '<tr><td style="width:44px"><button data-a="tFeita" data-id="' + t.id + '" aria-label="' + (t.feita ? 'Reabrir' : 'Concluir') + ' ' + esc(t.titulo) + '" style="width:26px;height:26px;border-radius:50%;border:2px solid ' + (t.feita ? 'var(--ok)' : '#9A9AAA') + ';background:' + (t.feita ? 'var(--ok)' : '#fff') + ';color:#fff;cursor:pointer;font-weight:700">' + (t.feita ? '✓' : '') + '</button></td>' +
+    '<td><b style="font-weight:500;' + (t.feita ? 'text-decoration:line-through;color:#8A8A99' : '') + '">' + esc(t.titulo) + '</b><div class="sub">' + (t.rotina ? 'Repete ' + ({ diaria: 'todo dia', semanal: 'toda semana', mensal: 'todo mês' })[t.rotina] : 'Única') + '</div></td>' +
+    '<td>' + esc(t.resp || '-') + '</td><td style="font-weight:600;color:' + (!t.feita && t.prazo && t.prazo < hj ? 'var(--er)' : 'inherit') + '">' + (t.prazo ? (t.prazo === hj ? 'Hoje' : br(t.prazo)) + (t.hora ? ' ' + t.hora : '') : '-') + '</td>' +
+    '<td style="text-align:right;white-space:nowrap">' + (!t.feita && t.prazo && t.prazo < hj ? '<button class="btn sm" data-a="tReag" data-id="' + t.id + '">Pra hoje</button> ' : '') + '<button class="btn ghost sm" data-a="tEditar" data-id="' + t.id + '">Editar</button>' + (aba === 'nao' ? ' <button class="btn ghost sm danger" data-a="tDesc" data-id="' + t.id + '">Descartar</button>' : '') + '</td></tr>';
+  return '<div class="topo"><div><h1>Tarefas da equipe</h1><div class="sub">Suas pendências com a equipe. O que passa do prazo sai do dia e vai pra Não executadas.</div></div><button class="btn pri" data-a="tNova">Nova tarefa</button></div>' +
+    '<div class="seg">' + [['abertas', 'Abertas (' + abertas.length + ')'], ['nao', 'Não executadas (' + nao.length + ')'], ['feitas', 'Concluídas']].map(([k, l]) => '<button class="' + (aba === k ? 'on' : '') + '" data-a="tAba" data-k="' + k + '">' + l + '</button>').join('') + '</div>' +
+    (aba === 'nao' && nao.length ? '<div class="alerta a-wa"><i></i><span>Passaram do prazo sem ninguém concluir. Conclua, traga pra hoje ou descarte.</span></div>' : '') +
+    '<div class="card flush"><table class="t"><thead><tr><th></th><th>Tarefa</th><th>Responsável</th><th>Prazo</th><th></th></tr></thead><tbody>' + (lista.length ? lista.map(linha).join('') : '<tr><td colspan="5" class="vazio" style="padding:18px">Nada aqui.</td></tr>') + '</tbody></table></div>';
+};
+A.tAba = (el) => { S.ui.tAba = el.dataset.k; render(); };
+A.tNova = () => { S.ui.modal = { t: 'tarefa', x: { id: uid(), titulo: '', resp: '', prazo: hojeStr(), hora: '', rotina: '', novo: true } }; render(); };
+A.tEditar = (el) => { S.ui.modal = { t: 'tarefa', x: Object.assign({}, S.tarefas.find((t) => t.id === el.dataset.id)) }; render(); };
+M.tarefa = () => {
+  const x = S.ui.modal.x;
+  const resp = S.equipe.map((p) => p.nome).concat(princ().flatMap((po) => S.cfg.turnos.map((t) => po + ' do ' + t.nome)));
+  return '<h2>' + (x.novo ? 'Nova tarefa' : 'Editar tarefa') + '</h2><form class="col" data-f="tarefa"><label class="f">O que fazer<input class="i" name="titulo" required value="' + esc(x.titulo) + '"></label>' +
+    '<label class="f">Responsável (pessoa ou posto)<input class="i" name="resp" list="lresp" value="' + esc(x.resp || '') + '"><datalist id="lresp">' + resp.map((r) => '<option value="' + esc(r) + '">').join('') + '</datalist></label>' +
+    '<div class="grid2" style="grid-template-columns:1fr 1fr 1fr;gap:10px"><label class="f">Prazo<input class="i" type="date" name="prazo" value="' + esc(x.prazo || '') + '"></label><label class="f">Hora<input class="i" type="time" name="hora" value="' + esc(x.hora || '') + '"></label>' +
+    '<label class="f">Repete<select class="i" name="rotina">' + [['', 'Não'], ['diaria', 'Todo dia'], ['semanal', 'Toda semana'], ['mensal', 'Todo mês']].map(([k, l]) => '<option value="' + k + '"' + ((x.rotina || '') === k ? ' selected' : '') + '>' + l + '</option>').join('') + '</select></label></div>' +
+    '<div class="row" style="justify-content:space-between">' + (x.novo ? '<span></span>' : '<button type="button" class="btn danger" data-a="tExcluir">Excluir</button>') + '<div class="row"><button type="button" class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri">Salvar</button></div></div></form>';
+};
+function onTarefa(f) {
+  const x = S.ui.modal.x, novo = x.novo; delete x.novo;
+  Object.assign(x, { titulo: f.titulo.value.trim(), resp: f.resp.value.trim(), prazo: f.prazo.value, hora: f.hora.value, rotina: f.rotina.value });
+  if (novo) S.tarefas.push(x); else S.tarefas[S.tarefas.findIndex((t) => t.id === x.id)] = x;
+  S.ui.modal = null; salvar('tarefas'); render();
+}
+A.tExcluir = () => { S.tarefas = S.tarefas.filter((t) => t.id !== S.ui.modal.x.id); S.ui.modal = null; salvar('tarefas'); render(); };
+A.tFeita = (el) => {
+  const t = S.tarefas.find((x) => x.id === el.dataset.id); t.feita = !t.feita; t.feitaEm = t.feita ? new Date().toISOString() : null;
+  if (t.feita && t.rotina && !t.gerouProx) {
+    const base = t.prazo || hojeStr(); let prox = t.rotina === 'diaria' ? addD(base, 1) : t.rotina === 'semanal' ? addD(base, 7) : (() => { const [a, m, d] = base.split('-').map(Number); const mm = m === 12 ? 1 : m + 1, aa = m === 12 ? a + 1 : a; return aa + '-' + pad(mm) + '-' + pad(Math.min(d, diasNoMes(aa, mm))); })();
+    S.tarefas.push({ id: uid(), titulo: t.titulo, resp: t.resp, prazo: prox, hora: t.hora, rotina: t.rotina }); t.gerouProx = true;
+  }
+  salvar('tarefas'); render();
+};
+A.tReag = (el) => { const t = S.tarefas.find((x) => x.id === el.dataset.id); t.prazo = hojeStr(); salvar('tarefas'); render(); toast('Trazida pra hoje'); };
+A.tDesc = (el) => { if (!confirm('Descartar esta tarefa?')) return; S.tarefas = S.tarefas.filter((x) => x.id !== el.dataset.id); salvar('tarefas'); render(); };
+
+/* ============ REUNIÕES ============ */
+const NTH = ['', '1ª', '2ª', '3ª', '4ª', 'última'];
+function regraTexto(r) {
+  const n = +r.intervalo || 1;
+  let t = r.freq === 'diaria' ? (n === 1 ? 'Todo dia' : 'A cada ' + n + ' dias')
+    : r.freq === 'semanal' ? (n === 1 ? 'Toda ' : 'A cada ' + n + ' semanas, ') + (r.dias || []).sort().map((d) => SEMC[d].toLowerCase()).join(', ')
+    : r.freq === 'mensal_dia' ? (n === 1 ? 'Todo mês' : 'A cada ' + n + ' meses') + ', dia ' + r.diaMes
+    : (n === 1 ? 'Todo mês' : 'A cada ' + n + ' meses') + ', ' + NTH[r.nth] + ' ' + SEMC[r.nthDow].toLowerCase();
+  return t + ' às ' + r.hora + (r.feriado === 'pular' ? ' · pula feriado' : r.feriado === 'adiar' ? ' · feriado adia pro próximo dia útil' : '');
+}
+function casaRegra(r, s) {
+  if (s < r.inicio || (r.fim && s > r.fim)) return false;
+  const n = Math.max(1, +r.intervalo || 1);
+  if (r.freq === 'diaria') return diffD(r.inicio, s) % n === 0;
+  if (r.freq === 'semanal') return (r.dias || []).includes(dow(s)) && Math.floor(diffD(segundaDe(r.inicio), segundaDe(s)) / 7) % n === 0;
+  const [a, m, d] = s.split('-').map(Number), [a0, m0] = r.inicio.split('-').map(Number);
+  if (((a - a0) * 12 + (m - m0)) % n !== 0) return false;
+  if (r.freq === 'mensal_dia') return d === Math.min(+r.diaMes, diasNoMes(a, m));
+  if (dow(s) !== +r.nthDow) return false;
+  return +r.nth === 5 ? d + 7 > diasNoMes(a, m) : Math.ceil(d / 7) === +r.nth;
+}
+function ocorrencias(r, de, ate) {
+  const out = [];
+  for (let s = addD(de, -7); s <= ate; s = addD(s, 1)) {
+    if (!casaRegra(r, s)) continue;
+    let real = s;
+    if (feriado(s) && r.feriado === 'pular') continue;
+    if (feriado(s) && r.feriado === 'adiar') { do { real = addD(real, 1); } while (feriado(real) || dow(real) === 0 || dow(real) === 6); }
+    if ((r.excecoes || []).includes(real)) continue;
+    if (real >= de && real <= ate) out.push({ r, s: real });
+  }
+  return out;
+}
+function proximasReunioes(de, dias) { return S.reunioes.flatMap((r) => ocorrencias(r, de, addD(de, dias))).sort((a, b) => (a.s + a.r.hora).localeCompare(b.s + b.r.hora)); }
+function emServico(s, hora) {
+  const mn = hm2min(hora);
+  const t = S.cfg.turnos.find((t) => { const [i, f] = janela(t.id); return (mn >= i && mn < f) || (mn + 1440 >= i && mn + 1440 < f) || (mn - 1440 >= i && mn - 1440 < f); });
+  if (!t || !S.equipe.length) return '';
+  const d = diaEscala(s);
+  const nomes = S.equipe.filter((p) => p.ativo !== false && d.turno[p.id] === t.id && trabalhando(d.cod[p.id])).map((p) => p.nome);
+  return t.nome + (nomes.length ? ': ' + nomes.join(', ') : '');
+}
+V.reunioes = () => {
+  const hj = hojeStr(), prox = proximasReunioes(hj, 20);
+  const porDia = {}; prox.forEach((o) => { (porDia[o.s] = porDia[o.s] || []).push(o); });
+  return '<div class="topo"><div><h1>Reuniões</h1><div class="sub">Recorrentes do jeito que se fala, cruzando com a escala pra você saber quem estará em serviço.</div></div><button class="btn pri" data-a="rNova">Nova reunião</button></div>' +
+    '<div class="grid2" style="grid-template-columns:minmax(300px,1fr) minmax(320px,1.2fr)"><div class="col">' +
+    (S.reunioes.length ? S.reunioes.map((r) => { const o = ocorrencias(r, hj, addD(hj, 120))[0]; return '<div class="card col" style="gap:6px;cursor:pointer" data-a="rEditar" data-id="' + r.id + '"><div class="row" style="justify-content:space-between"><b>' + esc(r.titulo) + '</b>' + (o ? '<span class="pill p-in">' + (o.s === hj ? 'Hoje' : SEM[dow(o.s)] + ' ' + br(o.s)) + '</span>' : '<span class="pill p-mu">Sem próximas</span>') + '</div><span class="sub">' + esc(regraTexto(r)) + (r.local ? ' · ' + esc(r.local) : '') + '</span>' + (r.pauta ? '<span class="sub" style="white-space:pre-line">Pauta: ' + esc(r.pauta.split('\n').slice(0, 3).join(' · ')) + '</span>' : '') + '</div>'; }).join('') : '<div class="card col"><h2>Nenhuma reunião ainda</h2><span class="sub">Ex.: "toda segunda 9h", "1ª sexta do mês 14h", "a cada 15 dias".</span></div>') +
+    '</div><div class="card col"><h2>Próximos 20 dias</h2>' +
+    (Object.keys(porDia).length ? Object.keys(porDia).map((s) => '<div class="col" style="gap:6px"><b style="font-size:13px;color:var(--mu)">' + SEMC[dow(s)] + ', ' + br(s) + (feriado(s) ? ' · ' + esc(feriado(s)) : '') + '</b>' + porDia[s].map((o) => '<div class="row" style="justify-content:space-between;align-items:flex-start;padding:10px 12px;border:1px solid #EEEEF3;border-radius:10px"><div class="col" style="gap:2px"><span><b>' + o.r.hora + '</b> ' + esc(o.r.titulo) + '</span><span class="sub">Em serviço · ' + esc(emServico(o.s, o.r.hora) || '-') + '</span></div><button class="btn ghost sm" data-a="rCancelar" data-id="' + o.r.id + '" data-s="' + o.s + '">Cancelar só esta</button></div>').join('') + '</div>').join('') : '<span class="vazio">Nada marcado.</span>') + '</div></div>';
+};
+function reuniaoPadrao() { return { id: uid(), titulo: '', freq: 'semanal', intervalo: 1, dias: [1], diaMes: 1, nth: 1, nthDow: 1, hora: '09:00', duracao: 30, inicio: hojeStr(), fim: '', local: '', pauta: '', feriado: 'pular', excecoes: [], novo: true }; }
+A.rNova = () => { S.ui.modal = { t: 'reuniao', x: reuniaoPadrao() }; render(); };
+A.rEditar = (el) => { S.ui.modal = { t: 'reuniao', x: JSON.parse(JSON.stringify(S.reunioes.find((r) => r.id === el.dataset.id))) }; render(); };
+A.rCancelar = (el) => { const r = S.reunioes.find((x) => x.id === el.dataset.id); r.excecoes = (r.excecoes || []).concat([el.dataset.s]); salvar('reunioes'); render(); toast('Cancelada só em ' + br(el.dataset.s)); };
+function lerFormReuniao() {
+  const f = $('[data-f=reuniao]'); if (!f) return; const x = S.ui.modal.x;
+  x.titulo = f.titulo.value; x.freq = f.freq.value; x.intervalo = +f.intervalo.value || 1; x.hora = f.hora.value || '09:00'; x.duracao = +f.duracao.value || 30; x.inicio = f.inicio.value || hojeStr(); x.fim = f.fim.value; x.local = f.local.value; x.pauta = f.pauta.value; x.feriado = f.feriado.value;
+  if (f.diaMes) x.diaMes = +f.diaMes.value || 1; if (f.nth) x.nth = +f.nth.value; if (f.nthDow) x.nthDow = +f.nthDow.value;
+}
+C.rCampo = () => { lerFormReuniao(); render(); };
+A.rDia = (el) => { lerFormReuniao(); const x = S.ui.modal.x, d = +el.dataset.d; x.dias = x.dias.includes(d) ? x.dias.filter((y) => y !== d) : x.dias.concat([d]); render(); };
+C.rFrase = (el) => {
+  lerFormReuniao(); const x = S.ui.modal.x, t = el.value.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const NOMES = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];
+  const hm = t.match(/(\d{1,2})\s*(?:h|:)\s*(\d{2})?/); if (hm) x.hora = pad(+hm[1]) + ':' + (hm[2] || '00');
+  const cada = t.match(/a cada (\d+)\s*(dia|semana|mes)/);
+  const nth = t.match(/(1|2|3|4|primeira|segunda|terceira|quarta|ultima)[ªa]?\s+(domingo|segunda|terca|quarta|quinta|sexta|sabado)/);
+  const diaN = t.match(/todo dia (\d{1,2})\b/);
+  if (nth && /(mes|do mes|mensal)/.test(t) || (nth && /^(1|2|3|4|ultima|primeira|terceira)/.test(nth[1]))) {
+    const mapa = { '1': 1, primeira: 1, '2': 2, segunda: 2, '3': 3, terceira: 3, '4': 4, quarta: 4, ultima: 5 };
+    x.freq = 'mensal_nth'; x.nth = mapa[nth[1]]; x.nthDow = NOMES.indexOf(nth[2]); x.intervalo = 1;
+  } else if (diaN) { x.freq = 'mensal_dia'; x.diaMes = +diaN[1]; x.intervalo = 1; }
+  else if (/todo dia|diariamente|todos os dias/.test(t)) { x.freq = 'diaria'; x.intervalo = 1; }
+  else if (cada && cada[2] === 'dia') { x.freq = 'diaria'; x.intervalo = +cada[1]; }
+  else {
+    const ds = NOMES.map((n, i) => (t.includes(n) ? i : -1)).filter((i) => i >= 0);
+    if (ds.length) { x.freq = 'semanal'; x.dias = ds; x.intervalo = cada && cada[2] === 'semana' ? +cada[1] : /quinzenal/.test(t) ? 2 : 1; }
+    else if (cada && cada[2] === 'semana') { x.freq = 'semanal'; x.intervalo = +cada[1]; }
+    else if (cada && cada[2] === 'mes') { x.freq = 'mensal_dia'; x.intervalo = +cada[1]; x.diaMes = +x.inicio.slice(8); }
+  }
+  render();
+};
+M.reuniao = () => {
+  const x = S.ui.modal.x, prev = ocorrencias(x, hojeStr(), addD(hojeStr(), 400)).slice(0, 5);
+  const sel = (n, ops, v) => '<select class="i" name="' + n + '" data-c="rCampo">' + ops.map(([k, l]) => '<option value="' + k + '"' + (String(v) === String(k) ? ' selected' : '') + '>' + l + '</option>').join('') + '</select>';
+  return '<h2>' + (x.novo ? 'Nova reunião' : 'Editar reunião') + '</h2>' +
+    '<label class="f">Escreva do jeito que fala (opcional)<input class="i" data-c="rFrase" placeholder="Ex.: toda 1ª segunda do mês 9h · a cada 15 dias 14h"></label>' +
+    '<form class="col" data-f="reuniao"><label class="f">Título<input class="i" name="titulo" required value="' + esc(x.titulo) + '" placeholder="Ex.: Reunião de turno"></label>' +
+    '<div class="grid2" style="grid-template-columns:1.4fr 1fr;gap:10px"><label class="f">Repete' + sel('freq', [['diaria', 'Por dia'], ['semanal', 'Por semana'], ['mensal_dia', 'Por mês (dia fixo)'], ['mensal_nth', 'Por mês (ex.: 1ª segunda)']], x.freq) + '</label><label class="f">A cada<input class="i" type="number" min="1" name="intervalo" data-c="rCampo" value="' + x.intervalo + '"></label></div>' +
+    (x.freq === 'semanal' ? '<div class="chipsel">' + [1, 2, 3, 4, 5, 6, 0].map((d) => '<button type="button" class="' + (x.dias.includes(d) ? 'on' : '') + '" data-a="rDia" data-d="' + d + '">' + SEM[d] + '</button>').join('') + '</div>' : '') +
+    (x.freq === 'mensal_dia' ? '<label class="f">Dia do mês<input class="i" type="number" min="1" max="31" name="diaMes" data-c="rCampo" value="' + x.diaMes + '"></label>' : '') +
+    (x.freq === 'mensal_nth' ? '<div class="grid2" style="grid-template-columns:1fr 1fr;gap:10px"><label class="f">Qual' + sel('nth', [1, 2, 3, 4, 5].map((n) => [n, NTH[n]]), x.nth) + '</label><label class="f">Dia da semana' + sel('nthDow', [1, 2, 3, 4, 5, 6, 0].map((d) => [d, SEMC[d]]), x.nthDow) + '</label></div>' : '') +
+    '<div class="grid2" style="grid-template-columns:repeat(4,1fr);gap:10px"><label class="f">Hora<input class="i" type="time" name="hora" data-c="rCampo" value="' + x.hora + '"></label><label class="f">Duração (min)<input class="i" type="number" name="duracao" value="' + x.duracao + '"></label><label class="f">Começa<input class="i" type="date" name="inicio" data-c="rCampo" value="' + x.inicio + '"></label><label class="f">Termina<input class="i" type="date" name="fim" data-c="rCampo" value="' + (x.fim || '') + '"></label></div>' +
+    '<div class="grid2" style="grid-template-columns:1fr 1fr;gap:10px"><label class="f">Local<input class="i" name="local" value="' + esc(x.local || '') + '"></label><label class="f">Se cair em feriado' + sel('feriado', [['manter', 'Mantém'], ['pular', 'Pula'], ['adiar', 'Adia pro próximo dia útil']], x.feriado) + '</label></div>' +
+    '<label class="f">Pauta fixa (uma linha por item)<textarea class="i" name="pauta">' + esc(x.pauta || '') + '</textarea></label>' +
+    '<div class="card col" style="background:#F9F8FD;border-color:#E4DDF6;gap:6px"><b style="font-size:13px">' + esc(regraTexto(x)) + '</b><span class="sub">Próximas: ' + (prev.length ? prev.map((o) => SEM[dow(o.s)] + ' ' + br(o.s)).join(' · ') : 'nenhuma') + '</span></div>' +
+    '<div class="row" style="justify-content:space-between">' + (x.novo ? '<span></span>' : '<button type="button" class="btn danger" data-a="rExcluir">Excluir</button>') + '<div class="row"><button type="button" class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri">Salvar</button></div></div></form>';
+};
+function onReuniao() {
+  lerFormReuniao(); const x = S.ui.modal.x, novo = x.novo; delete x.novo;
+  if (x.freq === 'semanal' && !x.dias.length) { toast('Escolha pelo menos um dia da semana'); x.novo = novo; return; }
+  if (novo) S.reunioes.push(x); else S.reunioes[S.reunioes.findIndex((r) => r.id === x.id)] = x;
+  S.ui.modal = null; salvar('reunioes'); render();
+}
+A.rExcluir = () => { if (!confirm('Excluir esta reunião e todas as repetições?')) return; S.reunioes = S.reunioes.filter((r) => r.id !== S.ui.modal.x.id); S.ui.modal = null; salvar('reunioes'); render(); };
+
+/* ============ CONFIGURAÇÕES ============ */
+V.config = () => {
+  const c = S.cfg, ano = +hojeStr().slice(0, 4);
+  const bloq = [];
+  c.turnos.forEach((a) => c.turnos.forEach((b) => { if (a.id !== b.id) { const d = descansoEntre(a.id, b.id); if (d >= 0 && d < c.travas.interjornada) bloq.push(a.nome + ' → ' + b.nome + ' no dia seguinte: ' + h(d) + ' de descanso'); } }));
+  const fer = feriadosDoAno(ano);
+  const nac = Object.keys(fer).sort();
+  return '<div class="topo"><div><h1>Configurações</h1><div class="sub">Tudo aqui vem com um padrão e você muda. A escala e o banco de horas se recalculam na hora.</div></div></div>' +
+    '<div class="card col"><h2>Equipe</h2><label class="f" style="max-width:420px">Nome da equipe<input class="i" data-c="cfgNome" value="' + esc(c.equipeNome) + '"></label></div>' +
+    '<div class="grid2">' +
+    '<div class="card col"><h2>Turnos</h2>' + c.turnos.map((t, i) => '<div class="row" style="gap:8px;flex-wrap:nowrap"><span class="tag" style="background:var(--acs);color:var(--ac)">' + esc(t.id) + '</span><input class="i" data-c="tNome" data-i="' + i + '" value="' + esc(t.nome) + '"><input class="i" style="width:110px" type="time" data-c="tIni" data-i="' + i + '" value="' + t.ini + '" aria-label="Entrada ' + esc(t.nome) + '"><input class="i" style="width:110px" type="time" data-c="tFim" data-i="' + i + '" value="' + t.fim + '" aria-label="Saída ' + esc(t.nome) + '">' + (c.turnos.length > 1 ? '<button class="btn ghost sm danger" data-a="tRem" data-i="' + i + '" aria-label="Remover ' + esc(t.nome) + '">✕</button>' : '') + '</div>').join('') +
+    '<button class="btn sm" data-a="tAdd" style="align-self:flex-start">Adicionar turno</button>' +
+    '<div class="regra"><div class="l"><b style="font-weight:500">Turno que vira a meia-noite conta no dia em que</b></div><div class="chipsel">' + [['entra', 'Entra'], ['sai', 'Sai']].map(([k, l]) => '<button class="' + (c.travas.virada === k ? 'on' : '') + '" data-a="virada" data-k="' + k + '">' + l + '</button>').join('') + '</div></div></div>' +
+    '<div class="card col"><h2>Travas da escala</h2>' +
+    '<div class="regra"><div class="l"><b style="font-weight:500">Descanso mínimo entre jornadas</b><small>Interjornada (CLT: 11h)</small></div><div class="stepper"><button data-a="trava" data-k="interjornada" data-d="-1">−</button><span>' + c.travas.interjornada + 'h</span><button data-a="trava" data-k="interjornada" data-d="1">+</button></div></div>' +
+    '<div class="regra"><div class="l"><b style="font-weight:500">Máximo de dias seguidos</b><small>Passou disso, alerta vermelho</small></div><div class="stepper"><button data-a="trava" data-k="maxSeguidos" data-d="-1">−</button><span>' + c.travas.maxSeguidos + ' dias</span><button data-a="trava" data-k="maxSeguidos" data-d="1">+</button></div></div>' +
+    '<div class="alerta a-er" style="flex-direction:column;gap:4px"><b style="font-size:12px;color:var(--er)">Trocas de turno que precisam de folga no meio (' + bloq.length + ')</b>' + (bloq.length ? bloq.map((b) => '<span style="font-size:12px">' + esc(b) + '</span>').join('') : '<span style="font-size:12px">Nenhuma</span>') + '</div></div></div>' +
+    '<div class="grid2">' +
+    '<div class="card col"><h2>Postos de trabalho</h2><span class="sub">Na ordem de prioridade: com menos gente, os últimos ficam descobertos.</span>' +
+    c.postos.map((p, i) => '<div class="row" style="gap:8px;flex-wrap:nowrap"><input class="i" type="color" data-c="pCor" data-i="' + i + '" value="' + p.cor + '" aria-label="Cor ' + esc(p.sigla) + '"><input class="i" style="width:90px" data-c="pSig" data-i="' + i + '" value="' + esc(p.sigla) + '"><input class="i" data-c="pNome" data-i="' + i + '" value="' + esc(p.nome) + '"><button class="btn ghost sm" data-a="pMov" data-i="' + i + '" data-d="-1" aria-label="Subir">↑</button><button class="btn ghost sm" data-a="pMov" data-i="' + i + '" data-d="1" aria-label="Descer">↓</button><button class="btn ghost sm danger" data-a="pRem" data-i="' + i + '" aria-label="Remover">✕</button></div>').join('') +
+    '<button class="btn sm" data-a="pAdd" style="align-self:flex-start">Adicionar posto</button>' +
+    '<div class="regra"><div class="l"><b style="font-weight:500">Excedente (suporte)</b><small>Quem sobra vira ' + esc(c.sup.prefixo) + '1, ' + esc(c.sup.prefixo) + '2... em rodízio</small></div><div class="row" style="gap:6px;flex-wrap:nowrap"><input class="i" type="color" data-c="supCor" value="' + c.sup.cor + '"><input class="i" style="width:80px" data-c="supPre" value="' + esc(c.sup.prefixo) + '"><input class="i" style="width:120px" data-c="supNome" value="' + esc(c.sup.nome) + '"></div></div></div>' +
+    '<div class="card col"><h2>Siglas e cores</h2>' +
+    c.siglas.map((x, i) => '<div class="row" style="gap:6px;flex-wrap:nowrap"><input class="i" type="color" data-c="sCor" data-i="' + i + '" value="' + x.cor + '"><input class="i" style="width:64px" data-c="sSig" data-i="' + i + '" value="' + esc(x.sigla) + '"' + (x.sigla === 'x' ? ' disabled title="Folga do ciclo"' : '') + '><input class="i" data-c="sNome" data-i="' + i + '" value="' + esc(x.nome) + '">' +
+      '<select class="i" style="width:130px" data-c="sTipo" data-i="' + i + '">' + [['ausencia', 'Ausência'], ['folga', 'Folga'], ['treinamento', 'Treinamento'], ['turno', 'Vai p/ turno']].map(([k, l]) => '<option value="' + k + '"' + (x.tipo === k ? ' selected' : '') + '>' + l + '</option>').join('') + '</select>' +
+      (x.tipo === 'turno' ? '<select class="i" style="width:70px" data-c="sDest" data-i="' + i + '">' + c.turnos.map((t) => '<option' + (x.destino === t.id ? ' selected' : '') + '>' + t.id + '</option>').join('') + '</select>' : '') +
+      (x.tipo === 'ausencia' ? '<label class="row" style="gap:4px;font-size:11px;white-space:nowrap" title="Desconta a jornada do banco de horas"><input type="checkbox" data-c="sBH" data-i="' + i + '"' + (x.descontaBH ? ' checked' : '') + '>-BH</label>' : '') +
+      (x.sigla !== 'x' ? '<button class="btn ghost sm danger" data-a="sRem" data-i="' + i + '" aria-label="Remover">✕</button>' : '') + '</div>').join('') +
+    '<button class="btn sm" data-a="sAdd" style="align-self:flex-start">Adicionar sigla</button></div></div>' +
+    '<div class="card col"><h2>Feriados de ' + ano + '</h2><span class="sub">Nacionais já vêm. Desmarque o que não vale e adicione municipais ou pontos facultativos.</span><div class="grid2" style="gap:6px">' +
+    nac.map((d) => '<label class="row" style="gap:8px;font-size:13px"><input type="checkbox" checked data-c="ferOff" data-d="' + d + '"> ' + br(d) + ' · ' + esc(fer[d]) + '</label>').join('') +
+    (c.feriadosIgnorados || []).filter((d) => d.startsWith(ano + '')).map((d) => '<label class="row" style="gap:8px;font-size:13px;color:var(--mu)"><input type="checkbox" data-c="ferOn" data-d="' + d + '"> ' + br(d) + ' (desligado)</label>').join('') + '</div>' +
+    '<form class="row" data-f="feriado" style="flex-wrap:wrap"><input class="i" style="width:160px" type="date" name="data" required><input class="i" style="flex:1;min-width:160px" name="nome" placeholder="Ex.: Aniversário da cidade" required><label class="row" style="gap:6px;font-size:13px"><input type="checkbox" name="rec" checked> Todo ano</label><button class="btn">Adicionar</button></form></div>';
+};
+function cfgSet(fn) { fn(S.cfg); salvar('config'); }
+C.cfgNome = (el) => cfgSet((c) => { c.equipeNome = el.value; });
+C.tNome = (el) => cfgSet((c) => { c.turnos[+el.dataset.i].nome = el.value; });
+C.tIni = (el) => { cfgSet((c) => { c.turnos[+el.dataset.i].ini = el.value; }); render(); };
+C.tFim = (el) => { cfgSet((c) => { c.turnos[+el.dataset.i].fim = el.value; }); render(); };
+A.tAdd = () => { const usados = S.cfg.turnos.map((t) => t.id); const id = 'ABCDEFGH'.split('').find((l) => !usados.includes(l)); cfgSet((c) => c.turnos.push({ id, nome: 'Turno ' + id, ini: '08:00', fim: '16:59' })); render(); };
+A.tRem = (el) => { const t = S.cfg.turnos[+el.dataset.i]; if (S.equipe.some((p) => p.turno === t.id)) { toast('Tem gente nesse turno. Mude as pessoas antes.'); return; } if (!confirm('Remover ' + t.nome + '?')) return; cfgSet((c) => c.turnos.splice(+el.dataset.i, 1)); render(); };
+A.virada = (el) => { cfgSet((c) => { c.travas.virada = el.dataset.k; }); render(); };
+A.trava = (el) => { cfgSet((c) => { const k = el.dataset.k; c.travas[k] = Math.max(k === 'maxSeguidos' ? 1 : 0, Math.min(k === 'maxSeguidos' ? 14 : 24, c.travas[k] + +el.dataset.d)); }); render(); };
+function renomeiaCodigo(de, para) {
+  if (!de || de === para) return;
+  Object.keys(S.ajustes).forEach((k) => { if (S.ajustes[k] === de) S.ajustes[k] = para; });
+  S.ausencias.forEach((a) => { if (a.sigla === de) a.sigla = para; });
+  salvar('ajustes'); salvar('ausencias');
+}
+C.pCor = (el) => { cfgSet((c) => { c.postos[+el.dataset.i].cor = el.value; }); render(); };
+C.pSig = (el) => { const v = el.value.trim(); if (!v) return; const old = S.cfg.postos[+el.dataset.i].sigla; cfgSet((c) => { c.postos[+el.dataset.i].sigla = v; }); renomeiaCodigo(old, v); render(); };
+C.pNome = (el) => cfgSet((c) => { c.postos[+el.dataset.i].nome = el.value; });
+A.pMov = (el) => { const i = +el.dataset.i, j = i + +el.dataset.d; if (j < 0 || j >= S.cfg.postos.length) return; cfgSet((c) => { const t = c.postos[i]; c.postos[i] = c.postos[j]; c.postos[j] = t; }); render(); };
+A.pRem = (el) => { if (S.cfg.postos.length <= 1) return; if (!confirm('Remover o posto ' + S.cfg.postos[+el.dataset.i].sigla + '?')) return; cfgSet((c) => c.postos.splice(+el.dataset.i, 1)); render(); };
+A.pAdd = () => { cfgSet((c) => c.postos.push({ sigla: 'P' + (c.postos.length + 1), nome: 'Novo posto', cor: '#E8E8F0' })); render(); };
+C.supCor = (el) => { cfgSet((c) => { c.sup.cor = el.value; }); render(); };
+C.supPre = (el) => { const v = el.value.trim(); if (v) { cfgSet((c) => { c.sup.prefixo = v; }); render(); } };
+C.supNome = (el) => cfgSet((c) => { c.sup.nome = el.value; });
+C.sCor = (el) => { cfgSet((c) => { c.siglas[+el.dataset.i].cor = el.value; }); render(); };
+C.sSig = (el) => { const v = el.value.trim(); if (!v) return; const old = S.cfg.siglas[+el.dataset.i].sigla; cfgSet((c) => { c.siglas[+el.dataset.i].sigla = v; }); renomeiaCodigo(old, v); render(); };
+C.sNome = (el) => cfgSet((c) => { c.siglas[+el.dataset.i].nome = el.value; });
+C.sTipo = (el) => { cfgSet((c) => { const x = c.siglas[+el.dataset.i]; x.tipo = el.value; if (x.tipo === 'turno' && !x.destino) x.destino = c.turnos[0].id; }); render(); };
+C.sDest = (el) => cfgSet((c) => { c.siglas[+el.dataset.i].destino = el.value; });
+C.sBH = (el) => cfgSet((c) => { c.siglas[+el.dataset.i].descontaBH = el.checked; });
+A.sRem = (el) => { const x = S.cfg.siglas[+el.dataset.i]; if (S.ausencias.some((a) => a.sigla === x.sigla)) { toast('Essa sigla está em uso em ausências.'); return; } if (!confirm('Remover a sigla ' + x.sigla + '?')) return; cfgSet((c) => c.siglas.splice(+el.dataset.i, 1)); render(); };
+A.sAdd = () => { cfgSet((c) => c.siglas.push({ sigla: 'N' + c.siglas.length, nome: 'Nova sigla', tipo: 'ausencia', cor: '#E8E8F0' })); render(); };
+C.ferOff = (el) => { cfgSet((c) => { const d = el.dataset.d; const ex = (c.feriadosExtras || []).findIndex((f) => (f.recorrente ? d.slice(4) === f.data.slice(4) : f.data === d)); if (ex >= 0) c.feriadosExtras.splice(ex, 1); else c.feriadosIgnorados = (c.feriadosIgnorados || []).concat([d]); }); render(); };
+C.ferOn = (el) => { cfgSet((c) => { c.feriadosIgnorados = c.feriadosIgnorados.filter((x) => x !== el.dataset.d); }); render(); };
+function onFeriado(f) { cfgSet((c) => { c.feriadosExtras = (c.feriadosExtras || []).concat([{ data: f.data.value, nome: f.nome.value.trim(), recorrente: f.rec.checked }]); }); render(); toast('Feriado adicionado'); }
+
+/* ============ EXPORTAR .XLSX ============ */
+A.exportar = () => { if (!S.equipe.length) { toast('Cadastre a equipe primeiro'); return; } S.ui.modal = { t: 'exportar', turnos: Object.fromEntries(S.cfg.turnos.map((t) => [t.id, true])) }; render(); };
+A.expT = (el) => { const m = S.ui.modal; m.turnos[el.dataset.t] = !m.turnos[el.dataset.t]; render(); };
+A.expOp = (el) => { const k = el.dataset.k; S.cfg.exportar[k] = !S.cfg.exportar[k]; salvar('config'); render(); };
+M.exportar = () => {
+  const [a, m] = mesAtual(), e = S.cfg.exportar, mm = S.ui.modal;
+  return '<h2>Exportar escala</h2><span class="sub">Gera a planilha de ' + MESES[m - 1] + ' ' + a + ' (mude o mês na tela da Escala).</span>' +
+    '<div class="col" style="gap:6px"><b style="font-size:13px">Turnos</b><div class="chipsel">' + S.cfg.turnos.map((t) => '<button class="' + (mm.turnos[t.id] ? 'on' : '') + '" data-a="expT" data-t="' + t.id + '">' + esc(t.nome) + '</button>').join('') + '</div></div>' +
+    '<div class="col" style="gap:4px">' + [['cores', 'Manter as cores das siglas'], ['bh', 'Incluir saldo do banco de horas'], ['abas', 'Uma aba por turno']].map(([k, l]) => '<label class="row" style="gap:8px;font-size:14px;cursor:pointer"><input type="checkbox" data-a="expOp" data-k="' + k + '"' + (e[k] ? ' checked' : '') + '> ' + l + '</label>').join('') + '</div>' +
+    '<div class="row" style="justify-content:flex-end"><button class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri" data-a="expBaixar">Baixar .xlsx</button></div>';
+};
+A.expBaixar = () => {
+  if (!window.XLSX) { toast('Carregando o gerador, tente de novo em 2 segundos'); return; }
+  const [a, m] = mesAtual(), em = escalaMes(a, m), e = S.cfg.exportar, mm = S.ui.modal, fim = em.dias[em.dias.length - 1];
+  const borda = { top: { style: 'thin', color: { rgb: 'DDDDE5' } }, bottom: { style: 'thin', color: { rgb: 'DDDDE5' } }, left: { style: 'thin', color: { rgb: 'DDDDE5' } }, right: { style: 'thin', color: { rgb: 'DDDDE5' } } };
+  const cel = (v, cor, bold, align) => { const s = { font: { name: 'Calibri', sz: 10, bold: !!bold, color: { rgb: cor && e.cores ? corTexto(cor).replace('#', '') : '1B1B23' } }, alignment: { horizontal: align || 'center', vertical: 'center' }, border: borda }; if (cor && e.cores) s.fill = { patternType: 'solid', fgColor: { rgb: cor.replace('#', '').toUpperCase() } }; return { v: v, t: typeof v === 'number' ? 'n' : 's', s }; };
+  function folha(turnos) {
+    const rows = [];
+    rows.push([cel('Escala · ' + MESES[m - 1] + ' ' + a + ' · ' + S.cfg.equipeNome, null, true, 'left')]);
+    rows.push([cel('Turno', '#EFEAFB', true), cel('Nome', '#EFEAFB', true, 'left')].concat(em.dias.map((s) => cel(+s.slice(8), feriado(s) ? '#FBE3EA' : (dow(s) === 0 || dow(s) === 6) ? '#F3F3F6' : '#EFEAFB', true)), [cel('Trab.', '#EFEAFB', true), cel('Folgas', '#EFEAFB', true)], e.bh ? [cel('Saldo BH', '#EFEAFB', true)] : []));
+    rows.push([cel('', '#EFEAFB'), cel('', '#EFEAFB')].concat(em.dias.map((s) => cel(feriado(s) ? 'fer' : SEM[dow(s)], feriado(s) ? '#FBE3EA' : '#EFEAFB')), [cel('', '#EFEAFB'), cel('', '#EFEAFB')], e.bh ? [cel('', '#EFEAFB')] : []));
+    turnos.forEach(({ t, linhas, cob }) => {
+      linhas.forEach(({ p, cods, trab, folgas }) => {
+        rows.push([cel(t.nome, null, true), cel(p.nome, null, false, 'left')].concat(cods.map((c) => cel(c === 'x' ? '' : c, (siglaInfo(c) || {}).cor, true)), [cel(trab), cel(folgas)], e.bh ? [cel(sh(saldoBH(p.id, fim)))] : []));
+      });
+      rows.push([cel(t.nome, null, false), cel('Cobertura', null, false, 'left')].concat(cob.map((f) => cel(f.length ? 'Falta ' + f.join('/') : 'ok', f.length ? '#FDECEA' : null)), [cel(''), cel('')], e.bh ? [cel('')] : []));
+    });
+    rows.push([]);
+    rows.push([cel('Legenda', null, true, 'left')]);
+    opcoesCodigo().filter((c) => !/3$/.test(c)).forEach((c) => { const i = siglaInfo(c); rows.push([cel(c === 'x' ? 'Folga' : c, i.cor, true), cel(i.nome, null, false, 'left')]); });
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{ wch: 10 }, { wch: 18 }].concat(em.dias.map(() => ({ wch: 5.5 })), [{ wch: 6 }, { wch: 7 }, { wch: 9 }]);
+    ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 10 } }];
+    ws['!freeze'] = { xSplit: 2, ySplit: 3 };
+    ws['!views'] = [{ state: 'frozen', xSplit: 2, ySplit: 3 }];
+    return ws;
+  }
+  const sel = em.turnos.filter((x) => mm.turnos[x.t.id]);
+  if (!sel.length) { toast('Escolha pelo menos um turno'); return; }
+  const wb = XLSX.utils.book_new();
+  if (e.abas) sel.forEach((x) => XLSX.utils.book_append_sheet(wb, folha([x]), x.t.nome.slice(0, 31)));
+  else XLSX.utils.book_append_sheet(wb, folha(sel), 'Escala');
+  XLSX.writeFile(wb, 'Escala_' + MESES[m - 1] + '_' + a + '.xlsx');
+  S.ui.modal = null; render(); toast('Planilha gerada');
+};
+
+/* ============ eventos ============ */
+document.addEventListener('click', (ev) => {
+  const el = ev.target.closest('[data-a]');
+  if (!el) { if (S.ui.pop && !ev.target.closest('.pop')) { S.ui.pop = null; S.ui.manterScroll = true; render(); } return; }
+  if (el.dataset.a === 'fecharModal' && el.classList.contains('modal-fundo') && ev.target.closest('[data-stop]')) return;
+  if (el.tagName === 'INPUT' && el.type === 'checkbox') { /* deixa o checkbox marcar e reage */ }
+  const fn = A[el.dataset.a]; if (fn) { if (el.tagName === 'A') ev.preventDefault(); fn(el, ev); }
+});
+document.addEventListener('change', (ev) => { const el = ev.target.closest('[data-c]'); if (el && C[el.dataset.c]) C[el.dataset.c](el, ev); });
+document.addEventListener('submit', (ev) => {
+  const f = ev.target.closest('[data-f]'); if (!f) return; ev.preventDefault();
+  ({ login: onLogin, pessoa: onPessoa, importar: onImportar, ausencia: onAusencia, tarefa: onTarefa, reuniao: onReuniao, feriado: onFeriado })[f.dataset.f](f);
+});
+document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && (S.ui.modal || S.ui.pop)) { S.ui.modal = null; S.ui.pop = null; render(); } });
+
+/* ============ início ============ */
+async function entrar(user) {
+  if (S.user && S.user.id === user.id) return;
+  S.user = user;
+  $('#raiz').innerHTML = '<div class="login card"><span class="sub">Carregando sua equipe…</span></div>';
+  try { await carregar(); } catch (e) { $('#raiz').innerHTML = '<div class="login card col"><h2>Não consegui carregar</h2><span class="sub">' + esc(e.message || e) + '</span><button class="btn" onclick="location.reload()">Tentar de novo</button></div>'; return; }
+  _escCache = {};
+  render();
+}
+sb.auth.onAuthStateChange((evt, sess) => { if (sess && sess.user) entrar(sess.user); else if (evt === 'SIGNED_OUT') { S.user = null; render(); } });
+sb.auth.getSession().then(({ data }) => { if (data.session) entrar(data.session.user); else render(); });
+</script>
+</body>
+</html>
