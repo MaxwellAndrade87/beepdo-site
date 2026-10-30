@@ -166,18 +166,19 @@ function cfgPadrao() {
   return {
     v: 1,
     equipeNome: 'Minha equipe',
-    ciclo: { nome: '6x2', blocos: [[6, 2]] },
+    setores: [{ id: 's1', nome: 'Brassagem', ciclo: { nome: '6x2', blocos: [[6, 2]] },
+      postos: [
+        { sigla: 'SB01', nome: 'Sala de brassagem 1', cor: '#E3E8FB' },
+        { sigla: 'SB02', nome: 'Sala de brassagem 2', cor: '#DFF1E1' },
+        { sigla: 'Área', nome: 'Área', cor: '#EDE3FA' }
+      ],
+      sup: { ativo: true, prefixo: 'SUP', nome: 'Suporte', cor: '#FBE3EA' },
+      trab: { sigla: 'TRAB', nome: 'Trabalhando', cor: '#E3F4E8' } }],
     turnos: [
-      { id: 'A', nome: 'Turno A', ini: '23:00', fim: '06:59' },
-      { id: 'B', nome: 'Turno B', ini: '07:00', fim: '14:59' },
-      { id: 'C', nome: 'Turno C', ini: '15:00', fim: '22:59' }
+      { id: 'A', setor: 's1', nome: 'Turno A', ini: '23:00', fim: '06:59' },
+      { id: 'B', setor: 's1', nome: 'Turno B', ini: '07:00', fim: '14:59' },
+      { id: 'C', setor: 's1', nome: 'Turno C', ini: '15:00', fim: '22:59' }
     ],
-    postos: [
-      { sigla: 'SB01', nome: 'Sala de brassagem 1', cor: '#E3E8FB' },
-      { sigla: 'SB02', nome: 'Sala de brassagem 2', cor: '#DFF1E1' },
-      { sigla: 'Área', nome: 'Área', cor: '#EDE3FA' }
-    ],
-    sup: { prefixo: 'SUP', nome: 'Suporte', cor: '#FBE3EA' },
     siglas: [
       { sigla: 'x', nome: 'Folga do ciclo', tipo: 'folga', cor: '#F3F3F6' },
       { sigla: 'BH', nome: 'Folga de banco de horas', tipo: 'ausencia', cor: '#D6ECFB', descontaBH: true },
@@ -223,8 +224,15 @@ async function carregar() {
   const { data, error } = await sb.from('gestor_docs').select('chave,dados');
   if (error) throw error;
   (data || []).forEach((r) => { if (MAPA[r.chave]) S[MAPA[r.chave]] = r.dados; });
-  const base = cfgPadrao();
-  S.cfg = Object.assign(base, S.cfg || {});
+  const base = cfgPadrao(), salvo = S.cfg || {};
+  if (salvo && !salvo.setores && salvo.turnos) {
+    salvo.setores = [{ id: 's1', nome: 'Brassagem', ciclo: salvo.ciclo || base.setores[0].ciclo, postos: salvo.postos || base.setores[0].postos, sup: Object.assign({ ativo: true }, salvo.sup || base.setores[0].sup), trab: base.setores[0].trab }];
+    salvo.turnos.forEach((t) => { if (!t.setor) t.setor = 's1'; });
+    delete salvo.ciclo; delete salvo.postos; delete salvo.sup;
+  }
+  S.cfg = Object.assign(base, salvo);
+  S.cfg.setores.forEach((x) => { x.postos = x.postos || []; x.sup = Object.assign({ ativo: true, prefixo: 'SUP', nome: 'Suporte', cor: '#FBE3EA' }, x.sup || {}); x.trab = Object.assign({ sigla: 'TRAB', nome: 'Trabalhando', cor: '#E3F4E8' }, x.trab || {}); x.ciclo = x.ciclo || { nome: '6x2', blocos: [[6, 2]] }; });
+  S.cfg.turnos.forEach((t) => { if (!t.setor) t.setor = S.cfg.setores[0].id; });
   S.cfg.bh = Object.assign(cfgPadrao().bh, S.cfg.bh || {});
   S.cfg.travas = Object.assign(cfgPadrao().travas, S.cfg.travas || {});
   S.cfg.exportar = Object.assign(cfgPadrao().exportar, S.cfg.exportar || {});
@@ -235,13 +243,20 @@ async function carregar() {
 }
 
 /* ============ siglas e cores ============ */
-function princ() { return S.cfg.postos.map((p) => p.sigla); }
-function ehSup(c) { return !!c && c.startsWith(S.cfg.sup.prefixo) && /\d+$/.test(c.slice(S.cfg.sup.prefixo.length)); }
-function ehPosto(c) { return princ().includes(c) || ehSup(c); }
+function setores() { return S.cfg.setores || []; }
+function setorPorId(id) { return setores().find((x) => x.id === id) || setores()[0]; }
+function setorDoTurno(tid) { const t = turnoPorId(tid); return setorPorId(t ? t.setor : null); }
+function labelTurno(tid) { const t = turnoPorId(tid); if (!t) return tid || ''; return (setores().length > 1 ? setorPorId(t.setor).nome + ' · ' : '') + t.nome; }
+function princ(st) { return (st ? [st] : setores()).flatMap((x) => (x.postos || []).map((p) => p.sigla)); }
+function supDe(c) { if (!c) return null; return setores().find((x) => x.sup && x.sup.ativo !== false && c.startsWith(x.sup.prefixo) && /^\d+$/.test(c.slice(x.sup.prefixo.length))) || null; }
+function ehSup(c) { return !!supDe(c); }
+function ehTrab(c) { return !!c && setores().some((x) => x.trab && x.trab.sigla === c); }
+function ehPosto(c) { return princ().includes(c) || ehSup(c) || ehTrab(c); }
 function siglaInfo(c) {
   if (!c) return null;
-  const p = S.cfg.postos.find((x) => x.sigla === c); if (p) return { sigla: c, nome: p.nome, tipo: 'posto', cor: p.cor };
-  if (ehSup(c)) return { sigla: c, nome: S.cfg.sup.nome + ' ' + c.slice(S.cfg.sup.prefixo.length), tipo: 'posto', cor: S.cfg.sup.cor };
+  for (const st of setores()) { const p = (st.postos || []).find((x) => x.sigla === c); if (p) return { sigla: c, nome: p.nome, tipo: 'posto', cor: p.cor }; }
+  const su = supDe(c); if (su) return { sigla: c, nome: su.sup.nome + ' ' + c.slice(su.sup.prefixo.length), tipo: 'posto', cor: su.sup.cor };
+  const tb = setores().find((x) => x.trab && x.trab.sigla === c); if (tb) return { sigla: c, nome: tb.trab.nome, tipo: 'posto', cor: tb.trab.cor };
   return S.cfg.siglas.find((x) => x.sigla === c) || { sigla: c, nome: c, tipo: 'ausencia', cor: '#EEEEF3' };
 }
 function trabalhando(c) { const i = siglaInfo(c); return !!i && (i.tipo === 'posto' || i.tipo === 'treinamento' || i.tipo === 'turno'); }
@@ -249,10 +264,10 @@ function tagStyle(c) { const i = siglaInfo(c) || { cor: '#EEEEF3' }; return 'bac
 function tag(c, txt) { return '<span class="tag" style="' + tagStyle(c) + '">' + esc(txt == null ? (c === 'x' ? 'Folga' : c) : txt) + '</span>'; }
 
 /* ============ ciclo ============ */
-function padraoCiclo() { const r = []; S.cfg.ciclo.blocos.forEach(([t, f]) => { for (let i = 0; i < t; i++) r.push(1); for (let j = 0; j < f; j++) r.push(0); }); return r.length ? r : [1]; }
-function trabBloco() { return ((S.cfg.ciclo.blocos || [])[0] || [6])[0]; }
+function padraoCiclo(st) { const r = []; ((st || setores()[0]).ciclo.blocos || []).forEach(([t, f]) => { for (let i = 0; i < t; i++) r.push(1); for (let j = 0; j < f; j++) r.push(0); }); return r.length ? r : [1]; }
+function trabBloco(st) { return (((st || setores()[0]).ciclo.blocos || [])[0] || [6])[0]; }
 function proximaFolga(p) { const h0 = hojeStr(); for (let i = 0; i < 90; i++) { const s = addD(h0, i); if (!trabalhaCiclo(p, s)) return SEM[dow(s)] + ' ' + br(s); } return '-'; }
-function trabalhaCiclo(p, s) { const pc = padraoCiclo(), L = pc.length; if (!p.inicio) return true; const i = ((diffD(p.inicio, s) % L) + L) % L; return pc[i] === 1; }
+function trabalhaCiclo(p, s) { const pc = padraoCiclo(setorDoTurno(turnoEm(p, s))), L = pc.length; if (!p.inicio) return true; const i = ((diffD(p.inicio, s) % L) + L) % L; return pc[i] === 1; }
 function ausenciaDe(pid, s) { let r = null; for (const a of S.ausencias) if (a.pessoaId === pid && s >= a.de && (!a.ate || s <= a.ate)) r = a; return r; }
 function turnoEm(p, s) { const hs = (p.historicoTurno || []).slice().sort((a, b) => a.ate.localeCompare(b.ate)); for (const x of hs) if (s <= x.ate) return x.turno; return p.turno; }
 function remanejoLinha(a) { return !a.ate || diffD(a.de, a.ate) + 1 >= (S.cfg.remanejoLinhaDias == null ? 4 : S.cfg.remanejoLinhaDias); }
@@ -277,7 +292,6 @@ function simular(ate) {
   const ini = c.ini || addD(ancora(), 0);
   if (c.ate && ate <= c.ate) return c;
   if (!c.dias) { c.ini = ini; c.dias = {}; c.ontem = {}; c.ultSup = {}; c.ate = addD(ini, -1); }
-  const P = princ(), pref = S.cfg.sup.prefixo;
   const ativos = S.equipe.filter((p) => p.ativo !== false);
   for (let s = addD(c.ate, 1); s <= ate; s = addD(s, 1)) {
     const fer = feriado(s), dia = { cod: {}, posto: {}, turno: {} };
@@ -304,11 +318,12 @@ function simular(ate) {
       else { dia.cod[p.id] = cod; dia.posto[p.id] = null; }
     });
     S.cfg.turnos.forEach((t) => {
+      const st = setorDoTurno(t.id), P = princ(st), supOn = !!(st.sup && st.sup.ativo !== false), pref = supOn ? st.sup.prefixo : '', TR = (st.trab && st.trab.sigla) || 'TRAB';
       const d = disp[t.id], f = forc[t.id];
       const n = d.length + f.length;
       const need = Math.max(0, Math.min(n, P.length) - f.filter((x) => P.includes(x)).length);
       const livres = P.filter((x) => !f.includes(x)).slice(0, need);
-      const nSup = Math.max(0, d.length - livres.length);
+      const nSup = supOn ? Math.max(0, d.length - livres.length) : 0;
       const ord = d.slice().sort((a, b) => { const ua = c.ultSup[a] || '', ub = c.ultSup[b] || ''; return ua < ub ? -1 : ua > ub ? 1 : String(a).localeCompare(String(b)); });
       const semOntem = ord.filter((pid) => !ehSup(c.ontem[pid]));
       const supL = semOntem.concat(ord.filter((pid) => !semOntem.includes(pid))).slice(0, nSup);
@@ -316,16 +331,17 @@ function simular(ate) {
       let k = 1;
       supL.forEach((pid) => { while (usadosSup.includes(pref + k)) k++; dia.posto[pid] = pref + k; usadosSup.push(pref + k); c.ultSup[pid] = s; });
       const resto = d.filter((pid) => !supL.includes(pid));
+      const alvo = livres.concat(Array(Math.max(0, resto.length - livres.length)).fill(TR));
       let melhor = null, nota = 1e9;
-      (function perm(arr, acc) {
+      if (resto.length > 7) { melhor = alvo.slice(); } else (function perm(arr, acc) {
         if (!arr.length) {
           let sc = 0;
-          resto.forEach((pid, j) => { const cc = acc[j], i = P.indexOf(c.ontem[pid]); if (cc === c.ontem[pid]) sc += 100; else if (i >= 0 && cc !== P[(i + 1) % P.length]) sc += 1; });
+          resto.forEach((pid, j) => { const cc = acc[j], i = P.indexOf(c.ontem[pid]); if (cc === c.ontem[pid] && cc !== TR) sc += 100; else if (i >= 0 && cc !== P[(i + 1) % P.length]) sc += 1; });
           if (sc < nota) { nota = sc; melhor = acc.slice(); }
           return;
         }
-        arr.forEach((x, i) => perm(arr.slice(0, i).concat(arr.slice(i + 1)), acc.concat([x])));
-      })(livres, []);
+        arr.forEach((x, i) => { if (arr.indexOf(x) === i) perm(arr.slice(0, i).concat(arr.slice(i + 1)), acc.concat([x])); });
+      })(alvo, []);
       resto.forEach((pid, j) => { dia.posto[pid] = melhor ? melhor[j] : null; });
       d.forEach((pid) => { if (siglaInfo(dia.cod[pid]).tipo !== 'turno') dia.cod[pid] = dia.posto[pid]; });
     });
@@ -354,8 +370,9 @@ function escalaMes(a, m) {
     const cob = dias.map((s) => {
       const d = diaEscala(s);
       const tem = Object.keys(d.posto).filter((pid) => d.turno[pid] === t.id && d.posto[pid]).map((pid) => d.posto[pid]);
-      const falta = princ().filter((x) => !tem.includes(x));
-      if (falta.length) alertas.push({ g: 'er', s, txt: br(s) + ' · ' + t.nome + ': ' + falta.join(', ') + (falta.length === 1 && falta[0] === princ()[princ().length - 1] && tem.length === princ().length - 1 ? ' descoberta' : ' sem ninguém') });
+      const PP = princ(setorDoTurno(t.id));
+      const falta = PP.filter((x) => !tem.includes(x));
+      if (falta.length) alertas.push({ g: 'er', s, txt: br(s) + ' · ' + labelTurno(t.id) + ': ' + falta.join(', ') + (falta.length === 1 && falta[0] === PP[PP.length - 1] && tem.length === PP.length - 1 ? ' descoberta' : ' sem ninguém') });
       return falta;
     });
     return { t, linhas, cob };
@@ -404,9 +421,9 @@ function sugerirBH(p, qtd) {
   const out = []; const t0 = hojeStr();
   for (let i = 1; i <= 45 && out.length < qtd; i++) {
     const s = addD(t0, i), d = diaEscala(s);
-    if (!princ().includes(d.posto[p.id]) && !ehSup(d.posto[p.id])) continue;
+    if (!ehPosto(d.posto[p.id])) continue;
     const noTurno = Object.keys(d.posto).filter((pid) => d.turno[pid] === d.turno[p.id] && d.posto[pid]).length;
-    if (noTurno - 1 >= princ().length) out.push(s);
+    if (noTurno - 1 >= princ(setorDoTurno(d.turno[p.id])).length) out.push(s);
   }
   return out;
 }
@@ -465,7 +482,7 @@ V.painel = () => {
   const d = diaEscala(hj);
   const agora = S.cfg.turnos.map((t) => {
     const pess = S.equipe.filter((p) => p.ativo !== false && d.turno[p.id] === t.id && trabalhando(d.cod[p.id]));
-    return '<div class="col" style="gap:6px"><div class="row" style="justify-content:space-between"><b>' + esc(t.nome) + '</b><span class="sub">' + t.ini + ' às ' + t.fim + '</span></div>' +
+    return '<div class="col" style="gap:6px"><div class="row" style="justify-content:space-between"><b>' + esc(labelTurno(t.id)) + '</b><span class="sub">' + t.ini + ' às ' + t.fim + '</span></div>' +
       (pess.length ? pess.map((p) => '<div class="row" style="justify-content:space-between"><span>' + esc(p.nome) + '</span>' + tag(d.posto[p.id] || d.cod[p.id]) + '</div>').join('') : '<span class="vazio">Ninguém escalado</span>') + '</div>';
   }).join('<hr style="border:none;border-top:1px solid #EEEEF3;margin:4px 0">');
   const aus7 = S.ausencias.filter((x) => (!x.ate || x.ate >= hj) && x.de <= addD(hj, 7));
@@ -494,12 +511,13 @@ function mesAtual() { if (!S.ui.mes) S.ui.mes = hojeStr().slice(0, 7); return S.
 A.mes = (el) => { let [a, m] = mesAtual(); m += +el.dataset.d; if (m < 1) { m = 12; a--; } if (m > 12) { m = 1; a++; } S.ui.mes = a + '-' + pad(m); S.ui.pop = null; render(); };
 A.filtroT = (el) => { S.ui.filtroT = el.dataset.t; render(); };
 A.togRegras = () => { S.ui.regras = !S.ui.regras; render(); };
-A.ciclo = (el) => { const n = el.dataset.n; if (n === 'pers') { S.ui.cicloPers = true; render(); return; } S.cfg.ciclo = { nome: n, blocos: CICLOS_PRONTOS[n] }; S.ui.cicloPers = false; salvar('config'); render(); };
+A.ciclo = (el) => { const st = S.cfg.setores[+el.dataset.s], n = el.dataset.n; if (n === 'pers') { S.ui.cicloPers = S.ui.cicloPers || {}; S.ui.cicloPers[st.id] = true; render(); return; } st.ciclo = { nome: n, blocos: CICLOS_PRONTOS[n] }; if (S.ui.cicloPers) S.ui.cicloPers[st.id] = false; salvar('config'); render(); };
 A.feriadoModo = (el) => { S.cfg.feriadoModo = el.dataset.m; salvar('config'); render(); };
 C.cicloPers = (el) => {
+  const st = S.cfg.setores[+el.dataset.s];
   const blocos = el.value.split(/[,/;]/).map((x) => x.trim().match(/^(\d+)\s*x\s*(\d+)$/i)).filter(Boolean).map((m) => [+m[1], +m[2]]);
   if (!blocos.length) { toast('Use o formato 6x2 ou 6x1, 5x2'); return; }
-  S.cfg.ciclo = { nome: blocos.map((b) => b[0] + 'x' + b[1]).join(' / '), blocos }; salvar('config'); render();
+  st.ciclo = { nome: blocos.map((b) => b[0] + 'x' + b[1]).join(' / '), blocos }; salvar('config'); render();
 };
 A.desfazer = () => {
   const [a, m] = mesAtual(), pre = a + '-' + pad(m);
@@ -515,9 +533,10 @@ A.setCel = (el) => {
   S.ui.pop = null; S.ui.manterScroll = true; salvar('ajustes'); render();
 };
 A.fecharPop = () => { S.ui.pop = null; S.ui.manterScroll = true; render(); };
-function opcoesCodigo() {
-  const sups = [1, 2, 3].map((i) => S.cfg.sup.prefixo + i);
-  return princ().concat(sups, S.cfg.siglas.map((x) => x.sigla));
+function opcoesCodigo(st) {
+  const lista = st ? [st] : setores(), out = [];
+  lista.forEach((x) => { princ(x).forEach((c) => out.push(c)); if (x.sup && x.sup.ativo !== false) [1, 2, 3].forEach((i) => out.push(x.sup.prefixo + i)); if (!(x.postos || []).length && x.trab) out.push(x.trab.sigla); });
+  return [...new Set(out)].concat(S.cfg.siglas.map((x) => x.sigla));
 }
 V.escala = () => {
   if (!S.equipe.length) return V.painel();
@@ -527,9 +546,11 @@ V.escala = () => {
   const nAj = Object.keys(S.ajustes).filter((k) => k.split('|')[1].startsWith(a + '-' + pad(m))).length;
   let thead = '<tr><th class="nm"></th>' + em.dias.map((s) => { const f = feriado(s), d = dow(s); return '<th class="' + (f ? 'fer' : (d === 0 || d === 6) ? 'fds' : '') + '" title="' + esc(f || '') + '"><span class="d">' + +s.slice(8) + '</span>' + (f ? 'fer.' : SEM[d]) + '</th>'; }).join('') + '<th>Trab.</th><th>Folgas</th>' + (S.cfg.feriadoModo === 'bh' ? '<th>BH fer.</th>' : '') + '</tr>';
   let corpo = '';
-  em.turnos.filter((x) => filtro === 'todos' || x.t.id === filtro).forEach(({ t, linhas, cob }) => {
+  let setorAnt = null;
+  em.turnos.filter((x) => filtro === 'todos' || x.t.setor === filtro).forEach(({ t, linhas, cob }) => {
+    if (setores().length > 1 && t.setor !== setorAnt) { setorAnt = t.setor; corpo += '<tr class="tit"><td colspan="3" style="font-size:15px;padding-top:18px;color:var(--ac)">' + esc(setorPorId(t.setor).nome) + '</td></tr>'; }
     corpo += '<tr class="tit"><td colspan="3">' + esc(t.nome) + ' <span class="sub" style="font-weight:500">' + t.ini + ' às ' + t.fim + '</span></td></tr>';
-    if (!linhas.length) corpo += '<tr><td class="nm sub">Ninguém neste turno</td></tr>';
+    if (!linhas.length) corpo += '<tr><td class="nm sub">Ninguém aqui</td></tr>';
     linhas.forEach(({ p, cods, trab, folgas, fer }) => {
       corpo += '<tr><td class="nm">' + esc(p.nome) + '</td>' + cods.map((c, i) => {
         const s = em.dias[i], k = p.id + '|' + s, d = diaEscala(s);
@@ -539,26 +560,25 @@ V.escala = () => {
         return '<td class="c' + (S.ajustes[k] ? ' ov' : '') + (sel ? ' sel' : '') + '" style="' + tagStyle(c) + (c === 'x' && (dow(s) === 0 || dow(s) === 6) ? ';background:#ECECF1' : '') + '" data-a="cel" data-p="' + p.id + '" data-s="' + s + '" title="' + esc(tit) + '">' + esc(txt) + '</td>';
       }).join('') + '<td class="tot"><b>' + trab + '</b></td><td class="tot">' + folgas + '</td>' + (S.cfg.feriadoModo === 'bh' ? '<td class="tot" style="color:var(--in);font-weight:600">' + (fer ? '+' + fer + 'h' : '-') + '</td>' : '') + '</tr>';
     });
-    corpo += '<tr><td class="nm sub" style="font-size:12px">Cobertura</td>' + cob.map((f) => '<td class="cob" style="' + (f.length ? 'background:var(--ers);color:var(--er)' : 'color:var(--ok)') + '" title="' + (f.length ? 'Falta: ' + f.join(', ') : 'Postos cobertos') + '">' + (f.length ? '!' : '✓') + '</td>').join('') + '</tr>';
+    if (princ(setorDoTurno(t.id)).length) corpo += '<tr><td class="nm sub" style="font-size:12px">Cobertura</td>' + cob.map((f) => '<td class="cob" style="' + (f.length ? 'background:var(--ers);color:var(--er)' : 'color:var(--ok)') + '" title="' + (f.length ? 'Falta: ' + f.join(', ') : 'Postos cobertos') + '">' + (f.length ? '!' : '✓') + '</td>').join('') + '</tr>';
   });
   let pop = '';
   if (S.ui.pop) {
     const p = S.equipe.find((x) => x.id === S.ui.pop.pid);
     pop = '<div class="pop" style="left:' + S.ui.pop.x + 'px;top:' + Math.max(8, S.ui.pop.y) + 'px"><div class="row" style="justify-content:space-between"><b>' + esc(p ? p.nome : '') + ' · ' + SEM[dow(S.ui.pop.s)] + ' ' + br(S.ui.pop.s) + '</b><button class="btn ghost sm" data-a="fecharPop">Fechar</button></div>' +
-      '<div class="chips">' + opcoesCodigo().map((c) => '<button data-a="setCel" data-c="' + esc(c) + '" style="' + tagStyle(c) + '">' + esc(c === 'x' ? 'Folga' : c) + '</button>').join('') + '</div>' +
+      '<div class="chips">' + opcoesCodigo(setorDoTurno(diaEscala(S.ui.pop.s).turno[S.ui.pop.pid])).map((c) => '<button data-a="setCel" data-c="' + esc(c) + '" style="' + tagStyle(c) + '">' + esc(c === 'x' ? 'Folga' : c) + '</button>').join('') + '</div>' +
       '<button class="btn sm" data-a="setCel" data-c="__auto">Voltar pro automático</button></div>';
   }
-  const ciclosBtns = Object.keys(CICLOS_PRONTOS).map((n) => '<button class="' + (S.cfg.ciclo.nome === n && !S.ui.cicloPers ? 'on' : '') + '" data-a="ciclo" data-n="' + n + '">' + n + '</button>').join('') + '<button class="' + (S.ui.cicloPers || !CICLOS_PRONTOS[S.cfg.ciclo.nome] ? 'on' : '') + '" data-a="ciclo" data-n="pers">Personalizado</button>';
   const regras = S.ui.regras ? '<div class="card grid2" style="gap:18px">' +
-    '<div class="col"><b>Ciclo</b><div class="chipsel">' + ciclosBtns + '</div>' + (S.ui.cicloPers || !CICLOS_PRONTOS[S.cfg.ciclo.nome] ? '<input class="i" data-c="cicloPers" placeholder="Ex.: 6x1, 5x2" value="' + esc(S.cfg.ciclo.nome) + '">' : '') + '<span class="sub">Cada pessoa entra no ciclo pela primeira folga dela (Equipe). O mês seguinte continua de onde este parou.</span></div>' +
+    '<div class="col"><b>Ciclo</b><span class="sub">' + setores().map((x) => esc(x.nome) + ': ' + esc(x.ciclo.nome)).join(' · ') + '</span><span class="sub">Cada posto tem o seu ciclo, em Configurações. Cada pessoa entra pela primeira folga dela.</span></div>' +
     '<div class="col"><b>Feriado</b><div class="chipsel">' + [['bh', 'Trabalha e gera BH'], ['sem', 'Trabalha sem BH'], ['folga', 'Folga']].map(([k, l]) => '<button class="' + (S.cfg.feriadoModo === k ? 'on' : '') + '" data-a="feriadoModo" data-m="' + k + '">' + l + '</button>').join('') + '</div><span class="sub">Feriados nacionais já vêm. Municipais e pontos facultativos você coloca em Configurações.</span></div>' +
-    '<div class="col"><b>Distribuição</b><span class="sub">Com 2 pessoas: ' + princ().slice(0, 2).join(' e ') + '. Quem segue trabalhando troca de posto todo dia e nunca repete o de ontem. Quem volta de folga entra no posto descoberto. Quem sobra vira ' + S.cfg.sup.prefixo + ', em rodízio, nunca 2 dias seguidos.</span><button class="btn sm" data-a="ir" data-v="config" style="align-self:flex-start">Postos, siglas e cores</button></div>' +
+    '<div class="col"><b>Distribuição</b><span class="sub">Com 2 pessoas: as 2 primeiras posições do posto. Quem segue trabalhando troca de posição todo dia e nunca repete a de ontem. Quem volta de folga entra na descoberta. Quem sobra vira suporte, em rodízio, nunca 2 dias seguidos. Posto sem posições mostra só o código de trabalho.</span><button class="btn sm" data-a="ir" data-v="config" style="align-self:flex-start">Postos, siglas e cores</button></div>' +
     '<div class="col"><b>Travas</b><span class="sub">Descanso mínimo de ' + S.cfg.travas.interjornada + 'h entre jornadas e no máximo ' + S.cfg.travas.maxSeguidos + ' dias seguidos. O que passar disso vira alerta vermelho.</span></div></div>' : '';
-  const leg = opcoesCodigo().filter((c) => !/3$/.test(c)).map((c) => tag(c, c === 'x' ? 'Folga' : c + (siglaInfo(c).tipo !== 'posto' && siglaInfo(c).nome ? ' ' + siglaInfo(c).nome : ''))).join('');
-  return '<div class="topo"><div class="row"><button class="btn" data-a="mes" data-d="-1" aria-label="Mês anterior">‹</button><div><h1>Escala · ' + MESES[m - 1] + ' ' + a + '</h1><div class="sub">Gerada automaticamente · ' + nAj + ' ajuste(s) manuais · ciclo ' + esc(S.cfg.ciclo.nome) + '</div></div><button class="btn" data-a="mes" data-d="1" aria-label="Próximo mês">›</button></div>' +
+  const leg = opcoesCodigo(filtro !== 'todos' ? setorPorId(filtro) : null).filter((c) => !/3$/.test(c)).map((c) => tag(c, c === 'x' ? 'Folga' : c + (siglaInfo(c).tipo !== 'posto' && siglaInfo(c).nome ? ' ' + siglaInfo(c).nome : ''))).join('');
+  return '<div class="topo"><div class="row"><button class="btn" data-a="mes" data-d="-1" aria-label="Mês anterior">‹</button><div><h1>Escala · ' + MESES[m - 1] + ' ' + a + '</h1><div class="sub">Gerada automaticamente · ' + nAj + ' ajuste(s) manuais</div></div><button class="btn" data-a="mes" data-d="1" aria-label="Próximo mês">›</button></div>' +
     '<div class="row"><button class="btn' + (S.ui.regras ? ' pri' : '') + '" data-a="togRegras">Regras da escala</button><button class="btn" data-a="desfazer">Desfazer ajustes</button><button class="btn pri" data-a="exportar">Exportar .xlsx</button></div></div>' +
     regras +
-    '<div class="row" style="justify-content:space-between"><div class="seg">' + [['todos', 'Todos os turnos']].concat(S.cfg.turnos.map((t) => [t.id, t.nome])).map(([k, l]) => '<button class="' + (filtro === k ? 'on' : '') + '" data-a="filtroT" data-t="' + k + '">' + esc(l) + '</button>').join('') + '</div><div class="legenda">' + leg + '</div></div>' +
+    '<div class="row" style="justify-content:space-between"><div class="seg">' + [['todos', setores().length > 1 ? 'Todos os postos' : 'Todos os turnos']].concat(setores().length > 1 ? setores().map((x) => [x.id, x.nome]) : []).map(([k, l]) => '<button class="' + (filtro === k ? 'on' : '') + '" data-a="filtroT" data-t="' + k + '">' + esc(l) + '</button>').join('') + '</div><div class="legenda">' + leg + '</div></div>' +
     '<div class="card flush" data-scroll><table class="esc">' + thead + corpo + '</table></div>' + pop +
     '<div class="card col"><div class="row" style="justify-content:space-between"><h2>Alertas da escala (' + em.alertas.length + ')</h2><span class="sub">Clique numa célula pra trocar. Ajuste manual fica com borda roxa.</span></div>' +
     (em.alertas.length ? '<div class="grid2" style="gap:8px">' + em.alertas.slice(0, 40).map((x) => '<div class="alerta a-' + x.g + '"><i></i><span>' + esc(x.txt) + '</span></div>').join('') + '</div>' : '<span style="color:var(--ok)">Tudo coberto e dentro das travas.</span>') + '</div>';
@@ -572,10 +592,10 @@ V.equipe = () => {
     '<div class="row"><button class="btn" data-a="importar">Colar lista</button><button class="btn pri" data-a="novaPessoa">Adicionar pessoa</button></div></div>' +
     '<div class="card flush"><table class="t"><thead><tr><th>Nome</th><th>Matrícula</th><th>Turno</th><th>Próxima folga</th><th>Hoje</th><th>Saldo BH</th><th>Situação</th></tr></thead><tbody>' +
     (lista.length ? lista.map((p) => {
-      const c = codigo(p.id, hj), t = turnoPorId(p.turno), v = saldoBH(p.id, hj), f = faixaBH(v);
+      const c = codigo(p.id, hj), t = { nome: labelTurno(p.turno) }, v = saldoBH(p.id, hj), f = faixaBH(v);
       return '<tr class="click" data-a="editarPessoa" data-p="' + p.id + '"><td><b>' + esc(p.nome) + '</b>' + (p.obs ? '<div class="sub">' + esc(p.obs) + '</div>' : '') + '</td><td class="sub">' + esc(p.matricula || '-') + '</td><td>' + esc(t ? t.nome : p.turno) + '</td><td>' + (p.ativo === false ? '-' : proximaFolga(p)) + '</td><td>' + (p.ativo === false ? '-' : tag(c)) + '</td><td><span class="pill ' + f[1] + '">' + sh(v) + '</span></td><td>' + (p.ativo === false ? '<span class="pill p-mu">Inativo</span>' : '<span class="pill p-ok">Ativo</span>') + '</td></tr>';
     }).join('') : '<tr><td colspan="7" class="vazio" style="padding:20px">Ninguém cadastrado ainda.</td></tr>') + '</tbody></table></div>' +
-    '<div class="card col"><h2>Como funciona a folga</h2><span class="sub">Você informa o primeiro dia de folga de cada pessoa no ciclo (' + esc(S.cfg.ciclo.nome) + '). A partir dele o app calcula todos os dias de trabalho e folga, em qualquer mês. Pra quem folga junto (ex.: novato com o padrinho), use a mesma data.</span></div>';
+    '<div class="card col"><h2>Como funciona a folga</h2><span class="sub">Você informa o primeiro dia de folga de cada pessoa no ciclo do posto dela. A partir dele o app calcula todos os dias de trabalho e folga, em qualquer mês. Pra quem folga junto (ex.: novato com o padrinho), use a mesma data.</span></div>';
 };
 A.novaPessoa = () => { S.ui.modal = { t: 'pessoa', p: { id: uid(), nome: '', turno: S.cfg.turnos[0].id, inicio: hojeStr(), ativo: true, novo: true } }; render(); };
 A.editarPessoa = (el) => { const p = S.equipe.find((x) => x.id === el.dataset.p); S.ui.modal = { t: 'pessoa', p: Object.assign({}, p) }; render(); };
@@ -584,9 +604,9 @@ M.pessoa = () => {
   return '<h2>' + (p.novo ? 'Adicionar pessoa' : 'Editar ' + esc(p.nome)) + '</h2><form class="col" data-f="pessoa">' +
     '<label class="f">Nome<input class="i" name="nome" required value="' + esc(p.nome) + '"></label>' +
     '<div class="grid2" style="grid-template-columns:1fr 1fr;gap:10px"><label class="f">Matrícula (opcional)<input class="i" name="matricula" value="' + esc(p.matricula || '') + '"></label>' +
-    '<label class="f">Turno<select class="i" name="turno">' + S.cfg.turnos.map((t) => '<option value="' + t.id + '"' + (p.turno === t.id ? ' selected' : '') + '>' + esc(t.nome) + '</option>').join('') + '</select></label></div>' +
+    '<label class="f">Posto e subposto<select class="i" name="turno">' + S.cfg.turnos.map((t) => '<option value="' + t.id + '"' + (p.turno === t.id ? ' selected' : '') + '>' + esc(labelTurno(t.id)) + '</option>').join('') + '</select></label></div>' +
     (p.novo ? '' : '<label class="f">Se mudar o turno, vale a partir de<input class="i" type="date" name="desde" value="' + hojeStr() + '"></label>') +
-    '<label class="f">Primeira folga (1º dia de folga do ciclo)<input class="i" type="date" name="folga" required value="' + esc(p.inicio ? addD(p.inicio, trabBloco()) : '') + '"></label>' +
+    '<label class="f">Primeira folga (1º dia de folga do ciclo)<input class="i" type="date" name="folga" required value="' + esc(p.inicio ? addD(p.inicio, trabBloco(setorDoTurno(p.turno))) : '') + '"></label>' +
     '<label class="f">Observação<input class="i" name="obs" placeholder="Ex.: novato, padrinho Leandro" value="' + esc(p.obs || '') + '"></label>' +
     '<label class="row" style="gap:8px;font-size:13px"><input type="checkbox" name="ativo"' + (p.ativo !== false ? ' checked' : '') + '> Ativo na escala</label>' +
     '<div class="row" style="justify-content:space-between">' + (p.novo ? '<span></span>' : '<button type="button" class="btn danger" data-a="excluirPessoa">Excluir</button>') + '<div class="row"><button type="button" class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri">Salvar</button></div></div></form>';
@@ -595,7 +615,7 @@ function onPessoa(f) {
   const p = S.ui.modal.p, novo = p.novo;
   const antigo = novo ? null : S.equipe.find((x) => x.id === p.id);
   if (antigo && antigo.turno !== f.turno.value && f.desde && f.desde.value) { p.historicoTurno = (antigo.historicoTurno || []).concat([{ ate: addD(f.desde.value, -1), turno: antigo.turno }]); }
-  Object.assign(p, { nome: f.nome.value.trim(), matricula: f.matricula.value.trim(), turno: f.turno.value, inicio: addD(f.folga.value, -trabBloco()), obs: f.obs.value.trim(), ativo: f.ativo.checked });
+  Object.assign(p, { nome: f.nome.value.trim(), matricula: f.matricula.value.trim(), turno: f.turno.value, inicio: addD(f.folga.value, -trabBloco(setorDoTurno(f.turno.value))), obs: f.obs.value.trim(), ativo: f.ativo.checked });
   delete p.novo;
   if (novo) S.equipe.push(p); else S.equipe[S.equipe.findIndex((x) => x.id === p.id)] = p;
   S.ui.modal = null; salvar('equipe'); render(); toast(novo ? 'Pessoa adicionada' : 'Salvo');
@@ -618,7 +638,7 @@ function onImportar(f) {
     const c = l.split(/[;\t]/).map((x) => x.trim()); if (!c[0]) return;
     const t = (c[1] || '').replace(/^turno\s*/i, '').toUpperCase();
     let ini = c[2] || ''; const m = ini.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); if (m) ini = m[3] + '-' + pad(+m[2]) + '-' + pad(+m[1]);
-    S.equipe.push({ id: uid(), nome: c[0], turno: turnoPorId(t) ? t : S.cfg.turnos[0].id, inicio: /^\d{4}-\d{2}-\d{2}$/.test(ini) ? addD(ini, -trabBloco()) : hojeStr(), ativo: true }); n++;
+    S.equipe.push({ id: uid(), nome: c[0], turno: turnoPorId(t) ? t : S.cfg.turnos[0].id, inicio: /^\d{4}-\d{2}-\d{2}$/.test(ini) ? addD(ini, -trabBloco(setorDoTurno(turnoPorId(t) ? t : S.cfg.turnos[0].id))) : hojeStr(), ativo: true }); n++;
   });
   S.ui.modal = null; salvar('equipe'); render(); toast(n + ' pessoa(s) importada(s)');
 }
@@ -634,7 +654,7 @@ V.ausencias = () => {
   return '<div class="topo"><div><h1>Ausências</h1><div class="sub">O que você lança aqui entra direto na escala, e o app redistribui os postos do dia.</div></div></div>' +
     '<div class="grid2" style="grid-template-columns:minmax(300px,380px) 1fr">' +
     '<div class="card col"><h2>Nova ausência</h2><form class="col" data-f="ausencia">' +
-    '<label class="f">Pessoa<select class="i" name="pessoa" required>' + ativos.map((p) => '<option value="' + p.id + '">' + esc(p.nome) + ' · ' + esc((turnoPorId(p.turno) || {}).nome || p.turno) + '</option>').join('') + '</select></label>' +
+    '<label class="f">Pessoa<select class="i" name="pessoa" required>' + ativos.map((p) => '<option value="' + p.id + '">' + esc(p.nome) + ' · ' + esc(labelTurno(p.turno)) + '</option>').join('') + '</select></label>' +
     '<div class="col" style="gap:6px"><span style="font-size:12px;font-weight:600">Tipo</span><div class="chipsel">' + siglasAusencia().map((x) => '<button type="button" data-a="ausSig" data-s="' + esc(x.sigla) + '" style="' + tagStyle(x.sigla) + ';border:2px solid ' + (sig === x.sigla ? 'var(--ac)' : 'transparent') + '">' + esc(x.nome) + '</button>').join('') + '</div></div>' +
     '<div class="grid2" style="grid-template-columns:1fr 1fr;gap:10px"><label class="f">De<input class="i" type="date" name="de" required value="' + hj + '"></label><label class="f">Até (vazio = sem fim)<input class="i" type="date" name="ate" value="' + hj + '"></label></div>' +
     '<label class="f">Observação (opcional)<input class="i" name="obs"></label>' +
@@ -678,7 +698,7 @@ function bhLancar(ativos) {
   let linhas = '';
   let turnoAnt = null;
   ativos.forEach((p) => {
-    if (p.turno !== turnoAnt) { turnoAnt = p.turno; linhas += '<tr class="tit"><td colspan="11">' + esc((turnoPorId(p.turno) || {}).nome || p.turno) + '</td></tr>'; }
+    if (p.turno !== turnoAnt) { turnoAnt = p.turno; linhas += '<tr class="tit"><td colspan="11">' + esc(labelTurno(p.turno)) + '</td></tr>'; }
     const L = limDia(p.id);
     let prevT = 0, heT = 0;
     const cels = dias.map((s) => {
@@ -723,7 +743,7 @@ function bhSaldos(ativos) {
       const media = sems.reduce((a, b) => a + b, 0) / 4;
       const mx = Math.max(S.cfg.bh.heSemana, 8, ...sems.map(Math.abs));
       const barras = sems.map((x, i) => '<span title="' + sh(x) + '" style="display:inline-block;width:12px;margin-right:3px;vertical-align:bottom;border-radius:3px 3px 0 0;height:' + Math.max(3, Math.round(Math.abs(x) / mx * 26)) + 'px;background:' + (x > S.cfg.bh.heSemana ? '#B3261E' : x < 0 ? '#9A9AAA' : i === 3 ? '#5B3FB0' : '#C9BFEA') + '"></span>').join('');
-      return '<tr><td><b>' + esc(p.nome) + '</b></td><td class="sub">' + esc((turnoPorId(p.turno) || {}).nome || p.turno) + '</td><td style="text-align:right;font-weight:700">' + sh(v) + '</td><td style="text-align:right">' + sh(sems[3]) + '</td><td style="text-align:right">' + sh(Math.round(media * 10) / 10) + '</td><td style="height:34px">' + barras + '</td><td><span class="pill ' + f[1] + '">' + f[0] + '</span></td><td style="text-align:right"><button class="btn sm" data-a="programarBH" data-p="' + p.id + '">Programar BH</button></td></tr>';
+      return '<tr><td><b>' + esc(p.nome) + '</b></td><td class="sub">' + esc(labelTurno(p.turno)) + '</td><td style="text-align:right;font-weight:700">' + sh(v) + '</td><td style="text-align:right">' + sh(sems[3]) + '</td><td style="text-align:right">' + sh(Math.round(media * 10) / 10) + '</td><td style="height:34px">' + barras + '</td><td><span class="pill ' + f[1] + '">' + f[0] + '</span></td><td style="text-align:right"><button class="btn sm" data-a="programarBH" data-p="' + p.id + '">Programar BH</button></td></tr>';
     }).join('') + '</tbody></table></div><span class="sub">Saldo contado desde ' + brA(S.cfg.bh.inicio) + ' (muda em Regras e alertas). Prazo de compensação configurado: ' + S.cfg.bh.prazoMeses + ' meses.</span>';
 }
 function stepper(chave, label, hint, passo, min, max, fmt) {
@@ -785,7 +805,7 @@ A.tNova = () => { S.ui.modal = { t: 'tarefa', x: { id: uid(), titulo: '', resp: 
 A.tEditar = (el) => { S.ui.modal = { t: 'tarefa', x: Object.assign({}, S.tarefas.find((t) => t.id === el.dataset.id)) }; render(); };
 M.tarefa = () => {
   const x = S.ui.modal.x;
-  const resp = S.equipe.map((p) => p.nome).concat(princ().flatMap((po) => S.cfg.turnos.map((t) => po + ' do ' + t.nome)));
+  const resp = S.equipe.map((p) => p.nome).concat(S.cfg.turnos.flatMap((t) => princ(setorDoTurno(t.id)).map((po) => po + ' do ' + labelTurno(t.id))));
   return '<h2>' + (x.novo ? 'Nova tarefa' : 'Editar tarefa') + '</h2><form class="col" data-f="tarefa"><label class="f">O que fazer<input class="i" name="titulo" required value="' + esc(x.titulo) + '"></label>' +
     '<label class="f">Responsável (pessoa ou posto)<input class="i" name="resp" list="lresp" value="' + esc(x.resp || '') + '"><datalist id="lresp">' + resp.map((r) => '<option value="' + esc(r) + '">').join('') + '</datalist></label>' +
     '<div class="grid2" style="grid-template-columns:1fr 1fr 1fr;gap:10px"><label class="f">Prazo<input class="i" type="date" name="prazo" value="' + esc(x.prazo || '') + '"></label><label class="f">Hora<input class="i" type="time" name="hora" value="' + esc(x.hora || '') + '"></label>' +
@@ -850,7 +870,7 @@ function emServico(s, hora) {
   if (!t || !S.equipe.length) return '';
   const d = diaEscala(s);
   const nomes = S.equipe.filter((p) => p.ativo !== false && d.turno[p.id] === t.id && trabalhando(d.cod[p.id])).map((p) => p.nome);
-  return t.nome + (nomes.length ? ': ' + nomes.join(', ') : '');
+  return labelTurno(t.id) + (nomes.length ? ': ' + nomes.join(', ') : '');
 }
 V.reunioes = () => {
   const hj = hojeStr(), prox = proximasReunioes(hj, 20);
@@ -921,28 +941,24 @@ A.rExcluir = () => { if (!confirm('Excluir esta reunião e todas as repetições
 V.config = () => {
   const c = S.cfg, ano = +hojeStr().slice(0, 4);
   const bloq = [];
-  c.turnos.forEach((a) => c.turnos.forEach((b) => { if (a.id !== b.id) { const d = descansoEntre(a.id, b.id); if (d >= 0 && d < c.travas.interjornada) bloq.push(a.nome + ' → ' + b.nome + ' no dia seguinte: ' + h(d) + ' de descanso'); } }));
+  c.turnos.forEach((a) => c.turnos.forEach((b) => { if (a.id !== b.id && a.setor === b.setor) { const d = descansoEntre(a.id, b.id); if (d >= 0 && d < c.travas.interjornada) bloq.push(labelTurno(a.id) + ' → ' + labelTurno(b.id) + ' no dia seguinte: ' + h(d) + ' de descanso'); } }));
   const fer = feriadosDoAno(ano);
   const nac = Object.keys(fer).sort();
   return '<div class="topo"><div><h1>Configurações</h1><div class="sub">Tudo aqui vem com um padrão e você muda. A escala e o banco de horas se recalculam na hora.</div></div></div>' +
     '<div class="card col"><h2>Equipe</h2><label class="f" style="max-width:420px">Nome da equipe<input class="i" data-c="cfgNome" value="' + esc(c.equipeNome) + '"></label></div>' +
+    '<div class="card col"><div class="row" style="justify-content:space-between"><div><h2>Postos e subpostos</h2><span class="sub">Ex.: Brassagem (turnos A, B e C), Pesagem (ADM), Tombador (turnos). Cada posto tem o seu ciclo e as suas posições.</span></div><button class="btn sm pri" data-a="stAdd">Adicionar posto</button></div>' +
+    c.setores.map((st, si) => cardSetor(st, si)).join('') + '</div>' +
     '<div class="grid2">' +
-    '<div class="card col"><h2>Turnos</h2>' + c.turnos.map((t, i) => '<div class="row" style="gap:8px;flex-wrap:nowrap"><span class="tag" style="background:var(--acs);color:var(--ac)">' + esc(t.id) + '</span><input class="i" data-c="tNome" data-i="' + i + '" value="' + esc(t.nome) + '"><input class="i" style="width:110px" type="time" data-c="tIni" data-i="' + i + '" value="' + t.ini + '" aria-label="Entrada ' + esc(t.nome) + '"><input class="i" style="width:110px" type="time" data-c="tFim" data-i="' + i + '" value="' + t.fim + '" aria-label="Saída ' + esc(t.nome) + '">' + (c.turnos.length > 1 ? '<button class="btn ghost sm danger" data-a="tRem" data-i="' + i + '" aria-label="Remover ' + esc(t.nome) + '">✕</button>' : '') + '</div>').join('') +
-    '<button class="btn sm" data-a="tAdd" style="align-self:flex-start">Adicionar turno</button>' +
-    '<div class="regra"><div class="l"><b style="font-weight:500">Turno que vira a meia-noite conta no dia em que</b></div><div class="chipsel">' + [['entra', 'Entra'], ['sai', 'Sai']].map(([k, l]) => '<button class="' + (c.travas.virada === k ? 'on' : '') + '" data-a="virada" data-k="' + k + '">' + l + '</button>').join('') + '</div></div></div>' +
     '<div class="card col"><h2>Travas da escala</h2>' +
+    '<div class="regra"><div class="l"><b style="font-weight:500">Subposto que vira a meia-noite conta no dia em que</b></div><div class="chipsel">' + [['entra', 'Entra'], ['sai', 'Sai']].map(([k, l]) => '<button class="' + (c.travas.virada === k ? 'on' : '') + '" data-a="virada" data-k="' + k + '">' + l + '</button>').join('') + '</div></div>' +
     '<div class="regra"><div class="l"><b style="font-weight:500">Descanso mínimo entre jornadas</b><small>Interjornada (CLT: 11h)</small></div><div class="stepper"><button data-a="trava" data-k="interjornada" data-d="-1">−</button><span>' + c.travas.interjornada + 'h</span><button data-a="trava" data-k="interjornada" data-d="1">+</button></div></div>' +
     '<div class="regra"><div class="l"><b style="font-weight:500">Máximo de dias seguidos</b><small>Passou disso, alerta vermelho</small></div><div class="stepper"><button data-a="trava" data-k="maxSeguidos" data-d="-1">−</button><span>' + c.travas.maxSeguidos + ' dias</span><button data-a="trava" data-k="maxSeguidos" data-d="1">+</button></div></div>' +
-    '<div class="alerta a-er" style="flex-direction:column;gap:4px"><b style="font-size:12px;color:var(--er)">Trocas de turno que precisam de folga no meio (' + bloq.length + ')</b>' + (bloq.length ? bloq.map((b) => '<span style="font-size:12px">' + esc(b) + '</span>').join('') : '<span style="font-size:12px">Nenhuma</span>') + '</div></div></div>' +
+    '<div class="alerta a-er" style="flex-direction:column;gap:4px"><b style="font-size:12px;color:var(--er)">Trocas de subposto que precisam de folga no meio (' + bloq.length + ')</b>' + (bloq.length ? bloq.map((b) => '<span style="font-size:12px">' + esc(b) + '</span>').join('') : '<span style="font-size:12px">Nenhuma</span>') + '</div></div></div>' +
     '<div class="grid2">' +
-    '<div class="card col"><h2>Postos de trabalho</h2><span class="sub">Na ordem de prioridade: com menos gente, os últimos ficam descobertos.</span>' +
-    c.postos.map((p, i) => '<div class="row" style="gap:8px;flex-wrap:nowrap"><input class="i" type="color" data-c="pCor" data-i="' + i + '" value="' + p.cor + '" aria-label="Cor ' + esc(p.sigla) + '"><input class="i" style="width:90px" data-c="pSig" data-i="' + i + '" value="' + esc(p.sigla) + '"><input class="i" data-c="pNome" data-i="' + i + '" value="' + esc(p.nome) + '"><button class="btn ghost sm" data-a="pMov" data-i="' + i + '" data-d="-1" aria-label="Subir">↑</button><button class="btn ghost sm" data-a="pMov" data-i="' + i + '" data-d="1" aria-label="Descer">↓</button><button class="btn ghost sm danger" data-a="pRem" data-i="' + i + '" aria-label="Remover">✕</button></div>').join('') +
-    '<button class="btn sm" data-a="pAdd" style="align-self:flex-start">Adicionar posto</button>' +
-    '<div class="regra"><div class="l"><b style="font-weight:500">Excedente (suporte)</b><small>Quem sobra vira ' + esc(c.sup.prefixo) + '1, ' + esc(c.sup.prefixo) + '2... em rodízio</small></div><div class="row" style="gap:6px;flex-wrap:nowrap"><input class="i" type="color" data-c="supCor" value="' + c.sup.cor + '"><input class="i" style="width:80px" data-c="supPre" value="' + esc(c.sup.prefixo) + '"><input class="i" style="width:120px" data-c="supNome" value="' + esc(c.sup.nome) + '"></div></div></div>' +
     '<div class="card col"><h2>Siglas e cores</h2>' +
     c.siglas.map((x, i) => '<div class="row" style="gap:6px;flex-wrap:nowrap"><input class="i" type="color" data-c="sCor" data-i="' + i + '" value="' + x.cor + '"><input class="i" style="width:64px" data-c="sSig" data-i="' + i + '" value="' + esc(x.sigla) + '"' + (x.sigla === 'x' ? ' disabled title="Folga do ciclo"' : '') + '><input class="i" data-c="sNome" data-i="' + i + '" value="' + esc(x.nome) + '">' +
       '<select class="i" style="width:130px" data-c="sTipo" data-i="' + i + '">' + [['ausencia', 'Ausência'], ['folga', 'Folga'], ['treinamento', 'Treinamento'], ['turno', 'Vai p/ turno']].map(([k, l]) => '<option value="' + k + '"' + (x.tipo === k ? ' selected' : '') + '>' + l + '</option>').join('') + '</select>' +
-      (x.tipo === 'turno' ? '<select class="i" style="width:70px" data-c="sDest" data-i="' + i + '">' + c.turnos.map((t) => '<option' + (x.destino === t.id ? ' selected' : '') + '>' + t.id + '</option>').join('') + '</select>' : '') +
+      (x.tipo === 'turno' ? '<select class="i" style="width:150px" data-c="sDest" data-i="' + i + '">' + c.turnos.map((t) => '<option value="' + t.id + '"' + (x.destino === t.id ? ' selected' : '') + '>' + esc(labelTurno(t.id)) + '</option>').join('') + '</select>' : '') +
       (x.tipo === 'ausencia' ? '<label class="row" style="gap:4px;font-size:11px;white-space:nowrap" title="Desconta a jornada do banco de horas"><input type="checkbox" data-c="sBH" data-i="' + i + '"' + (x.descontaBH ? ' checked' : '') + '>-BH</label>' : '') +
       (x.sigla !== 'x' ? '<button class="btn ghost sm danger" data-a="sRem" data-i="' + i + '" aria-label="Remover">✕</button>' : '') + '</div>').join('') +
     '<button class="btn sm" data-a="sAdd" style="align-self:flex-start">Adicionar sigla</button>' +
@@ -954,11 +970,34 @@ V.config = () => {
 };
 function cfgSet(fn) { fn(S.cfg); salvar('config'); }
 C.cfgNome = (el) => cfgSet((c) => { c.equipeNome = el.value; });
+function stI(el) { return S.cfg.setores[+el.dataset.s]; }
+const CORES = ['#E3E8FB', '#DFF1E1', '#EDE3FA', '#FBE3EA', '#FFF1B8', '#D6ECFB', '#FDE2DC', '#E6F4EA', '#F3E8FF', '#E8E8F0'];
+function cardSetor(st, si) {
+  const pers = (S.ui.cicloPers && S.ui.cicloPers[st.id]) || !CICLOS_PRONTOS[st.ciclo.nome];
+  const tur = S.cfg.turnos.filter((t) => t.setor === st.id);
+  return '<div class="col" style="border:1px solid #E6E6EE;border-radius:12px;padding:14px;gap:12px">' +
+    '<div class="row" style="flex-wrap:nowrap"><input class="i" style="font-weight:600;font-size:15px" data-c="stNome" data-s="' + si + '" value="' + esc(st.nome) + '" aria-label="Nome do posto">' + (S.cfg.setores.length > 1 ? '<button class="btn ghost sm danger" data-a="stRem" data-s="' + si + '">Remover posto</button>' : '') + '</div>' +
+    '<div class="grid2" style="gap:14px">' +
+    '<div class="col" style="gap:8px"><b style="font-size:13px">Subpostos</b>' + tur.map((t) => { const i = S.cfg.turnos.indexOf(t); return '<div class="row" style="gap:6px;flex-wrap:nowrap"><input class="i" data-c="tNome" data-i="' + i + '" value="' + esc(t.nome) + '"><input class="i" style="width:104px" type="time" data-c="tIni" data-i="' + i + '" value="' + t.ini + '" aria-label="Entrada ' + esc(t.nome) + '"><input class="i" style="width:104px" type="time" data-c="tFim" data-i="' + i + '" value="' + t.fim + '" aria-label="Saída ' + esc(t.nome) + '">' + (S.cfg.turnos.length > 1 ? '<button class="btn ghost sm danger" data-a="tRem" data-i="' + i + '" aria-label="Remover ' + esc(t.nome) + '">✕</button>' : '') + '</div>'; }).join('') +
+    '<button class="btn sm" data-a="tAdd" data-s="' + si + '" style="align-self:flex-start">Adicionar subposto</button>' +
+    '<b style="font-size:13px;margin-top:6px">Ciclo</b><div class="chipsel">' + Object.keys(CICLOS_PRONTOS).map((n) => '<button class="' + (st.ciclo.nome === n && !pers ? 'on' : '') + '" data-a="ciclo" data-s="' + si + '" data-n="' + n + '">' + n + '</button>').join('') + '<button class="' + (pers ? 'on' : '') + '" data-a="ciclo" data-s="' + si + '" data-n="pers">Personalizado</button></div>' +
+    (pers ? '<input class="i" data-c="cicloPers" data-s="' + si + '" placeholder="Ex.: 6x1, 5x2" value="' + esc(st.ciclo.nome) + '">' : '') + '</div>' +
+    '<div class="col" style="gap:8px"><b style="font-size:13px">Posições (em ordem de prioridade)</b><span class="sub">Com menos gente, as últimas ficam descobertas. Sem posições, o dia de trabalho aparece só com o código abaixo.</span>' +
+    (st.postos || []).map((p, i) => '<div class="row" style="gap:6px;flex-wrap:nowrap"><input class="i" type="color" data-c="pCor" data-s="' + si + '" data-i="' + i + '" value="' + p.cor + '" aria-label="Cor ' + esc(p.sigla) + '"><input class="i" style="width:84px" data-c="pSig" data-s="' + si + '" data-i="' + i + '" value="' + esc(p.sigla) + '"><input class="i" data-c="pNome" data-s="' + si + '" data-i="' + i + '" value="' + esc(p.nome) + '"><button class="btn ghost sm" data-a="pMov" data-s="' + si + '" data-i="' + i + '" data-d="-1" aria-label="Subir">↑</button><button class="btn ghost sm" data-a="pMov" data-s="' + si + '" data-i="' + i + '" data-d="1" aria-label="Descer">↓</button><button class="btn ghost sm danger" data-a="pRem" data-s="' + si + '" data-i="' + i + '" aria-label="Remover">✕</button></div>').join('') +
+    '<button class="btn sm" data-a="pAdd" data-s="' + si + '" style="align-self:flex-start">Adicionar posição</button>' +
+    '<label class="row" style="gap:8px;font-size:13px;margin-top:6px"><input type="checkbox" data-c="supOn" data-s="' + si + '"' + (st.sup.ativo !== false ? ' checked' : '') + '> Quem sobra vira suporte, em rodízio</label>' +
+    (st.sup.ativo !== false ? '<div class="row" style="gap:6px;flex-wrap:nowrap"><input class="i" type="color" data-c="supCor" data-s="' + si + '" value="' + st.sup.cor + '"><input class="i" style="width:84px" data-c="supPre" data-s="' + si + '" value="' + esc(st.sup.prefixo) + '" aria-label="Sigla do suporte"><input class="i" data-c="supNome" data-s="' + si + '" value="' + esc(st.sup.nome) + '"></div>' : '') +
+    '<span class="sub" style="margin-top:6px">Código do dia de trabalho (usado quando não há posição)</span><div class="row" style="gap:6px;flex-wrap:nowrap"><input class="i" type="color" data-c="trCor" data-s="' + si + '" value="' + st.trab.cor + '"><input class="i" style="width:84px" data-c="trSig" data-s="' + si + '" value="' + esc(st.trab.sigla) + '"><input class="i" data-c="trNome" data-s="' + si + '" value="' + esc(st.trab.nome) + '"></div>' +
+    '</div></div></div>';
+}
+A.stAdd = () => { const id = 's' + Date.now().toString(36); cfgSet((c) => { c.setores.push({ id, nome: 'Novo posto', ciclo: { nome: '6x1 / 5x2', blocos: [[6, 1], [5, 2]] }, postos: [], sup: { ativo: false, prefixo: 'SUP', nome: 'Suporte', cor: '#FBE3EA' }, trab: { sigla: 'ADM', nome: 'Trabalhando', cor: '#E3F4E8' } }); c.turnos.push({ id: 't' + Date.now().toString(36), setor: id, nome: 'ADM', ini: '08:00', fim: '17:59' }); }); render(); };
+A.stRem = (el) => { const st = stI(el); const tids = S.cfg.turnos.filter((t) => t.setor === st.id).map((t) => t.id); if (S.equipe.some((p) => tids.includes(p.turno))) { toast('Tem gente nesse posto. Mude as pessoas antes.'); return; } if (!confirm('Remover o posto ' + st.nome + '?')) return; cfgSet((c) => { c.setores = c.setores.filter((x) => x.id !== st.id); c.turnos = c.turnos.filter((t) => !tids.includes(t.id)); }); render(); };
+C.stNome = (el) => { cfgSet(() => { stI(el).nome = el.value; }); };
 C.tNome = (el) => cfgSet((c) => { c.turnos[+el.dataset.i].nome = el.value; });
 C.tIni = (el) => { cfgSet((c) => { c.turnos[+el.dataset.i].ini = el.value; }); render(); };
 C.tFim = (el) => { cfgSet((c) => { c.turnos[+el.dataset.i].fim = el.value; }); render(); };
-A.tAdd = () => { const usados = S.cfg.turnos.map((t) => t.id); const id = 'ABCDEFGH'.split('').find((l) => !usados.includes(l)); cfgSet((c) => c.turnos.push({ id, nome: 'Turno ' + id, ini: '08:00', fim: '16:59' })); render(); };
-A.tRem = (el) => { const t = S.cfg.turnos[+el.dataset.i]; if (S.equipe.some((p) => p.turno === t.id)) { toast('Tem gente nesse turno. Mude as pessoas antes.'); return; } if (!confirm('Remover ' + t.nome + '?')) return; cfgSet((c) => c.turnos.splice(+el.dataset.i, 1)); render(); };
+A.tAdd = (el) => { const st = stI(el); cfgSet((c) => c.turnos.push({ id: 't' + Date.now().toString(36), setor: st.id, nome: 'Novo subposto', ini: '08:00', fim: '16:59' })); render(); };
+A.tRem = (el) => { const t = S.cfg.turnos[+el.dataset.i]; if (S.equipe.some((p) => p.turno === t.id)) { toast('Tem gente nesse subposto. Mude as pessoas antes.'); return; } if (!confirm('Remover ' + t.nome + '?')) return; cfgSet((c) => c.turnos.splice(+el.dataset.i, 1)); render(); };
 A.virada = (el) => { cfgSet((c) => { c.travas.virada = el.dataset.k; }); render(); };
 A.trava = (el) => { cfgSet((c) => { const k = el.dataset.k; c.travas[k] = Math.max(k === 'maxSeguidos' ? 1 : 0, Math.min(k === 'maxSeguidos' ? 14 : 24, c.travas[k] + +el.dataset.d)); }); render(); };
 function renomeiaCodigo(de, para) {
@@ -967,15 +1006,19 @@ function renomeiaCodigo(de, para) {
   S.ausencias.forEach((a) => { if (a.sigla === de) a.sigla = para; });
   salvar('ajustes'); salvar('ausencias');
 }
-C.pCor = (el) => { cfgSet((c) => { c.postos[+el.dataset.i].cor = el.value; }); render(); };
-C.pSig = (el) => { const v = el.value.trim(); if (!v) return; const old = S.cfg.postos[+el.dataset.i].sigla; cfgSet((c) => { c.postos[+el.dataset.i].sigla = v; }); renomeiaCodigo(old, v); render(); };
-C.pNome = (el) => cfgSet((c) => { c.postos[+el.dataset.i].nome = el.value; });
-A.pMov = (el) => { const i = +el.dataset.i, j = i + +el.dataset.d; if (j < 0 || j >= S.cfg.postos.length) return; cfgSet((c) => { const t = c.postos[i]; c.postos[i] = c.postos[j]; c.postos[j] = t; }); render(); };
-A.pRem = (el) => { if (S.cfg.postos.length <= 1) return; if (!confirm('Remover o posto ' + S.cfg.postos[+el.dataset.i].sigla + '?')) return; cfgSet((c) => c.postos.splice(+el.dataset.i, 1)); render(); };
-A.pAdd = () => { cfgSet((c) => c.postos.push({ sigla: 'P' + (c.postos.length + 1), nome: 'Novo posto', cor: '#E8E8F0' })); render(); };
-C.supCor = (el) => { cfgSet((c) => { c.sup.cor = el.value; }); render(); };
-C.supPre = (el) => { const v = el.value.trim(); if (v) { cfgSet((c) => { c.sup.prefixo = v; }); render(); } };
-C.supNome = (el) => cfgSet((c) => { c.sup.nome = el.value; });
+C.pCor = (el) => { cfgSet(() => { stI(el).postos[+el.dataset.i].cor = el.value; }); render(); };
+C.pSig = (el) => { const v = el.value.trim(); if (!v) return; const st = stI(el), old = st.postos[+el.dataset.i].sigla; cfgSet(() => { st.postos[+el.dataset.i].sigla = v; }); renomeiaCodigo(old, v); render(); };
+C.pNome = (el) => cfgSet(() => { stI(el).postos[+el.dataset.i].nome = el.value; });
+A.pMov = (el) => { const st = stI(el), i = +el.dataset.i, j = i + +el.dataset.d; if (j < 0 || j >= st.postos.length) return; cfgSet(() => { const t = st.postos[i]; st.postos[i] = st.postos[j]; st.postos[j] = t; }); render(); };
+A.pRem = (el) => { const st = stI(el); if (!confirm('Remover a posição ' + st.postos[+el.dataset.i].sigla + '?')) return; cfgSet(() => st.postos.splice(+el.dataset.i, 1)); render(); };
+A.pAdd = (el) => { const st = stI(el); cfgSet(() => st.postos.push({ sigla: 'P' + (st.postos.length + 1), nome: 'Nova posição', cor: CORES[st.postos.length % CORES.length] })); render(); };
+C.supOn = (el) => { cfgSet(() => { stI(el).sup.ativo = el.checked; }); render(); };
+C.supCor = (el) => { cfgSet(() => { stI(el).sup.cor = el.value; }); render(); };
+C.supPre = (el) => { const v = el.value.trim(); if (v) { cfgSet(() => { stI(el).sup.prefixo = v; }); render(); } };
+C.supNome = (el) => cfgSet(() => { stI(el).sup.nome = el.value; });
+C.trCor = (el) => { cfgSet(() => { stI(el).trab.cor = el.value; }); render(); };
+C.trSig = (el) => { const v = el.value.trim(); if (!v) return; const st = stI(el), old = st.trab.sigla; cfgSet(() => { st.trab.sigla = v; }); renomeiaCodigo(old, v); render(); };
+C.trNome = (el) => cfgSet(() => { stI(el).trab.nome = el.value; });
 C.sCor = (el) => { cfgSet((c) => { c.siglas[+el.dataset.i].cor = el.value; }); render(); };
 C.sSig = (el) => { const v = el.value.trim(); if (!v) return; const old = S.cfg.siglas[+el.dataset.i].sigla; cfgSet((c) => { c.siglas[+el.dataset.i].sigla = v; }); renomeiaCodigo(old, v); render(); };
 C.sNome = (el) => cfgSet((c) => { c.siglas[+el.dataset.i].nome = el.value; });
@@ -996,7 +1039,7 @@ A.expOp = (el) => { const k = el.dataset.k; S.cfg.exportar[k] = !S.cfg.exportar[
 M.exportar = () => {
   const [a, m] = mesAtual(), e = S.cfg.exportar, mm = S.ui.modal;
   return '<h2>Exportar escala</h2><span class="sub">Gera a planilha de ' + MESES[m - 1] + ' ' + a + ' (mude o mês na tela da Escala).</span>' +
-    '<div class="col" style="gap:6px"><b style="font-size:13px">Turnos</b><div class="chipsel">' + S.cfg.turnos.map((t) => '<button class="' + (mm.turnos[t.id] ? 'on' : '') + '" data-a="expT" data-t="' + t.id + '">' + esc(t.nome) + '</button>').join('') + '</div></div>' +
+    '<div class="col" style="gap:6px"><b style="font-size:13px">Subpostos</b><div class="chipsel">' + S.cfg.turnos.map((t) => '<button class="' + (mm.turnos[t.id] ? 'on' : '') + '" data-a="expT" data-t="' + t.id + '">' + esc(labelTurno(t.id)) + '</button>').join('') + '</div></div>' +
     '<div class="col" style="gap:4px">' + [['cores', 'Manter as cores das siglas'], ['bh', 'Incluir saldo do banco de horas'], ['abas', 'Uma aba por turno']].map(([k, l]) => '<label class="row" style="gap:8px;font-size:14px;cursor:pointer"><input type="checkbox" data-a="expOp" data-k="' + k + '"' + (e[k] ? ' checked' : '') + '> ' + l + '</label>').join('') + '</div>' +
     '<div class="row" style="justify-content:flex-end"><button class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri" data-a="expBaixar">Baixar .xlsx</button></div>';
 };
@@ -1012,9 +1055,9 @@ A.expBaixar = () => {
     rows.push([cel('', '#EFEAFB'), cel('', '#EFEAFB')].concat(em.dias.map((s) => cel(feriado(s) ? 'fer' : SEM[dow(s)], feriado(s) ? '#FBE3EA' : '#EFEAFB')), [cel('', '#EFEAFB'), cel('', '#EFEAFB')], e.bh ? [cel('', '#EFEAFB')] : []));
     turnos.forEach(({ t, linhas, cob }) => {
       linhas.forEach(({ p, cods, trab, folgas }) => {
-        rows.push([cel(t.nome, null, true), cel(p.nome, null, false, 'left')].concat(cods.map((c) => cel(c, (siglaInfo(c) || {}).cor, true)), [cel(trab), cel(folgas)], e.bh ? [cel(sh(saldoBH(p.id, fim)))] : []));
+        rows.push([cel(labelTurno(t.id), null, true), cel(p.nome, null, false, 'left')].concat(cods.map((c) => cel(c, (siglaInfo(c) || {}).cor, true)), [cel(trab), cel(folgas)], e.bh ? [cel(sh(saldoBH(p.id, fim)))] : []));
       });
-      rows.push([cel(t.nome, null, false), cel('Cobertura', null, false, 'left')].concat(cob.map((f) => cel(f.length ? 'Falta ' + f.join('/') : 'ok', f.length ? '#FDECEA' : null)), [cel(''), cel('')], e.bh ? [cel('')] : []));
+      if (princ(setorDoTurno(t.id)).length) rows.push([cel(labelTurno(t.id), null, false), cel('Cobertura', null, false, 'left')].concat(cob.map((f) => cel(f.length ? 'Falta ' + f.join('/') : 'ok', f.length ? '#FDECEA' : null)), [cel(''), cel('')], e.bh ? [cel('')] : []));
     });
     rows.push([]);
     rows.push([cel('Legenda', null, true, 'left')]);
@@ -1029,7 +1072,7 @@ A.expBaixar = () => {
   const sel = em.turnos.filter((x) => mm.turnos[x.t.id]);
   if (!sel.length) { toast('Escolha pelo menos um turno'); return; }
   const wb = XLSX.utils.book_new();
-  if (e.abas) sel.forEach((x) => XLSX.utils.book_append_sheet(wb, folha([x]), x.t.nome.slice(0, 31)));
+  if (e.abas) sel.forEach((x) => XLSX.utils.book_append_sheet(wb, folha([x]), labelTurno(x.t.id).replace(/[\\/?*\[\]:]/g, '-').slice(0, 31)));
   else XLSX.utils.book_append_sheet(wb, folha(sel), 'Escala');
   XLSX.writeFile(wb, 'Escala_' + MESES[m - 1] + '_' + a + '.xlsx');
   S.ui.modal = null; render(); toast('Planilha gerada');
