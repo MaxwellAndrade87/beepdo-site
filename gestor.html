@@ -1063,10 +1063,12 @@ A.expBaixar = () => {
     rows.push([cel('Escala · ' + MESES[m - 1] + ' ' + a + ' · ' + S.cfg.equipeNome, null, true, 'left')]);
     rows.push([cel('Turno', '#EFEAFB', true), cel('Nome', '#EFEAFB', true, 'left')].concat(em.dias.map((s) => cel(br(s), feriado(s) ? '#FBE3EA' : (dow(s) === 0 || dow(s) === 6) ? '#F3F3F6' : '#EFEAFB', true)), [cel('Trab.', '#EFEAFB', true), cel('Folgas', '#EFEAFB', true)], e.bh ? [cel('Saldo BH', '#EFEAFB', true)] : []));
     rows.push([cel('', '#EFEAFB'), cel('', '#EFEAFB')].concat(em.dias.map((s) => cel(feriado(s) ? 'fer' : SEM[dow(s)], feriado(s) ? '#FBE3EA' : '#EFEAFB')), [cel('', '#EFEAFB'), cel('', '#EFEAFB')], e.bh ? [cel('', '#EFEAFB')] : []));
+    let grupos = 0;
     turnos.forEach(({ t, linhas, cob }) => {
       if (!linhas.length) return;
+      if (grupos++) rows.push([]);
       linhas.forEach(({ p, cods, trab, folgas }) => {
-        rows.push([cel(labelTurno(t.id), null, true), cel(p.nome, null, false, 'left')].concat(cods.map((c) => cel(trabOculto(c) ? '' : c, trabOculto(c) ? null : (siglaInfo(c) || {}).cor, true)), [cel(trab), cel(folgas)], e.bh ? [cel(sh(saldoBH(p.id, fim)))] : []));
+        rows.push([cel(labelTurno(t.id), null, false), cel(p.nome, null, false, 'left')].concat(cods.map((c) => cel(trabOculto(c) ? '' : c, trabOculto(c) ? null : (siglaInfo(c) || {}).cor, true)), [cel(trab), cel(folgas)], e.bh ? [cel(sh(saldoBH(p.id, fim)))] : []));
       });
       if (princ(setorDoTurno(t.id)).length) rows.push([cel(labelTurno(t.id), null, false), cel('Cobertura', null, false, 'left')].concat(cob.map((f) => cel(f.length ? 'Falta ' + f.join('/') : 'ok', f.length ? '#FDECEA' : null)), [cel(''), cel('')], e.bh ? [cel('')] : []));
     });
@@ -1074,7 +1076,8 @@ A.expBaixar = () => {
     rows.push([cel('Legenda', null, true, 'left')]);
     opcoesCodigo().filter((c) => !/3$/.test(c) && !trabOculto(c)).forEach((c) => { const i = siglaInfo(c); rows.push([cel(c, i.cor, true), cel(i.nome, null, false, 'left')]); });
     const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [{ wch: 10 }, { wch: 18 }].concat(em.dias.map(() => ({ wch: 5.5 })), [{ wch: 6 }, { wch: 7 }, { wch: 9 }]);
+    ws['!cols'] = [{ wch: 18 }, { wch: 16 }].concat(em.dias.map(() => ({ wch: 8 })), [{ wch: 7 }, { wch: 8 }, { wch: 10 }]);
+    ws['!rows'] = rows.map((r, i) => ({ hpt: i === 0 ? 24 : r.length ? 21 : 12 }));
     ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 10 } }];
     ws['!freeze'] = { xSplit: 2, ySplit: 3 };
     ws['!views'] = [{ state: 'frozen', xSplit: 2, ySplit: 3 }];
@@ -1105,11 +1108,23 @@ document.addEventListener('submit', (ev) => {
 document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && (S.ui.modal || S.ui.pop)) { S.ui.modal = null; S.ui.pop = null; render(); } });
 
 /* ============ início ============ */
+function telaPremium() {
+  return '<div class="login card col" style="gap:12px;max-width:460px">' +
+    '<h2>Área do Gestor é Premium</h2>' +
+    '<span class="sub">Escala da equipe, banco de horas, ausências e reuniões ficam liberados para quem assina o BeepDo Premium.</span>' +
+    '<span class="sub">Assine no app BeepDo (Perfil &gt; Premium) usando esta mesma conta: <b>' + esc(S.user.email || '') + '</b>. Depois é só voltar aqui.</span>' +
+    '<div class="row" style="gap:8px;justify-content:flex-end"><a href="#" class="btn" data-a="sair">Sair</a><button class="btn pri" onclick="location.reload()">Já assinei, verificar</button></div></div>';
+}
 async function entrar(user) {
   if (S.user && S.user.id === user.id) return;
   S.user = user;
   $('#raiz').innerHTML = '<div class="login card"><span class="sub">Carregando sua equipe…</span></div>';
-  try { await carregar(); } catch (e) { $('#raiz').innerHTML = '<div class="login card col"><h2>Não consegui carregar</h2><span class="sub">' + esc(e.message || e) + '</span><button class="btn" onclick="location.reload()">Tentar de novo</button></div>'; return; }
+  try {
+    const { data: liberado, error: erroAcesso } = await sb.rpc('gestor_tem_acesso');
+    if (erroAcesso) throw erroAcesso;
+    if (!liberado) { $('#raiz').innerHTML = telaPremium(); return; }
+    await carregar();
+  } catch (e) { $('#raiz').innerHTML = '<div class="login card col"><h2>Não consegui carregar</h2><span class="sub">' + esc(e.message || e) + '</span><button class="btn" onclick="location.reload()">Tentar de novo</button></div>'; return; }
   _escCache = {};
   render();
 }
