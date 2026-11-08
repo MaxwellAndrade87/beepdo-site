@@ -311,7 +311,7 @@ function desenharResumoCad() {
       '<div><b>' + r.mes + '</b><span>30 dias</span></div>' +
       '<div><b>' + r.total + '</b><span>no total</span></div>' +
     '</div>' +
-    '<p class="dica" style="margin:0 0 10px">' + r.com_conta + ' com conta · ' + r.anonimos + ' usando sem cadastro · ' + r.conversoes_mes + ' criaram conta depois de usar sem cadastro (30 dias)</p>' +
+    '<p class="dica" style="margin:0 0 10px">' + r.com_conta + ' com conta · ' + r.anonimos + ' usando sem cadastro · ' + r.conversoes_mes + ' criaram conta depois de usar sem cadastro (30 dias)' + (r.apagadas_mes ? ' · ' + r.apagadas_mes + ' contas abandonadas apagadas pela limpeza (30 dias)' : '') + '<br>Limpeza automática todo dia: e-mail não confirmado em 7 dias, sem cadastro parado há 90 dias, conta sem acesso há 24 meses.</p>' +
     '<div class="cad-novos"><p>' + (novos ? '<b>' + novos + ' novidade' + (novos === 1 ? '' : 's') + '</b> desde a sua última olhada (' + dataHora(r.visto_em) + '): ' + partes.join(', ') + '.' : 'Nada novo desde a sua última olhada (' + dataHora(r.visto_em) + ').') + '</p>' +
       '<span>' + (podeAvisar ? '<button type="button" class="btn btn-s" id="bAvisarCad">Avisar neste navegador</button> ' : '') +
       (novos ? '<button type="button" class="btn btn-s" id="bVistoCad">Marcar como visto</button>' : '') + '</span></div>';
