@@ -21,6 +21,21 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
+<style>
+.adm-badge{display:inline-block;min-width:18px;padding:0 6px;margin-left:6px;border-radius:999px;background:#E5484D;color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center}
+.cad-num{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.cad-num div{background:var(--card,#fff);border-radius:14px;padding:12px 10px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.cad-num b{display:block;font-size:24px;font-weight:800;line-height:1.1}
+.cad-num span{font-size:12px;opacity:.7}
+.cad-novos{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;border-radius:14px;background:rgba(139,124,246,.12);margin-bottom:10px}
+.cad-novos p{margin:0;font-size:14px}
+.adm-selo.s-anon{background:rgba(120,120,140,.15);color:#555}
+.adm-selo.s-email{background:rgba(63,167,245,.15);color:#1d6fb0}
+.adm-selo.s-google{background:rgba(43,182,115,.15);color:#1c7a4c}
+.adm-selo.s-conv{background:rgba(139,124,246,.18);color:#5a49c9}
+.adm-selo.s-novo{background:#E5484D;color:#fff}
+@media (max-width:560px){.cad-num{grid-template-columns:repeat(2,1fr)}}
+</style>
 </head>
 <body>
 <header class="topo"><div class="wrap">
@@ -50,11 +65,16 @@
 <div data-etapa="painel" hidden>
 <div class="adm-topo"><div><h1>Painel do suporte</h1><p class="dica" id="quem"></p></div>
 <div class="adm-acoes"><button class="btn btn-s" id="bAtualizar" type="button">Atualizar</button><button class="btn btn-s" data-sair type="button">Sair</button></div></div>
-<div class="adm-abas"><button type="button" class="adm-aba ativa" data-aba="msg">Mensagens</button><button type="button" class="adm-aba" data-aba="usu">Usuários</button><button type="button" class="adm-aba" data-aba="news">Newsletter</button></div>
+<div class="adm-abas"><button type="button" class="adm-aba ativa" data-aba="msg">Mensagens</button><button type="button" class="adm-aba" data-aba="cad">Cadastros</button><button type="button" class="adm-aba" data-aba="usu">Usuários</button><button type="button" class="adm-aba" data-aba="news">Newsletter</button></div>
 <div id="abaMsg">
 <div class="adm-filtros" id="fStatus"></div>
 <div class="adm-filtros" id="fTipo"></div>
 <div id="lista" class="adm-lista"></div>
+</div>
+<div id="abaCad" hidden>
+<div id="cadResumo"></div>
+<div class="adm-filtros" id="fCad"></div>
+<div id="cadastros" class="adm-lista"></div>
 </div>
 <div id="abaUsu" hidden>
 <div class="adm-card adm-usu" style="cursor:default;margin-bottom:10px"><div class="adm-card-topo"><b>Limites dos recursos</b><span><button type="button" class="chip ativo" id="bLimEsp" hidden>Salvar</button></span></div><div id="limLista"></div><p class="dica" id="limEspTxt">Grátis e Premium. Projetos Premium: ∞ = sem limite. Cortesias somam extras por pessoa.</p></div>
@@ -123,7 +143,7 @@ for (const b of document.querySelectorAll('.olho')) b.addEventListener('click', 
   b.querySelector('svg').innerHTML = ver ? '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>' : '<path d="M3 3l18 18"/><path d="M10.6 5.1A10.7 10.7 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>';
 });
 for (const b of document.querySelectorAll('[data-sair]')) b.addEventListener('click', async () => { await sb.auth.signOut(); mostrar('entrar'); });
-$('bAtualizar').addEventListener('click', () => carregar());
+$('bAtualizar').addEventListener('click', () => { carregar(); carregarResumoCad(); if (!$('abaCad').hidden) carregarCadastros(); });
 $('fEntrar').addEventListener('submit', async e => {
   e.preventDefault(); $('erroEntrar').textContent = ''; $('bEntrar').disabled = true;
   const { error } = await sb.auth.signInWithPassword({ email: $('email').value.trim().toLowerCase(), password: $('senha').value });
@@ -138,7 +158,7 @@ async function iniciar() {
   const { data: ok } = await sb.rpc('eh_admin');
   if (!ok) return mostrar('negado');
   $('quem').textContent = 'Conectado como ' + session.user.email;
-  mostrar('painel'); carregar();
+  mostrar('painel'); carregar(); iniciarCadastros();
 }
 async function carregar() {
   const { data, error } = await sb.from('sugestoes').select('*').order('ultima_atividade', { ascending: false }).limit(1000);
@@ -214,7 +234,8 @@ const temAlgo = c => !!c && (c.premium || c.projetos_extra > 0 || c.espacos_extr
 const vencida = c => !!(c && c.expira_em) && new Date(c.expira_em).getTime() <= Date.now();
 for (const b of document.querySelectorAll('.adm-aba')) b.addEventListener('click', () => {
   for (const x of document.querySelectorAll('.adm-aba')) x.classList.toggle('ativa', x === b);
-  $('abaMsg').hidden = b.dataset.aba !== 'msg'; $('abaUsu').hidden = b.dataset.aba !== 'usu'; $('abaNews').hidden = b.dataset.aba !== 'news';
+  $('abaMsg').hidden = b.dataset.aba !== 'msg'; $('abaCad').hidden = b.dataset.aba !== 'cad'; $('abaUsu').hidden = b.dataset.aba !== 'usu'; $('abaNews').hidden = b.dataset.aba !== 'news';
+  if (b.dataset.aba === 'cad') carregarCadastros();
   if (b.dataset.aba === 'usu' && !usuarios.length) carregarUsuarios();
 if (b.dataset.aba === 'usu' && limEsp === null) carregarLimite();
 });
@@ -244,6 +265,96 @@ $('bNewsCsv').addEventListener('click', () => {
 });
 for (const b of document.querySelectorAll('.adm-aba[data-aba="news"]')) b.addEventListener('click', () => { if (!inscritos) carregarNews(); });
 $('busca').addEventListener('input', () => { clearTimeout(tBusca); tBusca = setTimeout(carregarUsuarios, 400); });
+// ---------- Cadastros: quem entrou no BeepDo (com conta ou sem cadastro) ----------
+const TIPO_CAD = { anonimo: ['Sem cadastro', 's-anon'], email: ['E-mail', 's-email'], google: ['Google', 's-google'], converteu: ['Criou conta', 's-conv'] };
+const FILTROS_CAD = { todos: 'Todos', anonimo: 'Sem cadastro', conta: 'Com conta', converteu: 'Criaram conta' };
+const tituloPagina = document.title;
+let cadastros = null, resumoCad = null, fCad = 'todos', ultimosNovos = null;
+const dataHora = iso => iso ? new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+const totalNovos = r => r ? (r.novos_anonimos || 0) + (r.novos_conta || 0) + (r.novas_conversoes || 0) : 0;
+
+function iniciarCadastros() {
+  carregarResumoCad();
+  // Painel aberto: confere a cada minuto e avisa quando chegar gente nova.
+  setInterval(() => { if (!document.hidden) carregarResumoCad(); }, 60000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) carregarResumoCad(); });
+}
+async function carregarResumoCad() {
+  const { data, error } = await sb.rpc('admin_cadastros_resumo');
+  if (error || !data) return;
+  resumoCad = data;
+  const novos = totalNovos(data);
+  const aba = document.querySelector('.adm-aba[data-aba="cad"]');
+  if (aba) aba.innerHTML = 'Cadastros' + (novos ? '<span class="adm-badge">' + novos + '</span>' : '');
+  document.title = (novos ? '(' + novos + ') ' : '') + tituloPagina;
+  if (ultimosNovos !== null && novos > ultimosNovos) avisarNovos(novos - ultimosNovos);
+  ultimosNovos = novos;
+  desenharResumoCad();
+  if (!$('abaCad').hidden && cadastros) carregarCadastros();
+}
+function avisarNovos(n) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  try { new Notification('BeepDo', { body: n === 1 ? 'Chegou 1 cadastro novo.' : 'Chegaram ' + n + ' cadastros novos.', icon: '/favicon.png' }); } catch (e) {}
+}
+function desenharResumoCad() {
+  const r = resumoCad; if (!r) return;
+  const novos = totalNovos(r);
+  const partes = [];
+  if (r.novos_conta) partes.push(r.novos_conta + ' com conta');
+  if (r.novos_anonimos) partes.push(r.novos_anonimos + ' sem cadastro');
+  if (r.novas_conversoes) partes.push(r.novas_conversoes + (r.novas_conversoes === 1 ? ' criou conta' : ' criaram conta'));
+  const podeAvisar = ('Notification' in window) && Notification.permission === 'default';
+  $('cadResumo').innerHTML =
+    '<div class="cad-num">' +
+      '<div><b>' + r.hoje + '</b><span>hoje</span></div>' +
+      '<div><b>' + r.semana + '</b><span>7 dias</span></div>' +
+      '<div><b>' + r.mes + '</b><span>30 dias</span></div>' +
+      '<div><b>' + r.total + '</b><span>no total</span></div>' +
+    '</div>' +
+    '<p class="dica" style="margin:0 0 10px">' + r.com_conta + ' com conta · ' + r.anonimos + ' usando sem cadastro · ' + r.conversoes_mes + ' criaram conta depois de usar sem cadastro (30 dias)</p>' +
+    '<div class="cad-novos"><p>' + (novos ? '<b>' + novos + ' novidade' + (novos === 1 ? '' : 's') + '</b> desde a sua última olhada (' + dataHora(r.visto_em) + '): ' + partes.join(', ') + '.' : 'Nada novo desde a sua última olhada (' + dataHora(r.visto_em) + ').') + '</p>' +
+      '<span>' + (podeAvisar ? '<button type="button" class="btn btn-s" id="bAvisarCad">Avisar neste navegador</button> ' : '') +
+      (novos ? '<button type="button" class="btn btn-s" id="bVistoCad">Marcar como visto</button>' : '') + '</span></div>';
+  const bA = $('bAvisarCad'); if (bA) bA.addEventListener('click', async () => { await Notification.requestPermission(); desenharResumoCad(); });
+  const bV = $('bVistoCad'); if (bV) bV.addEventListener('click', async () => {
+    bV.disabled = true;
+    const { error } = await sb.rpc('admin_marcar_cadastros_vistos');
+    if (!error) { ultimosNovos = 0; await carregarResumoCad(); desenharCadastros(); }
+    else bV.disabled = false;
+  });
+}
+async function carregarCadastros() {
+  if (!cadastros) $('cadastros').innerHTML = '<div class="carregando"></div>';
+  const { data, error } = await sb.rpc('admin_cadastros', { p_dias: 30 });
+  if (error) { $('cadastros').innerHTML = '<p class="msg-erro">Não foi possível carregar os cadastros.</p>'; return; }
+  cadastros = data || []; desenharCadastros();
+}
+function desenharCadastros() {
+  if (!cadastros) return;
+  const conta = c => c.tipo === 'email' || c.tipo === 'google' || c.tipo === 'converteu';
+  const filtrar = c => fCad === 'todos' || (fCad === 'conta' ? conta(c) : c.tipo === fCad);
+  const n = k => cadastros.filter(c => k === 'todos' || (k === 'conta' ? conta(c) : c.tipo === k)).length;
+  $('fCad').innerHTML = Object.keys(FILTROS_CAD).map(k => chip(fCad === k, FILTROS_CAD[k] + ' (' + n(k) + ')', 'data-fcad="' + k + '"')).join('');
+  for (const b of document.querySelectorAll('[data-fcad]')) b.addEventListener('click', () => { fCad = b.dataset.fcad; desenharCadastros(); });
+  const visto = resumoCad && resumoCad.visto_em ? new Date(resumoCad.visto_em) : null;
+  const lista = cadastros.filter(filtrar);
+  $('cadastros').innerHTML = lista.length ? lista.map(c => {
+    const [rotulo, cls] = TIPO_CAD[c.tipo] || [c.tipo, 's-email'];
+    const quando = c.tipo === 'converteu' ? c.conta_em : c.criado_em;
+    const novo = visto && quando && new Date(quando) > visto;
+    const linhas = [];
+    if (c.email) linhas.push(esc(c.email));
+    linhas.push(c.tipo === 'converteu'
+      ? 'Começou sem cadastro em ' + dataHora(c.criado_em) + ' · criou conta (' + esc(c.provedor || 'e-mail') + ') em ' + dataHora(c.conta_em)
+      : (c.tipo === 'anonimo' ? 'Entrou sem cadastro em ' : 'Criou conta em ') + dataHora(c.criado_em));
+    const extra = [];
+    if (c.ultimo_acesso) extra.push('último acesso ' + dataHora(c.ultimo_acesso));
+    if (c.plataforma) extra.push(esc(c.plataforma) + (c.versao_app ? ' ' + esc(c.versao_app) : ''));
+    if (extra.length) linhas.push(extra.join(' · '));
+    return '<div class="adm-card adm-usu" style="cursor:default"><div class="adm-card-topo"><b>' + esc(c.nome || (c.tipo === 'anonimo' ? 'Sem nome' : (c.email || 'Sem nome'))) + '</b><span>' + (novo ? selo('Novo', 's-novo') : '') + selo(rotulo, cls) + '</span></div>' +
+      '<p class="dica">' + linhas.join('<br>') + '</p></div>';
+  }).join('') : '<p class="dica" style="text-align:center;padding:40px 0">Ninguém nos últimos 30 dias com esse filtro.</p>';
+}
 async function carregarUsuarios() {
   $('usuarios').innerHTML = '<div class="carregando"></div>';
   const [{ data, error }, { data: dono }] = await Promise.all([sb.rpc('admin_usuarios', { p_busca: $('busca').value.trim() }), sb.rpc('eh_dono')]);
