@@ -21,7 +21,9 @@ const RAIZ = path.resolve(__dirname, '..');
 const POSTS = require('./posts.js').slice().sort((a, b) => (b.data + (b.hora || '')).localeCompare(a.data + (a.hora || '')));
 // Foto de capa: se existir blog/img/<slug>.webp (gerada pela automação), ela entra no lugar do emoji.
 POSTS.forEach(p => {
-  if (!p.imagem && fs.existsSync(path.join(RAIZ, 'blog/img', p.slug + '.webp'))) p.imagem = `/blog/img/${p.slug}.webp`;
+  const arq = path.join(RAIZ, 'blog/img', p.slug + '.webp');
+  // ?v= muda quando a foto é refeita, pra ninguém ficar vendo a antiga em cache.
+  if (!p.imagem && fs.existsSync(arq)) p.imagem = `/blog/img/${p.slug}.webp?v=${fs.statSync(arq).size.toString(36)}`;
   if (p.imagem && !p.imagemAlt) p.imagemAlt = `Foto ilustrativa: ${p.titulo}`;
   if (p.imagem && !p.creditoImagem) p.creditoImagem = 'Imagem ilustrativa gerada por IA';
 });
