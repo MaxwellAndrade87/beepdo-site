@@ -35,6 +35,25 @@
 .adm-selo.s-conv{background:rgba(139,124,246,.18);color:#5a49c9}
 .adm-selo.s-novo{background:#E5484D;color:#fff}
 @media (max-width:560px){.cad-num{grid-template-columns:repeat(2,1fr)}}
+.st-num{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+@media (max-width:700px){.st-num{grid-template-columns:repeat(2,1fr)}}
+.st-num div{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px}
+.st-num b{display:block;font-size:24px;color:var(--t);line-height:1.1}
+.st-num span{font-size:13px;color:var(--mut)}
+.st-graf{display:flex;align-items:flex-end;gap:3px;height:120px;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:14px}
+.st-graf i{flex:1;background:var(--ac);border-radius:4px 4px 0 0;min-height:2px;position:relative}
+.st-graf i:hover::after{content:attr(data-t);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--t);color:var(--bg);font:12px Inter,sans-serif;padding:3px 7px;border-radius:6px;white-space:nowrap;font-style:normal}
+.st-grade{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:800px){.st-grade{grid-template-columns:1fr}}
+.st-box{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px}
+.st-box h3{margin:0 0 8px;font-size:15px;color:var(--t)}
+.st-lin{display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:14px;padding:5px 0;border-top:1px solid var(--bd)}
+.st-lin:first-of-type{border-top:0}
+.st-lin small{grid-column:1/-1;height:4px;border-radius:4px;background:var(--acbg);overflow:hidden}
+.st-lin small i{display:block;height:100%;background:var(--ac)}
+.st-pag{font-size:14px;padding:7px 0;border-top:1px solid var(--bd)}
+.st-pag b{display:block;color:var(--t);font-weight:600}
+.st-pag span{color:var(--mut);font-size:13px}
 </style>
 </head>
 <body>
@@ -65,7 +84,7 @@
 <div data-etapa="painel" hidden>
 <div class="adm-topo"><div><h1>Painel do suporte</h1><p class="dica" id="quem"></p></div>
 <div class="adm-acoes"><button class="btn btn-s" id="bAtualizar" type="button">Atualizar</button><button class="btn btn-s" data-sair type="button">Sair</button></div></div>
-<div class="adm-abas"><button type="button" class="adm-aba ativa" data-aba="msg">Mensagens</button><button type="button" class="adm-aba" data-aba="cad">Cadastros</button><button type="button" class="adm-aba" data-aba="usu">Usuários</button><button type="button" class="adm-aba" data-aba="news">Newsletter</button></div>
+<div class="adm-abas"><button type="button" class="adm-aba ativa" data-aba="msg">Mensagens</button><button type="button" class="adm-aba" data-aba="cad">Cadastros</button><button type="button" class="adm-aba" data-aba="usu">Usuários</button><button type="button" class="adm-aba" data-aba="news">Newsletter</button><button type="button" class="adm-aba" data-aba="site">Site</button></div>
 <div id="abaMsg">
 <div class="adm-filtros" id="fStatus"></div>
 <div class="adm-filtros" id="fTipo"></div>
@@ -85,6 +104,10 @@
 <div class="adm-topo" style="margin:0 0 10px"><p class="dica" id="newsResumo" style="margin:0"></p><div class="adm-acoes"><button class="btn btn-s" id="bNewsCsv" type="button">Exportar CSV</button></div></div>
 <div class="campo" style="margin-bottom:10px"><input id="buscaNews" type="search" placeholder="Buscar por nome ou e-mail" autocomplete="off"></div>
 <div id="newsLista" class="adm-lista"></div>
+</div>
+<div id="abaSite" hidden>
+<div class="adm-filtros" id="fSite"></div>
+<div id="siteConteudo"></div>
 </div>
 </div>
 <dialog id="ficha" class="adm-ficha"><form method="dialog" id="fFicha" novalidate>
@@ -158,6 +181,7 @@ async function iniciar() {
   const { data: ok } = await sb.rpc('eh_admin');
   if (!ok) return mostrar('negado');
   $('quem').textContent = 'Conectado como ' + session.user.email;
+  try { localStorage.setItem('bd_nao_contar', '1'); } catch (e) {} // as suas visitas não entram no contador
   mostrar('painel'); carregar(); iniciarCadastros();
 }
 async function carregar() {
@@ -234,7 +258,8 @@ const temAlgo = c => !!c && (c.premium || c.projetos_extra > 0 || c.espacos_extr
 const vencida = c => !!(c && c.expira_em) && new Date(c.expira_em).getTime() <= Date.now();
 for (const b of document.querySelectorAll('.adm-aba')) b.addEventListener('click', () => {
   for (const x of document.querySelectorAll('.adm-aba')) x.classList.toggle('ativa', x === b);
-  $('abaMsg').hidden = b.dataset.aba !== 'msg'; $('abaCad').hidden = b.dataset.aba !== 'cad'; $('abaUsu').hidden = b.dataset.aba !== 'usu'; $('abaNews').hidden = b.dataset.aba !== 'news';
+  $('abaMsg').hidden = b.dataset.aba !== 'msg'; $('abaCad').hidden = b.dataset.aba !== 'cad'; $('abaUsu').hidden = b.dataset.aba !== 'usu'; $('abaNews').hidden = b.dataset.aba !== 'news'; $('abaSite').hidden = b.dataset.aba !== 'site';
+  if (b.dataset.aba === 'site') carregarSite();
   if (b.dataset.aba === 'cad') carregarCadastros();
   if (b.dataset.aba === 'usu' && !usuarios.length) carregarUsuarios();
 if (b.dataset.aba === 'usu' && limEsp === null) carregarLimite();
@@ -265,6 +290,43 @@ $('bNewsCsv').addEventListener('click', () => {
 });
 for (const b of document.querySelectorAll('.adm-aba[data-aba="news"]')) b.addEventListener('click', () => { if (!inscritos) carregarNews(); });
 $('busca').addEventListener('input', () => { clearTimeout(tBusca); tBusca = setTimeout(carregarUsuarios, 400); });
+
+// ---------- Site: contador de visitas ----------
+let diasSite = 30;
+const fmtTempo = s => !s ? '-' : (s < 60 ? s + ' s' : Math.floor(s / 60) + ' min ' + (s % 60 ? (s % 60) + ' s' : ''));
+const nomePag = p => p === '/' ? 'Página inicial' : p;
+function filtrosSite() {
+  $('fSite').innerHTML = [[1, 'Hoje'], [7, '7 dias'], [30, '30 dias'], [90, '90 dias']].map(([d, t]) => '<button type="button" class="chip' + (d === diasSite ? ' ativo' : '') + '" data-d="' + d + '">' + t + '</button>').join('');
+  for (const b of $('fSite').querySelectorAll('button')) b.onclick = () => { diasSite = Number(b.dataset.d); carregarSite(); };
+}
+function listaBarras(titulo, itens) {
+  const max = Math.max(1, ...itens.map(i => i.visitas));
+  return '<div class="st-box"><h3>' + titulo + '</h3>' + (itens.length ? itens.map(i => '<div class="st-lin"><span>' + esc(i.nome) + '</span><b>' + i.visitas + '</b><small><i style="width:' + Math.round(100 * i.visitas / max) + '%"></i></small></div>').join('') : '<p class="dica">Sem dados ainda.</p>') + '</div>';
+}
+async function carregarSite() {
+  filtrosSite();
+  $('siteConteudo').innerHTML = '<div class="carregando"></div>';
+  const { data: r, error } = await sb.rpc('admin_site_resumo', { p_dias: diasSite });
+  if (error || !r) { $('siteConteudo').innerHTML = '<p class="msg-erro">Não foi possível carregar as visitas.</p>'; return; }
+  const dias = r.por_dia || [], maxD = Math.max(1, ...dias.map(d => d.visitas));
+  $('siteConteudo').innerHTML =
+    '<div class="st-num">' +
+      '<div><b>' + r.visitas + '</b><span>visitas</span></div>' +
+      '<div><b>' + r.pessoas + '</b><span>pessoas (aprox.)</span></div>' +
+      '<div><b>' + r.hoje + '</b><span>visitas hoje</span></div>' +
+      '<div><b>' + fmtTempo(r.tempo_medio) + '</b><span>tempo médio</span></div>' +
+      '<div><b>' + (r.rolagem_media ? r.rolagem_media + '%' : '-') + '</b><span>da página lida</span></div>' +
+    '</div>' +
+    (dias.length > 1 ? '<div class="st-graf">' + dias.map(d => '<i style="height:' + Math.round(100 * d.visitas / maxD) + '%" data-t="' + new Date(d.dia + 'T12:00').toLocaleDateString('pt-BR') + ': ' + d.visitas + ' visitas"></i>').join('') + '</div>' : '') +
+    '<div class="st-grade">' +
+      '<div class="st-box" style="grid-row:span 2"><h3>Páginas mais vistas</h3>' + ((r.paginas || []).length ? r.paginas.map(p => '<div class="st-pag"><b>' + esc(p.titulo || nomePag(p.pagina)) + '</b><span>' + p.visitas + ' visitas · ' + fmtTempo(p.tempo) + ' em média · ' + (p.rolagem ? p.rolagem + '% lido' : '-') + '</span></div>').join('') : '<p class="dica">Sem dados ainda.</p>') + '</div>' +
+      listaBarras('De onde vieram', r.origens || []) +
+      listaBarras('Aparelho', r.dispositivos || []) +
+      listaBarras('Estados', r.estados || []) +
+      listaBarras('Cidades (aproximado)', r.cidades || []) +
+    '</div>' +
+    '<p class="dica" style="margin-top:12px">Sem cookies e sem guardar IP. "Pessoas" é estimado por dia. Visitas de robôs e as suas (logado aqui) não contam.</p>';
+}
 // ---------- Cadastros: quem entrou no BeepDo (com conta ou sem cadastro) ----------
 const TIPO_CAD = { anonimo: ['Sem cadastro', 's-anon'], email: ['E-mail', 's-email'], google: ['Google', 's-google'], converteu: ['Criou conta', 's-conv'] };
 const FILTROS_CAD = { todos: 'Todos', anonimo: 'Sem cadastro', conta: 'Com conta', converteu: 'Criaram conta' };
