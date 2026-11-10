@@ -25,7 +25,7 @@ POSTS.forEach(p => {
   // ?v= muda quando a foto é refeita, pra ninguém ficar vendo a antiga em cache.
   if (!p.imagem && fs.existsSync(arq)) p.imagem = `/blog/img/${p.slug}.webp?v=${fs.statSync(arq).size.toString(36)}`;
   if (p.imagem && !p.imagemAlt) p.imagemAlt = `Foto ilustrativa: ${p.titulo}`;
-  if (p.imagem && !p.creditoImagem) p.creditoImagem = 'Imagem ilustrativa gerada por IA';
+  if (p.imagem && !p.creditoImagem) p.creditoImagem = 'Imagem ilustrativa';
 });
 
 const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
