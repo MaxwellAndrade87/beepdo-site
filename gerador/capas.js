@@ -7,6 +7,7 @@
 //   QUALIDADE       low | medium | high (padrão medium)
 //   MAXIMO          máximo de capas por execução (padrão 20, pra controlar custo)
 //   SO_SLUG         gera só a capa desse post (refaz mesmo se já existir)
+//   REFAZER_TODAS=1 refaz a capa de todos os posts (até MAXIMO)
 //   TESTE=1         só testa a chave: gera 1 imagem pequena e não salva nada no site
 
 const fs = require('fs');
@@ -21,6 +22,7 @@ const QUALIDADE = process.env.QUALIDADE || 'medium';
 const MAXIMO = Number(process.env.MAXIMO || 20);
 const SO_SLUG = (process.env.SO_SLUG || '').trim();
 const TESTE = process.env.TESTE === '1';
+const REFAZER_TODAS = process.env.REFAZER_TODAS === '1';
 
 if (!CHAVE) { console.error('Falta OPENAI_API_KEY.'); process.exit(1); }
 
@@ -31,9 +33,23 @@ const ESTILO = [
   'Proibido: texto, letras, números legíveis, logotipos, marcas, telas com interface legível, marca d\'água, aparência de ilustração ou 3D.',
 ].join(' ');
 
-const promptDo = p => p.imagemPrompt
-  ? `${p.imagemPrompt} ${ESTILO}`
-  : `Foto que ilustre a matéria "${p.titulo}". Assunto: ${p.resumo} ${ESTILO}`;
+// Variedade: cada post ganha uma pessoa e um lugar diferentes (escolhidos pelo slug),
+// pra capa não ficar sempre "mulher estressada na mesa da cozinha".
+const PESSOAS = ['um homem de uns 30 anos', 'uma mulher de uns 50 anos', 'uma pessoa jovem de uns 22 anos', 'um homem de uns 45 anos com barba grisalha',
+  'uma mulher de uns 30 anos', 'um casal', 'um homem de uns 60 anos', 'dois colegas de trabalho', 'um pai com o filho pequeno', 'uma mulher de uns 40 anos',
+  'um rapaz de uns 25 anos', 'uma senhora de uns 65 anos'];
+const LUGARES = ['num escritório moderno', 'na cozinha de casa', 'dentro de um ônibus ou metrô', 'numa fábrica, usando uniforme e EPI', 'numa varanda com plantas',
+  'numa padaria ou café', 'atrás do balcão de uma loja pequena', 'numa sala de reunião', 'numa rua de cidade brasileira', 'num home office simples',
+  'num canteiro de obras, com capacete', 'numa sala de estar à noite'];
+const hash = t => [...t].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+const promptDo = p => {
+  if (p.imagemPrompt) return `${p.imagemPrompt} ${ESTILO}`;
+  const h = hash(p.slug);
+  return `Foto que ilustre a matéria "${p.titulo}". Assunto: ${p.resumo} `
+    + `Personagem: ${PESSOAS[h % PESSOAS.length]}, ${LUGARES[(h >> 5) % LUGARES.length]}. `
+    + 'Expressão natural, tranquila, concentrada ou contente. Evite a cena clichê de pessoa estressada com a mão na cabeça. '
+    + ESTILO;
+};
 
 // Tenta o modelo atual; se a OpenAI disser que ele não existe ou foi desligado, passa pro próximo da lista.
 async function gerar(prompt, opcoes = {}) {
@@ -76,6 +92,7 @@ async function gerarCom(modelo, prompt, { tamanho = '1536x1024', qualidade = QUA
   const posts = require('./posts.js').slice().sort((a, b) => b.data.localeCompare(a.data));
   const fila = SO_SLUG
     ? posts.filter(p => p.slug === SO_SLUG)
+    : REFAZER_TODAS ? posts.filter(p => !p.imagem)
     : posts.filter(p => !p.imagem && !fs.existsSync(path.join(PASTA, p.slug + '.webp')));
   if (SO_SLUG && !fila.length) { console.error(`Post "${SO_SLUG}" não existe em posts.js.`); process.exit(1); }
 
