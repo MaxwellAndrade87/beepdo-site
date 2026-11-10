@@ -142,7 +142,9 @@ a:hover .foto{transform:scale(1.04)}
 .materia .post-corpo h2{font-size:24px;margin:36px 0 10px}
 .materia .post-corpo h3{font-size:20px;margin:26px 0 8px}
 .materia .post-corpo blockquote{margin:24px 0;padding:14px 20px;border-left:4px solid var(--ac);background:var(--bg2);border-radius:0 12px 12px 0;color:var(--t);font-weight:600}
-.fontes{font-size:14px;color:var(--mut);margin-top:22px}
+.fontes{font-size:14px;color:var(--mut);margin:28px 0 0;padding-top:14px;border-top:1px solid var(--bd);font-style:italic}
+.fontes a{color:var(--t2);text-decoration:none;font-weight:600}
+.fontes a:hover{color:var(--ac);text-decoration:underline}
 .compartilhar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;font-weight:600;color:var(--t);margin-top:20px}
 .compartilhar a{border:1px solid var(--bd);border-radius:999px;padding:6px 14px;text-decoration:none;color:var(--t2);font-weight:600}
 .compartilhar a:hover{border-color:var(--ac);color:var(--ac)}
