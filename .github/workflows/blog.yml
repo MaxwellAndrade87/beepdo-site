@@ -13,6 +13,7 @@ on:
     branches: [main]
     paths:
       - 'gerador/posts.js'
+      - 'gerador/noticias.json'
       - 'gerador/blog.js'
       - 'blog/portal.css'
   workflow_dispatch:
