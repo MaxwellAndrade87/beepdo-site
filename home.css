@@ -6,7 +6,9 @@
   box-shadow:0 0 0 2px #2A2833,0 40px 80px -24px rgba(40,20,90,.55),inset 0 0 0 1px #3A3845;flex:none}
 .cel::before{content:"";position:absolute;top:20px;left:50%;width:84px;height:22px;margin-left:-42px;border-radius:20px;background:#000;z-index:3}
 .tela{position:relative;height:100%;border-radius:34px;overflow:hidden;background:var(--f);color:var(--tx);font:13px/1.35 "Inter",system-ui,sans-serif;padding:46px 14px 14px;display:flex;flex-direction:column;gap:8px}
-.tela img.print{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+.tela img.print{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;border-radius:inherit}
+.tela[data-print]:has(img.print){padding:0;background:#F4F4F8}
+.cel:has(img.print){aspect-ratio:300/607}
 .t-topo{display:flex;align-items:center;justify-content:space-between}
 .t-topo b{font-size:22px;letter-spacing:-.4px}
 .t-topo small{display:block;color:var(--tm);font-size:11px;font-weight:500}
@@ -77,13 +79,13 @@
 /* ---------- em uso ---------- */
 .em-uso .wrap{text-align:center}
 .em-uso .sub{margin-left:auto;margin-right:auto}
-.celulares{display:flex;gap:28px;justify-content:center;margin-top:34px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 20px 24px;scrollbar-width:none}
+.celulares{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-top:34px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 20px 24px;scrollbar-width:none}
 .celulares::-webkit-scrollbar{display:none}
 .celulares figure{margin:0;scroll-snap-align:center;flex:none}
 .celulares figcaption{margin-top:14px;font-weight:700;color:var(--t)}
 .celulares figcaption small{display:block;font-weight:500;color:var(--mut);font-size:14px}
-.celulares .cel{width:260px}
-@media (max-width:900px){.celulares{justify-content:flex-start}}
+.celulares .cel{width:228px}
+@media (max-width:900px){.celulares{justify-content:flex-start;flex-wrap:nowrap}}
 
 /* ---------- recursos ---------- */
 .grade.rec4{grid-template-columns:repeat(4,1fr)}
