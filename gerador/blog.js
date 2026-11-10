@@ -382,6 +382,36 @@ ${NEWS_JS}`,
   });
 });
 
+// ---------- bloco "Do blog" na página inicial (entre <!--blog-home--> e <!--/blog-home-->) ----------
+{
+  const HOME = path.join(RAIZ, 'index.html');
+  if (fs.existsSync(HOME)) {
+    const h = fs.readFileSync(HOME, 'utf8');
+    const ini = h.indexOf('<!--blog-home-->'), fim = h.indexOf('<!--/blog-home-->');
+    if (ini >= 0 && fim > ini) {
+      const cartao = p => `<a class="bh-card" href="/blog/${p.slug}">
+      ${p.imagem ? `<img src="${esc(p.imagem)}" alt="${esc(p.imagemAlt || '')}" loading="lazy" decoding="async" width="1200" height="800">` : `<div class="bh-sem" style="background:linear-gradient(135deg,${p.capa.de},${p.capa.para})" aria-hidden="true">${p.capa.emoji}</div>`}
+      <span class="bh-cat">${esc(p.categoria)}</span>
+      <h3>${esc(p.titulo)}</h3>
+      <small>${quando(p)} · ${p.leitura} min de leitura</small>
+    </a>`;
+      const bloco = `<!--blog-home-->
+<section class="blog-home"><div class="wrap">
+  <div class="blog-topo">
+    <div><h2>Do blog</h2><p class="sub" style="margin:0">Notícias e ideias práticas pra trabalho, rotina e prazos.</p></div>
+    <a class="btn btn-s" href="/blog/">Ver todas</a>
+  </div>
+  <div class="bh-grade">
+    ${POSTS.slice(0, 5).map(cartao).join('\n    ')}
+  </div>
+</div></section>
+${TEMPO_JS}
+`;
+      fs.writeFileSync(HOME, h.slice(0, ini) + bloco + h.slice(fim));
+    }
+  }
+}
+
 // ---------- feed e sitemap ----------
 const xml = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 fs.writeFileSync(path.join(RAIZ, 'blog/feed.xml'), `<?xml version="1.0" encoding="UTF-8"?>
