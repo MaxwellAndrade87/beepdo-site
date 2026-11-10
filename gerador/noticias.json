@@ -1,1 +1,42 @@
-[]
+[
+ {
+  "slug": "emissoes-fosseis-devem-cair-mas-total-de-carbono-cresce",
+  "data": "2026-11-10",
+  "hora": "10:11",
+  "categoria": "Mundo",
+  "titulo": "Emissões fósseis devem cair em 2026, mas total de CO2 ainda cresce",
+  "resumo": "Relatório divulgado nesta terça prevê queda de 0,4% nas emissões fósseis. Renováveis avançam, mas choque do petróleo também pesa no resultado.",
+  "leitura": 3,
+  "capa": {
+   "emoji": "🌍",
+   "de": "#2563EB",
+   "para": "#4F86F7"
+  },
+  "imagemPrompt": "Fotografia editorial ilustrativa e realista de duas pessoas adultas comuns caminhando por uma rua de bairro residencial genérico, com painéis solares nos telhados e bicicletas estacionadas, luz natural da manhã, composição horizontal, cores naturais. Pessoas fictícias, sem personalidades públicas, sem logotipos, marcas, bandeiras, letras ou números legíveis, sem cenas de conflito ou tragédia.",
+  "imagemAlt": "Imagem ilustrativa: Emissões fósseis devem cair em 2026, mas total de CO2 ainda cresce",
+  "fontes": [
+   {
+    "nome": "Global Carbon Project, divulgação do Global Carbon Budget 2026",
+    "url": "https://globalcarbonbudget.org/fossil-co2-emissions-decrease-in-2026/"
+   },
+   {
+    "nome": "AFP, publicada pela SWI swissinfo.ch",
+    "url": "https://www.swissinfo.ch/por/emissões-de-origem-fóssil-caíram-em-2026-por-causa-da-guerra-no-irã-e-das-energias-renováveis/92354756"
+   },
+   {
+    "nome": "Global Carbon Project, documento técnico com resultados e incertezas",
+    "url": "https://cger.nies.go.jp/gcp/pdf/20261110/Key%20Messages%20Global%20Carbon%20Budget%202026.pdf"
+   },
+   {
+    "nome": "Le Monde",
+    "url": "https://www.lemonde.fr/en/environment/article/2026/11/10/fossil-fuel-related-co-emissions-show-slight-global-drop-an-encouraging-but-insufficient-sign_6776431_114.html"
+   },
+   {
+    "nome": "Emissões de origem fóssil caíram em 2026 por causa da guerra no Irã e das energi",
+    "url": "https://www.swissinfo.ch/por/emiss%C3%B5es-de-origem-f%C3%B3ssil-ca%C3%ADram-em-2026-por-causa-da-guerra-no-ir%C3%A3-e-das-energias-renov%C3%A1veis/92354756"
+   }
+  ],
+  "automatico": true,
+  "corpo": "<p>As emissões mundiais de dióxido de carbono ligadas aos combustíveis fósseis devem diminuir 0,4% em 2026, segundo o Global Carbon Budget, divulgado nesta terça-feira, 10 de novembro. A projeção combina o avanço das energias renováveis com a redução do consumo de petróleo provocada pelo choque energético associado à guerra no Irã. Se confirmada, será a primeira queda anual desde 2020. ([swissinfo.ch](https://www.swissinfo.ch/por/emiss%C3%B5es-de-origem-f%C3%B3ssil-ca%C3%ADram-em-2026-por-causa-da-guerra-no-ir%C3%A3-e-das-energias-renov%C3%A1veis/92354756))</p><p>O resultado, porém, não significa que a trajetória global esteja resolvida. <strong>Quando entram na conta as emissões relacionadas ao uso da terra, como desmatamento e degradação florestal, o total de CO2 ainda deve crescer.</strong> A estimativa passa de 42,8 bilhões de toneladas em 2025 para 43,3 bilhões neste ano. ([globalcarbonbudget.org](https://globalcarbonbudget.org/fossil-co2-emissions-decrease-in-2026/))</p><h2>Por que as emissões fósseis devem diminuir</h2><p>O petróleo concentra a maior redução prevista entre os combustíveis: 1,9%. Segundo os pesquisadores, parte desse movimento provavelmente é uma reação temporária às dificuldades de abastecimento e ao encarecimento da energia durante o conflito. A crise no Estreito de Ormuz afetou uma rota importante para o comércio mundial de petróleo e gás. ([swissinfo.ch](https://www.swissinfo.ch/por/emiss%C3%B5es-de-origem-f%C3%B3ssil-ca%C3%ADram-em-2026-por-causa-da-guerra-no-ir%C3%A3-e-das-energias-renov%C3%A1veis/92354756))</p><p>Os efeitos já apareceram fora da região do conflito. A cobertura da agência AFP relata aumento de preços na Europa e nos Estados Unidos, além de problemas de abastecimento na Ásia. Isso ajuda a explicar por que consumir menos combustível em uma crise não equivale, necessariamente, a uma transformação duradoura da economia. ([swissinfo.ch](https://www.swissinfo.ch/por/emiss%C3%B5es-de-origem-f%C3%B3ssil-ca%C3%ADram-em-2026-por-causa-da-guerra-no-ir%C3%A3-e-das-energias-renov%C3%A1veis/92354756))</p><p>Há também uma mudança estrutural em andamento. Energia solar, eólica e veículos elétricos estão compensando cerca de dois terços das emissões que seriam geradas pelo crescimento da demanda mundial por energia. Ainda assim, os autores avaliam que essa expansão precisa acelerar para garantir uma queda contínua. ([globalcarbonbudget.org](https://globalcarbonbudget.org/fossil-co2-emissions-decrease-in-2026/))</p><h2>Uma pequena queda, com incerteza</h2><p>O levantamento reúne mais de 140 cientistas. A edição de 2026 foi apresentada inicialmente como uma versão preliminar na revista Earth System Science Data, ainda sem conclusão da revisão por outros especialistas. Sua divulgação ocorre no início da COP31, a conferência climática das Nações Unidas em Antália, na Turquia. ([lemonde.fr](https://www.lemonde.fr/en/environment/article/2026/11/10/fossil-fuel-related-co-emissions-show-slight-global-drop-an-encouraging-but-insufficient-sign_6776431_114.html))</p><p>Os números também exigem cautela porque o ano não terminou. A projeção para as emissões fósseis tem uma faixa de incerteza que vai de queda de 1,5% a aumento de 0,6%. Portanto, o recuo de 0,4% é a estimativa central, não um resultado definitivo. ([cger.nies.go.jp](https://cger.nies.go.jp/gcp/pdf/20261110/Key%20Messages%20Global%20Carbon%20Budget%202026.pdf))</p><h2>Por que o total continua subindo</h2><p>O relatório prevê aumento nas emissões decorrentes das mudanças no uso da terra. Entre os fatores estão incêndios em áreas de turfa, um solo rico em matéria orgânica, e degradação de florestas no Sudeste Asiático. Condições mais secas associadas ao El Niño contribuem para esse quadro. ([cger.nies.go.jp](https://cger.nies.go.jp/gcp/pdf/20261110/Key%20Messages%20Global%20Carbon%20Budget%202026.pdf))</p><p>O problema importa porque o CO2 continua se acumulando na atmosfera. Pelas contas do estudo, o volume que ainda poderia ser emitido para manter uma chance de 50% de limitar o aquecimento a 1,5°C corresponde a menos de quatro anos no ritmo atual. Isso é uma medida do orçamento de carbono restante, não uma previsão de que a temperatura cruzará esse limite em uma data exata. ([cger.nies.go.jp](https://cger.nies.go.jp/gcp/pdf/20261110/Key%20Messages%20Global%20Carbon%20Budget%202026.pdf))</p><h2>O que muda na vida das pessoas</h2><p>A ligação mais imediata é com o custo e a disponibilidade de energia. O levantamento mostra que parte da redução ocorre em um contexto de combustível caro e oferta restrita, não apenas pela substituição de fontes poluentes. Por isso, o indicador não deve ser interpretado como sinal automático de alívio no orçamento das famílias. ([swissinfo.ch](https://www.swissinfo.ch/por/emiss%C3%B5es-de-origem-f%C3%B3ssil-ca%C3%ADram-em-2026-por-causa-da-guerra-no-ir%C3%A3-e-das-energias-renov%C3%A1veis/92354756))</p><p>Para acompanhar os próximos resultados, a distinção essencial é entre <strong>uma redução temporária do consumo e uma mudança permanente na forma de produzir energia</strong>. Segundo os pesquisadores, somente uma queda sustentada por transformações estruturais permitirá afirmar que as emissões fósseis passaram do pico e começaram a recuar de maneira duradoura. ([globalcarbonbudget.org](https://globalcarbonbudget.org/fossil-co2-emissions-decrease-in-2026/))</p>"
+ }
+]
