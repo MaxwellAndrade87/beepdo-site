@@ -20,6 +20,7 @@ on:
           - 'gerar capas que faltam'
           - 'testar OpenAI'
           - 'refazer capa de um post'
+          - 'refazer todas as capas'
           - 'só refazer páginas'
       slug:
         description: 'Slug do post (só para "refazer capa de um post")'
@@ -46,7 +47,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Testar OpenAI
         if: github.event_name == 'workflow_dispatch' && inputs.acao == 'testar OpenAI'
@@ -62,6 +63,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           QUALIDADE: ${{ inputs.qualidade || 'medium' }}
           SO_SLUG: ${{ inputs.acao == 'refazer capa de um post' && inputs.slug || '' }}
+          REFAZER_TODAS: ${{ inputs.acao == 'refazer todas as capas' && '1' || '' }}
         run: node gerador/capas.js
 
       - name: Refazer páginas do blog
