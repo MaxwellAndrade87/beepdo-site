@@ -3,7 +3,7 @@
 //
 // Variáveis de ambiente:
 //   OPENAI_API_KEY  (obrigatória; no GitHub vem do segredo do repositório)
-//   MODELO          modelo de imagem (padrão gpt-image-1)
+//   MODELO          modelo de imagem (padrão: tenta gpt-image-2, depois gpt-image-1.5, depois gpt-image-1-mini)
 //   QUALIDADE       low | medium | high (padrão medium)
 //   MAXIMO          máximo de capas por execução (padrão 20, pra controlar custo)
 //   SO_SLUG         gera só a capa desse post (refaz mesmo se já existir)
@@ -15,7 +15,8 @@ const path = require('path');
 const RAIZ = path.resolve(__dirname, '..');
 const PASTA = path.join(RAIZ, 'blog/img');
 const CHAVE = process.env.OPENAI_API_KEY;
-const MODELO = process.env.MODELO || 'gpt-image-1';
+const MODELOS = process.env.MODELO ? [process.env.MODELO] : ['gpt-image-2', 'gpt-image-1.5', 'gpt-image-1-mini'];
+let MODELO = MODELOS[0];
 const QUALIDADE = process.env.QUALIDADE || 'medium';
 const MAXIMO = Number(process.env.MAXIMO || 20);
 const SO_SLUG = (process.env.SO_SLUG || '').trim();
@@ -34,11 +35,26 @@ const promptDo = p => p.imagemPrompt
   ? `${p.imagemPrompt} ${ESTILO}`
   : `Foto que ilustre a matéria "${p.titulo}". Assunto: ${p.resumo} ${ESTILO}`;
 
-async function gerar(prompt, { tamanho = '1536x1024', qualidade = QUALIDADE } = {}) {
+// Tenta o modelo atual; se a OpenAI disser que ele não existe ou foi desligado, passa pro próximo da lista.
+async function gerar(prompt, opcoes = {}) {
+  while (true) {
+    try { return await gerarCom(MODELO, prompt, opcoes); }
+    catch (e) {
+      const prox = MODELOS[MODELOS.indexOf(MODELO) + 1];
+      if (prox && /model|does not exist|not found|deprecated|shut down|not supported|access/i.test(e.message)) {
+        console.log(`  modelo ${MODELO} indisponível (${e.message.slice(0, 120)}). Tentando ${prox}.`);
+        MODELO = prox; continue;
+      }
+      throw e;
+    }
+  }
+}
+
+async function gerarCom(modelo, prompt, { tamanho = '1536x1024', qualidade = QUALIDADE } = {}) {
   const r = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: { Authorization: `Bearer ${CHAVE}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: MODELO, prompt, size: tamanho, quality: qualidade, n: 1, output_format: 'webp', output_compression: 78 }),
+    body: JSON.stringify({ model: modelo, prompt, size: tamanho, quality: qualidade, n: 1, output_format: 'webp', output_compression: 78 }),
   });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(`OpenAI ${r.status}: ${j.error?.message || JSON.stringify(j).slice(0, 300)}`);
@@ -64,7 +80,7 @@ async function gerar(prompt, { tamanho = '1536x1024', qualidade = QUALIDADE } = 
   if (SO_SLUG && !fila.length) { console.error(`Post "${SO_SLUG}" não existe em posts.js.`); process.exit(1); }
 
   const lote = fila.slice(0, MAXIMO);
-  console.log(`${fila.length} post(s) sem capa. Gerando ${lote.length} agora (modelo ${MODELO}, qualidade ${QUALIDADE}).`);
+  console.log(`${fila.length} post(s) sem capa. Gerando ${lote.length} agora (modelo ${MODELOS.join(' > ')}, qualidade ${QUALIDADE}).`);
   let ok = 0, erros = 0;
   for (const p of lote) {
     try {
@@ -76,6 +92,6 @@ async function gerar(prompt, { tamanho = '1536x1024', qualidade = QUALIDADE } = 
       if (/billing|quota|insufficient|verify|verified|organization must be/i.test(e.message)) { console.error('Parando: problema de crédito ou verificação na OpenAI.'); break; }
     }
   }
-  console.log(`Fim: ${ok} capa(s) nova(s), ${erros} erro(s).`);
+  console.log(`Fim: ${ok} capa(s) nova(s), ${erros} erro(s). Modelo usado: ${MODELO}.`);
   if (!ok && erros) process.exit(1);
 })();
