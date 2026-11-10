@@ -20,6 +20,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/home.css">
 </head>
 <body>
 <header class="topo"><div class="wrap">
@@ -45,22 +46,74 @@
     </div>
     <p class="nota">Grátis para começar. Sem anúncios.</p>
   </div>
-  <div class="vitrine">
-    <img class="w1" src="/widget-hoje.png" alt="Widget Hoje do BeepDo mostrando a próxima tarefa e as tarefas do dia" width="640" height="500">
-    <img class="w2" src="/widget-projeto.png" alt="Widget de Projeto do BeepDo" width="640" height="300">
+  <div class="vitrine2" role="img" aria-label="Tela Meu dia do BeepDo com as tarefas de hoje, horários e alarmes">
+    <div class="cel"><div class="tela" data-print="meu-dia" aria-hidden="true">
+      <div class="t-topo"><div><b>Hoje</b><small><span data-hoje>Terça, 10 de novembro</span></small></div><span class="t-mais">+</span></div>
+      <div class="t-resumo"><span><b>6</b>a fazer</span><span><b>2</b>feitas</span><span><b>1</b>atrasada</span></div>
+      <div class="t-dest"><i></i><div><b>Reunião diária com a equipe</b><small>em 25 min · alarme 08:20</small></div></div>
+      <div class="t-sec ver">Atrasadas</div>
+      <div class="t-item" style="--cor:#F2555A"><i></i><span>Pagar a conta de luz</span><small class="r">ontem</small></div>
+      <div class="t-sec">Hoje</div>
+      <div class="t-item" style="--cor:#F2B84B"><i></i><span>Revisar proposta do cliente</span><small>10:00</small></div>
+      <div class="t-item" style="--cor:#F2555A"><i></i><span>Enviar relatório mensal</span><small>14:00 <em>🔔 13:30</em></small></div>
+      <div class="t-item" style="--cor:#5AA9F2"><i></i><span>Ligar para o fornecedor</span><small>16:30</small></div>
+      <div class="t-item" style="--cor:#3DD68C"><i></i><span>Buscar as crianças</span><small>17:45</small></div>
+      <div class="t-item ok" style="--cor:#3DD68C"><i></i><span>Café e revisar a agenda</span><small>06:30</small></div>
+      <div class="t-abas"><span class="on">Meu dia</span><span>Pendentes</span><span>Projetos</span><span>Perfil</span></div>
+    </div></div>
+    <div class="flut flut-al" aria-hidden="true"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span><div><b>Enviar relatório mensal</b><small>Alarme às 13:30 · toca até você parar</small></div></div>
+    <div class="flut flut-pj" aria-hidden="true"><b>🏠 Reforma da cozinha</b><small>2 de 4 tarefas</small><div class="t-barra" style="--cor:#E67E22"><span style="width:50%"></span></div></div>
+  </div>
+</div></section>
+
+<section class="em-uso"><div class="wrap">
+  <h2>Veja o BeepDo em uso</h2>
+  <p class="sub">O dia em lista ou por horário, projetos com progresso e o alarme que não deixa passar.</p>
+  <div class="celulares">
+    <figure><div class="cel"><div class="tela" data-print="horario" aria-hidden="true">
+      <div class="t-topo"><div><b>Hoje</b><small>Por horário</small></div><span class="t-mais">+</span></div>
+      <div class="t-hora">
+        <small>08:00</small><div><div class="t-ev" style="--cor:#5AA9F2">Reunião diária com a equipe<small>08:30 · Trabalho</small></div></div>
+        <small>10:00</small><div><div class="t-ev" style="--cor:#F2B84B">Revisar proposta do cliente<small>10:00 · Lançamento do site</small></div></div>
+        <small>12:00</small><div><div class="t-ev" style="--cor:#8B7CF6">Almoço com o time<small>Agenda do celular</small></div></div>
+        <small>13:00</small><div><div class="t-agora"></div></div>
+        <small>14:00</small><div><div class="t-ev" style="--cor:#F2555A">Enviar relatório mensal<small>14:00 · alarme 13:30</small></div></div>
+        <small>16:00</small><div><div class="t-ev" style="--cor:#5AA9F2">Ligar para o fornecedor<small>16:30 · Reforma da cozinha</small></div></div>
+        <small>18:00</small><div><div class="t-ev" style="--cor:#3DD68C">Buscar as crianças<small>17:45 · Casa</small></div></div>
+      </div>
+      <div class="t-abas"><span class="on">Meu dia</span><span>Pendentes</span><span>Projetos</span><span>Perfil</span></div>
+    </div></div><figcaption>Meu dia por horário<small>Tarefas e agenda do celular juntas</small></figcaption></figure>
+    <figure><div class="cel"><div class="tela" data-print="projetos" aria-hidden="true">
+      <div class="t-topo"><div><b>Projetos</b><small>4 ativos</small></div><span class="t-mais">+</span></div>
+      <div class="t-proj" style="--cor:#7C5CBF"><b>🚀 Lançamento do site <small>2/4</small></b><div class="t-barra"><span style="width:50%"></span></div><p>Prazo em 14 dias</p></div>
+      <div class="t-proj" style="--cor:#E74C3C"><b>📊 Relatório trimestral <small>1/3</small></b><div class="t-barra"><span style="width:33%"></span></div><p>Prazo em 7 dias</p></div>
+      <div class="t-proj" style="--cor:#E67E22"><b>🏠 Reforma da cozinha <small>2/5</small></b><div class="t-barra"><span style="width:40%"></span></div><p>Prazo em 30 dias</p></div>
+      <div class="t-proj" style="--cor:#00BCD4"><b>✈️ Férias em Paraty <small>1/3</small></b><div class="t-barra"><span style="width:33%"></span></div><p>Prazo em 45 dias</p></div>
+      <div class="t-abas"><span>Meu dia</span><span>Pendentes</span><span class="on">Projetos</span><span>Perfil</span></div>
+    </div></div><figcaption>Projetos<small>Metas grandes em passos pequenos</small></figcaption></figure>
+    <figure><div class="cel"><div class="tela alarme" data-print="alarme" aria-hidden="true">
+      <div class="al-hora">13:30</div>
+      <div class="al-sub"><span data-hoje>Terça, 10 de novembro</span></div>
+      <div class="al-sino"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
+      <div class="al-tit">Enviar relatório mensal</div>
+      <div class="al-sub">Vence às 14:00 · Relatório trimestral</div>
+      <div class="al-bts"><span>+ 5 min</span><span class="p">Parar</span></div>
+    </div></div><figcaption>Alarme em tela cheia<small>Toca até no silencioso, para com a tela bloqueada</small></figcaption></figure>
   </div>
 </div></section>
 
 <section class="alt" id="recursos"><div class="wrap">
   <h2>Feito pra você não esquecer</h2>
-  <p class="sub">Menos app pra gerenciar, mais coisa feita.</p>
-  <div class="grade">
-    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 21a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M12 9v4l2.5 1.5"/><path d="M5 3 2 6M19 3l3 3"/></svg></div><h3>Alarme e avisos antecipados</h3><p>Toque na hora, minutos antes ou dias antes. Adiar não bagunça o horário da tarefa.</p></div>
-    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="18" height="8" rx="2"/></svg></div><h3>Widgets na tela inicial</h3><p>Veja a próxima tarefa e conclua direto do widget, sem abrir o app.</p></div>
-    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M2 12a10 10 0 0 1 20 0"/><path d="M6 12a6 6 0 0 1 12 0"/><path d="M12 12v8"/><path d="M9 17l3 3 3-3"/></svg></div><h3>Funciona sem internet</h3><p>Tudo fica salvo no celular e sincroniza sozinho quando a conexão volta.</p></div>
-    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg></div><h3>Tarefas recorrentes</h3><p>Repita por dias da semana ou a cada N dias. A próxima já nasce quando você conclui.</p></div>
-    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div><h3>Projetos</h3><p>Agrupe tarefas por assunto, com cor, ícone e prazo.</p></div>
-    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.9-3.5M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.9 3.5M20 20v-4h-4"/></svg></div><h3>Sua conta em qualquer aparelho</h3><p>Entre com seu e-mail e encontre tudo no celular novo.</p></div>
+  <p class="sub">Menos app pra gerenciar, mais coisa feita. E tudo funciona até sem internet.</p>
+  <div class="grade rec4">
+    <div class="card" style="--cor:#E5484D"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5"/><path d="M5 3 2 6M19 3l3 3"/></svg></div><h3>Alarme que toca de verdade</h3><p>Em tela cheia, até no silencioso. Para direto da tela bloqueada, sem abrir o app.</p></div>
+    <div class="card" style="--cor:#6D4AE0"><div class="ico"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M18 2l2 2"/></svg></div><h3>Avisos antecipados</h3><p>Minutos, horas ou dias antes. Adiar não bagunça o horário da tarefa.</p></div>
+    <div class="card" style="--cor:#0E7490"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h12M3 18h8"/><circle cx="18" cy="17" r="4"/><path d="M18 15.5V17l1 1"/></svg></div><h3>Meu dia por horário</h3><p>O dia num eixo de horas, com a hora atual e os compromissos da agenda do celular.</p></div>
+    <div class="card" style="--cor:#B25AE0"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div><h3>Crie escrevendo</h3><p>Escreva "pagar luz dia 10 às 9h" e o BeepDo entende data, hora e repetição.</p></div>
+    <div class="card" style="--cor:#1F9D63"><div class="ico"><svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg></div><h3>Rotina no automático</h3><p>Repita por dias da semana, a cada N dias ou por regra. A próxima já nasce quando você conclui.</p></div>
+    <div class="card" style="--cor:#E67E22"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M8 13h8"/></svg></div><h3>Projetos e espaços</h3><p>Separe Trabalho e Casa e acompanhe o progresso de cada projeto.</p></div>
+    <div class="card" style="--cor:#2563EB"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="18" height="8" rx="2"/></svg></div><h3>Widgets na tela inicial</h3><p>Veja a próxima tarefa e conclua direto do widget, sem abrir o app.</p></div>
+    <div class="card" style="--cor:#BE185D"><div class="ico"><svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/></svg></div><h3>Fotos e checklist</h3><p>Anexe fotos (até sem internet) e quebre a tarefa em passos.</p></div>
   </div>
 </div></section>
 
@@ -103,90 +156,61 @@
   </div>
 </div></section>
 
+<!--blog-home-->
 <section class="blog-home"><div class="wrap">
   <div class="blog-topo">
-    <div><h2>Do blog</h2><p class="sub" style="margin:0">Dicas para organizar a rotina e tirar o máximo do BeepDo.</p></div>
-    <div class="carrossel-nav">
-      <button type="button" class="seta" data-car="-1" aria-label="Posts anteriores"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
-      <button type="button" class="seta" data-car="1" aria-label="Próximos posts"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
-    </div>
+    <div><h2>Do blog</h2><p class="sub" style="margin:0">Notícias e ideias práticas pra trabalho, rotina e prazos.</p></div>
+    <a class="btn btn-s" href="/blog/">Ver todas</a>
   </div>
-  <div class="carrossel" id="carrossel" tabindex="0" aria-label="Posts recentes do blog">
-    <a class="post-card" href="/blog/organizar-a-semana-no-domingo">
-  <div class="capa" style="background:linear-gradient(135deg,#6D4AE0,#3B6FE0)" aria-hidden="true"><span>🗓️</span></div>
-  <div class="post-info">
-    <span class="post-cat">Produtividade</span>
-    <h3>Domingo à noite: 15 minutos para organizar a semana inteira</h3>
-    <p>Uma revisão rápida no domingo evita a sensação de começar a segunda correndo atrás. Veja o roteiro de 15 minutos para planejar a semana.</p>
-    <span class="post-meta">26 de setembro de 2026 · 4 min de leitura</span>
+  <div class="bh-grade">
+    <a class="bh-card" href="/blog/emissoes-fosseis-devem-cair-mas-total-de-carbono-cresce">
+      <img src="/blog/img/emissoes-fosseis-devem-cair-mas-total-de-carbono-cresce.webp?v=626m" alt="Imagem ilustrativa: Emissões fósseis devem cair em 2026, mas total de CO2 ainda cresce" loading="lazy" decoding="async" width="1200" height="800">
+      <span class="bh-cat">Mundo</span>
+      <h3>Emissões fósseis devem cair em 2026, mas total de CO2 ainda cresce</h3>
+      <small><time datetime="2026-11-10T10:11:00-03:00" data-rel>10 de novembro de 2026</time> · 3 min de leitura</small>
+    </a>
+    <a class="bh-card" href="/blog/organizar-a-semana-no-domingo">
+      <img src="/blog/img/organizar-a-semana-no-domingo.webp?v=2sz2" alt="Foto ilustrativa: Domingo à noite: 15 minutos para organizar a semana inteira" loading="lazy" decoding="async" width="1200" height="800">
+      <span class="bh-cat">Produtividade</span>
+      <h3>Domingo à noite: 15 minutos para organizar a semana inteira</h3>
+      <small><time datetime="2026-09-26T09:00:00-03:00" data-rel>26 de setembro de 2026</time> · 4 min de leitura</small>
+    </a>
+    <a class="bh-card" href="/blog/trabalho-e-vida-pessoal-na-mesma-lista">
+      <img src="/blog/img/trabalho-e-vida-pessoal-na-mesma-lista.webp?v=1o5g" alt="Foto ilustrativa: Trabalho e vida pessoal na mesma lista: como separar sem se perder" loading="lazy" decoding="async" width="1200" height="800">
+      <span class="bh-cat">Dia a dia</span>
+      <h3>Trabalho e vida pessoal na mesma lista: como separar sem se perder</h3>
+      <small><time datetime="2026-09-26T09:00:00-03:00" data-rel>26 de setembro de 2026</time> · 4 min de leitura</small>
+    </a>
+    <a class="bh-card" href="/blog/whatsapp-do-trabalho-fora-do-horario">
+      <img src="/blog/img/whatsapp-do-trabalho-fora-do-horario.webp?v=1x3y" alt="Foto ilustrativa: WhatsApp do trabalho fora do horário: como não perder pedidos (nem a sua noite)" loading="lazy" decoding="async" width="1200" height="800">
+      <span class="bh-cat">Trabalho</span>
+      <h3>WhatsApp do trabalho fora do horário: como não perder pedidos (nem a sua noite)</h3>
+      <small><time datetime="2026-09-26T09:00:00-03:00" data-rel>26 de setembro de 2026</time> · 5 min de leitura</small>
+    </a>
+    <a class="bh-card" href="/blog/como-dizer-nao-sem-culpa-no-trabalho">
+      <img src="/blog/img/como-dizer-nao-sem-culpa-no-trabalho.webp?v=1hwc" alt="Foto ilustrativa: Como dizer &quot;não&quot; (ou &quot;agora não&quot;) sem culpa no trabalho" loading="lazy" decoding="async" width="1200" height="800">
+      <span class="bh-cat">Trabalho</span>
+      <h3>Como dizer &quot;não&quot; (ou &quot;agora não&quot;) sem culpa no trabalho</h3>
+      <small><time datetime="2026-09-26T09:00:00-03:00" data-rel>26 de setembro de 2026</time> · 5 min de leitura</small>
+    </a>
   </div>
-</a>
-<a class="post-card" href="/blog/trabalho-e-vida-pessoal-na-mesma-lista">
-  <div class="capa" style="background:linear-gradient(135deg,#1F9D63,#6D4AE0)" aria-hidden="true"><span>⚖️</span></div>
-  <div class="post-info">
-    <span class="post-cat">Dia a dia</span>
-    <h3>Trabalho e vida pessoal na mesma lista: como separar sem se perder</h3>
-    <p>Relatório, mercado, reunião e consulta do filho disputam o mesmo espaço na cabeça. Veja como organizar tudo junto, mas sem misturar.</p>
-    <span class="post-meta">26 de setembro de 2026 · 4 min de leitura</span>
-  </div>
-</a>
-<a class="post-card" href="/blog/whatsapp-do-trabalho-fora-do-horario">
-  <div class="capa" style="background:linear-gradient(135deg,#1F9D63,#3DB8A8)" aria-hidden="true"><span>💬</span></div>
-  <div class="post-info">
-    <span class="post-cat">Trabalho</span>
-    <h3>WhatsApp do trabalho fora do horário: como não perder pedidos (nem a sua noite)</h3>
-    <p>O pedido chega às 22h pelo WhatsApp e some no meio das conversas. Veja como registrar sem virar refém da mensagem e sem deixar nada escapar.</p>
-    <span class="post-meta">26 de setembro de 2026 · 5 min de leitura</span>
-  </div>
-</a>
-<a class="post-card" href="/blog/como-dizer-nao-sem-culpa-no-trabalho">
-  <div class="capa" style="background:linear-gradient(135deg,#E0564A,#E05AA8)" aria-hidden="true"><span>✋</span></div>
-  <div class="post-info">
-    <span class="post-cat">Trabalho</span>
-    <h3>Como dizer "não" (ou "agora não") sem culpa no trabalho</h3>
-    <p>Aceitar tudo parece colaborativo, até os prazos começarem a estourar. Veja como negociar prioridades com respeito e proteger o que já foi prometido.</p>
-    <span class="post-meta">26 de setembro de 2026 · 5 min de leitura</span>
-  </div>
-</a>
-<a class="post-card" href="/blog/rotina-de-quem-trabalha-por-turno">
-  <div class="capa" style="background:linear-gradient(135deg,#3B3F8F,#6D4AE0)" aria-hidden="true"><span>🌙</span></div>
-  <div class="post-info">
-    <span class="post-cat">Dia a dia</span>
-    <h3>Rotina de quem trabalha por turno: como se organizar quando cada semana é diferente</h3>
-    <p>Folga no meio da semana, turno da noite, escala que muda. Veja como organizar contas, compromissos e descanso quando a rotina não é de segunda a sexta.</p>
-    <span class="post-meta">26 de setembro de 2026 · 5 min de leitura</span>
-  </div>
-</a>
-<a class="post-card" href="/blog/muita-tarefa-pouco-tempo-prazos-perdidos">
-  <div class="capa" style="background:linear-gradient(135deg,#E0564A,#E08A2E)" aria-hidden="true"><span>🗂️</span></div>
-  <div class="post-info">
-    <span class="post-cat">Trabalho</span>
-    <h3>Muita tarefa, pouco tempo: por que estamos perdendo prazos (e não é preguiça)</h3>
-    <p>O trabalho pede cada vez mais, as demandas chegam por todos os lados e os prazos escapam. Entenda o que está acontecendo e o que dá pra mudar já.</p>
-    <span class="post-meta">26 de setembro de 2026 · 6 min de leitura</span>
-  </div>
-</a>
-<a class="post-card" href="/blog/carga-mental-o-peso-invisivel">
-  <div class="capa" style="background:linear-gradient(135deg,#8B5CF6,#E05AA8)" aria-hidden="true"><span>🧠</span></div>
-  <div class="post-info">
-    <span class="post-cat">Dia a dia</span>
-    <h3>Carga mental: o peso invisível de ter que lembrar de tudo</h3>
-    <p>Conta pra pagar, reunião, mercado, consulta do filho, aniversário da mãe. Lembrar de tudo cansa tanto quanto fazer. Veja como aliviar esse peso.</p>
-    <span class="post-meta">26 de setembro de 2026 · 5 min de leitura</span>
-  </div>
-</a>
-<a class="post-card" href="/blog/nunca-mais-esquecer-tarefas">
-  <div class="capa" style="background:linear-gradient(135deg,#6D4AE0,#B25AE0)" aria-hidden="true"><span>⏰</span></div>
-  <div class="post-info">
-    <span class="post-cat">Produtividade</span>
-    <h3>Como parar de esquecer tarefas: o método dos 3 avisos</h3>
-    <p>Anotar não basta: o que faz uma tarefa acontecer é ser lembrado na hora certa. Veja como combinar aviso antecipado, alarme e revisão do dia.</p>
-    <span class="post-meta">26 de setembro de 2026 · 5 min de leitura</span>
-  </div>
-</a>
-  </div>
-  <p style="margin:18px 0 0"><a href="/blog/">Ver todos os posts ›</a></p>
 </div></section>
+<script>
+(function(){
+  var M=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  document.querySelectorAll('time[data-rel]').forEach(function(t){
+    var d=new Date(t.getAttribute('datetime')), s=(Date.now()-d)/1000;
+    if (isNaN(s) || s < 0) return;
+    var txt = s<3600 ? 'há '+Math.max(1,Math.round(s/60))+' min'
+      : s<86400 ? 'há '+Math.round(s/3600)+' h'
+      : s<172800 ? 'ontem'
+      : s<604800 ? 'há '+Math.floor(s/86400)+' dias'
+      : d.getDate()+' '+M[d.getMonth()]+(d.getFullYear()!==new Date().getFullYear()?' '+d.getFullYear():'');
+    t.title=t.textContent; t.textContent=txt;
+  });
+})();
+</script>
+<!--/blog-home-->
 
 <section><div class="wrap">
   <div class="news" id="newsletter">
@@ -211,23 +235,12 @@
   <p class="sub">As dúvidas mais comuns. <a href="/faq">Ver todas</a>.</p>
   <details><summary>Funciona sem internet?</summary><p>Sim. Tudo é salvo primeiro no celular. Quando a internet volta, o BeepDo sincroniza sozinho com a sua conta.</p></details><details><summary>Como funciona o teste grátis?</summary><p>No plano anual, quem nunca assinou tem 7 dias grátis. Se cancelar antes do fim do teste, nada é cobrado. Se não cancelar, a assinatura começa automaticamente.</p></details><details><summary>Como cancelo?</summary><p>No Google Play › Pagamentos e assinaturas › Assinaturas › BeepDo › Cancelar. Ou no app: Perfil › Gerenciar assinatura. <a href="/cancelamento">Veja o passo a passo</a>.</p></details><details><summary>O que acontece com meus dados se eu cancelar?</summary><p>Nada é apagado. Os recursos Premium ficam travados: projetos acima de 3 continuam editáveis, o alarme volta a ser notificação comum e o tema volta ao padrão.</p></details><details><summary>O alarme não tocou. E agora?</summary><ul><li>Confira se as notificações do BeepDo estão ligadas no Android e no Perfil do app.</li><li>Desative a economia de bateria para o BeepDo (Configurações › Apps › BeepDo › Bateria › Sem restrições).</li><li>No modo alarme, permita "Alarmes e lembretes" e "Tela cheia" quando o app pedir.</li></ul></details>
 </div></section>
-<script>
-(() => {
-  const c = document.getElementById('carrossel'); if (!c) return;
-  const passo = () => { const card = c.querySelector('.post-card'); return card ? card.getBoundingClientRect().width + 18 : 300; };
-  for (const b of document.querySelectorAll('[data-car]')) b.addEventListener('click', () => c.scrollBy({ left: passo() * Number(b.dataset.car), behavior: 'smooth' }));
-  // Passa sozinho a cada 6 s (para quando a pessoa interage ou prefere menos movimento)
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  let parado = false; const parar = () => { parado = true; };
-  ['pointerdown','wheel','touchstart','focusin','keydown'].forEach(e => c.addEventListener(e, parar, { passive: true }));
-  setInterval(() => {
-    if (parado || document.hidden) return;
-    const fim = c.scrollLeft + c.clientWidth >= c.scrollWidth - 8;
-    c.scrollTo({ left: fim ? 0 : c.scrollLeft + passo(), behavior: 'smooth' });
-  }, 6000);
-})();
-</script>
 <script src="/newsletter.js" defer></script>
+<script>
+document.querySelectorAll('[data-hoje]').forEach(function(e){
+  try { var t = new Date().toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'}); e.textContent = t.charAt(0).toUpperCase() + t.slice(1).replace('-feira',''); } catch (x) {}
+});
+</script>
 
 </main>
 <footer class="rodape"><div class="wrap">

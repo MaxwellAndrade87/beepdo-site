@@ -1,0 +1,112 @@
+/* Página inicial: celular com o app, recursos e blog. Usa as variáveis de /styles.css. */
+
+/* ---------- celular ---------- */
+.cel{--f:#0E0D14;--c:#1C1B26;--c2:#26243A;--tx:#F3F2F8;--tm:#9C99AE;--ac:#8B7CF6;--ve:#F2555A;--am:#F2B84B;--az:#5AA9F2;--vd:#3DD68C;
+  position:relative;width:300px;aspect-ratio:9/19.2;border-radius:44px;padding:11px;background:#0B0A10;
+  box-shadow:0 0 0 2px #2A2833,0 40px 80px -24px rgba(40,20,90,.55),inset 0 0 0 1px #3A3845;flex:none}
+.cel::before{content:"";position:absolute;top:20px;left:50%;width:84px;height:22px;margin-left:-42px;border-radius:20px;background:#000;z-index:3}
+.tela{position:relative;height:100%;border-radius:34px;overflow:hidden;background:var(--f);color:var(--tx);font:13px/1.35 "Inter",system-ui,sans-serif;padding:46px 14px 14px;display:flex;flex-direction:column;gap:8px}
+.tela img.print{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+.t-topo{display:flex;align-items:center;justify-content:space-between}
+.t-topo b{font-size:22px;letter-spacing:-.4px}
+.t-topo small{display:block;color:var(--tm);font-size:11px;font-weight:500}
+.t-mais{width:34px;height:34px;border-radius:50%;background:var(--ac);display:grid;place-items:center;color:#fff;font-size:22px;line-height:1}
+.t-resumo{display:flex;gap:6px}
+.t-resumo span{flex:1;background:var(--c);border-radius:12px;padding:7px 8px;font-size:10px;color:var(--tm)}
+.t-resumo span b{display:block;color:var(--tx);font-size:16px}
+.t-dest{background:linear-gradient(135deg,#3B2F86,#2A2366);border-radius:16px;padding:12px;display:flex;gap:10px;align-items:center}
+.t-dest i,.t-item i{flex:none;width:18px;height:18px;border-radius:50%;border:2px solid #C9C4E6}
+.t-dest b{display:block;font-size:14px}
+.t-dest small{color:#CFC8FF;font-size:11px}
+.t-sec{font-size:11px;font-weight:700;color:var(--tm);margin-top:2px}
+.t-sec.ver{color:var(--ve)}
+.t-item{position:relative;background:var(--c);border-radius:12px;padding:9px 10px 9px 13px;display:flex;align-items:center;gap:9px}
+.t-item::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--cor,var(--ac))}
+.t-item span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t-item small{color:var(--tm);font-size:11px;white-space:nowrap}
+.t-item small.r{color:var(--ve)}
+.t-item small em{font-style:normal;color:var(--ac)}
+.t-item.ok span{text-decoration:line-through;color:var(--tm)}
+.t-item.ok i{background:var(--vd);border-color:var(--vd)}
+.t-abas{margin-top:auto;display:flex;justify-content:space-around;background:var(--c);border-radius:16px;padding:9px 0;font-size:10px;color:var(--tm)}
+.t-abas span.on{color:var(--ac);font-weight:700}
+
+/* linha do tempo */
+.t-hora{display:grid;grid-template-columns:36px 1fr;gap:0 8px;font-size:11px}
+.t-hora>small{color:var(--tm);padding-top:2px}
+.t-hora>div{border-top:1px dashed #2E2C3D;min-height:38px;padding:4px 0}
+.t-ev{border-radius:10px;padding:6px 8px;background:color-mix(in srgb,var(--cor) 22%,var(--c));border-left:3px solid var(--cor);font-size:11px}
+.t-ev small{display:block;color:var(--tm)}
+.t-agora{position:relative;height:0;border-top:2px solid var(--ve);margin:-1px 0 0}
+.t-agora::before{content:"";position:absolute;left:-4px;top:-5px;width:8px;height:8px;border-radius:50%;background:var(--ve)}
+
+/* projetos */
+.t-proj{background:var(--c);border-radius:14px;padding:11px 12px}
+.t-proj b{display:flex;justify-content:space-between;font-size:13px}
+.t-proj b small{color:var(--tm);font-weight:500}
+.t-barra{height:6px;border-radius:6px;background:var(--c2);margin-top:8px;overflow:hidden}
+.t-barra span{display:block;height:100%;border-radius:6px;background:var(--cor,var(--ac))}
+.t-proj p{margin:6px 0 0;color:var(--tm);font-size:11px}
+
+/* alarme em tela cheia */
+.tela.alarme{background:radial-gradient(120% 70% at 50% 30%,#4B37B8,#16112E 70%);align-items:center;text-align:center;justify-content:center;gap:10px;padding-top:60px}
+.al-hora{font-size:54px;font-weight:800;letter-spacing:-2px;line-height:1}
+.al-sino{width:74px;height:74px;border-radius:50%;background:rgba(255,255,255,.12);display:grid;place-items:center;box-shadow:0 0 0 14px rgba(255,255,255,.05),0 0 0 28px rgba(255,255,255,.03);margin:22px 0 18px;animation:balanca 1.2s ease-in-out infinite}
+.al-sino svg{width:34px;height:34px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@keyframes balanca{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+.al-tit{font-size:18px;font-weight:700}
+.al-sub{color:#CFC8FF;font-size:12px}
+.al-bts{display:flex;gap:10px;margin-top:auto;width:100%}
+.al-bts span{flex:1;border-radius:16px;padding:12px 0;font-weight:700;background:rgba(255,255,255,.12)}
+.al-bts span.p{background:#fff;color:#2A2366}
+
+/* cartões flutuantes do topo */
+.vitrine2{position:relative;display:flex;justify-content:center;padding:10px 0 20px}
+.flut{position:absolute;background:var(--card);color:var(--t);border:1px solid var(--bd);border-radius:18px;box-shadow:0 24px 50px -20px rgba(40,20,90,.45);padding:12px 14px;font-size:13px;z-index:4}
+.flut b{display:block;font-size:14px}
+.flut small{color:var(--mut)}
+.flut-al{left:calc(50% - 250px);bottom:70px;display:flex;gap:10px;align-items:center;animation:flutua 5s ease-in-out infinite}
+.flut-al .ic{width:38px;height:38px;border-radius:12px;background:#FDE8E9;display:grid;place-items:center}
+.flut-al .ic svg{width:20px;height:20px;stroke:#E5484D;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.flut-pj{right:calc(50% - 260px);top:60px;width:190px;animation:flutua 6s ease-in-out infinite reverse}
+.flut-pj .t-barra{background:var(--bg2)}
+@keyframes flutua{50%{transform:translateY(-8px)}}
+@media (max-width:620px){.flut-al{left:0}.flut-pj{right:0;top:10px}.cel{width:270px}}
+@media (prefers-reduced-motion:reduce){.flut,.al-sino{animation:none}}
+
+/* ---------- em uso ---------- */
+.em-uso .wrap{text-align:center}
+.em-uso .sub{margin-left:auto;margin-right:auto}
+.celulares{display:flex;gap:28px;justify-content:center;margin-top:34px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 20px 24px;scrollbar-width:none}
+.celulares::-webkit-scrollbar{display:none}
+.celulares figure{margin:0;scroll-snap-align:center;flex:none}
+.celulares figcaption{margin-top:14px;font-weight:700;color:var(--t)}
+.celulares figcaption small{display:block;font-weight:500;color:var(--mut);font-size:14px}
+.celulares .cel{width:260px}
+@media (max-width:900px){.celulares{justify-content:flex-start}}
+
+/* ---------- recursos ---------- */
+.grade.rec4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:1000px){.grade.rec4{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.grade.rec4{grid-template-columns:1fr}}
+.grade.rec4 .card{padding:22px}
+.grade.rec4 .ico{width:46px;height:46px;border-radius:14px;background:color-mix(in srgb,var(--cor) 14%,transparent);color:var(--cor);display:grid;place-items:center}
+.grade.rec4 .ico svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.grade.rec4 h3{font-size:17px;margin:14px 0 6px}
+.grade.rec4 p{font-size:15px;margin:0}
+.etq-p{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;color:var(--ac);background:var(--acbg);padding:2px 7px;border-radius:999px;vertical-align:middle}
+
+/* ---------- blog na home ---------- */
+.bh-grade{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:20px}
+.bh-card{display:flex;flex-direction:column;gap:8px;text-decoration:none;color:inherit}
+.bh-card img,.bh-card .bh-sem{width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;border-radius:16px;background:var(--bg2)}
+.bh-card .bh-sem{display:grid;place-items:center;font-size:44px}
+.bh-card:first-child{grid-row:span 2}
+.bh-card:first-child img{aspect-ratio:4/3.4}
+.bh-card:first-child h3{font-size:22px}
+.bh-cat{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--ac)}
+.bh-card h3{margin:0;color:var(--t);font-size:16px;line-height:1.3}
+.bh-card:hover h3{color:var(--ac)}
+.bh-card small{color:var(--mut);font-size:13px}
+@media (max-width:860px){.bh-grade{grid-template-columns:1fr 1fr}.bh-card:first-child{grid-column:span 2;grid-row:auto}}
+@media (max-width:560px){.bh-grade{grid-template-columns:1fr}.bh-card:first-child{grid-column:auto}}
