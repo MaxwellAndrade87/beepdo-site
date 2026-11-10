@@ -89,7 +89,7 @@ async function gerarCom(modelo, prompt, { tamanho = '1536x1024', qualidade = QUA
   }
 
   fs.mkdirSync(PASTA, { recursive: true });
-  const posts = require('./posts.js').slice().sort((a, b) => b.data.localeCompare(a.data));
+  const posts = require('./todos.js')().slice().sort((a, b) => b.data.localeCompare(a.data));
   const fila = SO_SLUG
     ? posts.filter(p => p.slug === SO_SLUG)
     : REFAZER_TODAS ? posts.filter(p => !p.imagem)

@@ -18,7 +18,7 @@ const fs = require('fs');
 const path = require('path');
 
 const RAIZ = path.resolve(__dirname, '..');
-const POSTS = require('./posts.js').slice().sort((a, b) => (b.data + (b.hora || '')).localeCompare(a.data + (a.hora || '')));
+const POSTS = require('./todos.js')().slice().sort((a, b) => (b.data + (b.hora || '')).localeCompare(a.data + (a.hora || '')));
 // Foto de capa: se existir blog/img/<slug>.webp (gerada pela automação), ela entra no lugar do emoji.
 POSTS.forEach(p => {
   const arq = path.join(RAIZ, 'blog/img', p.slug + '.webp');
@@ -32,7 +32,7 @@ const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').re
 const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
 const dataPost = iso => { const [a, m, d] = iso.split('-').map(Number); return `${d} de ${MESES[m - 1]} de ${a}`; };
 const slugCat = c => c.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-const ORDEM_CATS = ['Trabalho', 'Dia a dia', 'Produtividade', 'Dicas do app'];
+const ORDEM_CATS = ['Brasil', 'Mundo', 'Economia', 'Tecnologia', 'Trabalho', 'Dia a dia', 'Produtividade', 'Dicas do app'];
 const CATS = [...new Set([...ORDEM_CATS, ...POSTS.map(p => p.categoria)])].filter(c => POSTS.some(p => p.categoria === c));
 const hojeBR = new Date(Date.now() - 3 * 3600e3).toISOString().slice(0, 10);
 const ehNovo = p => p.data >= new Date(Date.now() - 3 * 3600e3 - 2 * 86400e3).toISOString().slice(0, 10);
