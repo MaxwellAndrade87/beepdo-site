@@ -35,7 +35,7 @@
 .meta{display:block;font-size:13px;color:var(--mut);margin-top:6px}
 
 /* fotos */
-.foto{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;background:var(--bg2)}
+.foto{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:12px;background:var(--bg2)}
 .foto-capa{display:grid;place-items:center}
 .foto-capa span{font-size:clamp(40px,6vw,72px);filter:drop-shadow(0 4px 10px rgba(0,0,0,.15))}
 .pc-img,.pr-img,.pl-img{overflow:hidden;border-radius:12px}
