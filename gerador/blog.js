@@ -170,7 +170,7 @@ const JS = `<script>
 const NEWS_JS = '<script src="/newsletter.js" defer></script>';
 
 // ---------- molde da página (mesmo topo e rodapé do site) ----------
-function pagina({ arquivo, titulo, descricao, corpo, head = '', tipo = 'website', imagem }) {
+function pagina({ arquivo, titulo, descricao, corpo, head = '', tipo = 'website', imagem, imagemAlt = '' }) {
   const caminho = arquivo.replace(/(^|\/)index$/, '$1');
   const og = imagem ? `https://beepdo.app${imagem}` : 'https://beepdo.app/favicon.png';
   const html = `<!doctype html>
@@ -180,6 +180,7 @@ function pagina({ arquivo, titulo, descricao, corpo, head = '', tipo = 'website'
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(titulo)}</title>
 <meta name="description" content="${esc(descricao)}">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <link rel="canonical" href="https://beepdo.app/${caminho}">
 <link rel="alternate" type="application/rss+xml" title="Blog do BeepDo" href="https://beepdo.app/blog/feed.xml">
 <meta name="theme-color" content="#6D4AE0">
@@ -187,9 +188,15 @@ function pagina({ arquivo, titulo, descricao, corpo, head = '', tipo = 'website'
 <meta property="og:description" content="${esc(descricao)}">
 <meta property="og:type" content="${tipo}">
 <meta property="og:url" content="https://beepdo.app/${caminho}">
-<meta property="og:image" content="${og}">
+<meta property="og:image" content="${og}">${imagem ? `
+<meta property="og:image:width" content="1536">
+<meta property="og:image:height" content="1024">
+<meta property="og:image:alt" content="${esc(imagemAlt)}">` : ''}
+<meta property="og:site_name" content="BeepDo">
 <meta property="og:locale" content="pt_BR">
-<meta name="twitter:card" content="${imagem ? 'summary_large_image' : 'summary'}">${head}
+<meta name="twitter:card" content="${imagem ? 'summary_large_image' : 'summary'}">
+<meta name="twitter:title" content="${esc(titulo)}">
+<meta name="twitter:description" content="${esc(descricao)}">${head}
 <link rel="icon" href="/logo.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -338,14 +345,28 @@ ${NEWS_JS}`,
 // ---------- matérias ----------
 POSTS.forEach(p => {
   const outros = [...POSTS.filter(x => x.slug !== p.slug && x.categoria === p.categoria), ...POSTS.filter(x => x.slug !== p.slug && x.categoria !== p.categoria)].slice(0, 3);
-  const ld = {
-    '@context': 'https://schema.org', '@type': 'BlogPosting',
-    headline: p.titulo, description: p.resumo, datePublished: p.data, dateModified: p.atualizado || p.data,
-    inLanguage: 'pt-BR', mainEntityOfPage: `https://beepdo.app/blog/${p.slug}`,
-    ...(p.imagem ? { image: `https://beepdo.app${p.imagem}` } : {}),
-    author: { '@type': 'Organization', name: 'BeepDo' },
-    publisher: { '@type': 'Organization', name: 'BeepDo', logo: { '@type': 'ImageObject', url: 'https://beepdo.app/favicon.png' } },
-  };
+  const url = `https://beepdo.app/blog/${p.slug}`;
+  const palavras = String(p.corpo).replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
+  const ld = [{
+    '@context': 'https://schema.org', '@type': p.automatico ? 'NewsArticle' : 'BlogPosting',
+    headline: p.titulo.slice(0, 110), description: p.resumo,
+    datePublished: isoPost(p), dateModified: p.atualizado ? `${p.atualizado}T09:00:00-03:00` : isoPost(p),
+    inLanguage: 'pt-BR', mainEntityOfPage: { '@type': 'WebPage', '@id': url }, url,
+    articleSection: p.categoria, wordCount: palavras,
+    ...(p.palavrasChave ? { keywords: p.palavrasChave.join(', ') } : {}),
+    ...(p.imagem ? { image: [{ '@type': 'ImageObject', url: `https://beepdo.app${p.imagem.split('?')[0]}`, width: 1536, height: 1024, caption: p.imagemAlt || '' }] } : {}),
+    author: { '@type': 'Organization', name: 'Redação BeepDo', url: 'https://beepdo.app/blog/' },
+    publisher: { '@type': 'Organization', name: 'BeepDo', url: 'https://beepdo.app/', logo: { '@type': 'ImageObject', url: 'https://beepdo.app/favicon.png', width: 512, height: 512 } },
+    ...(p.fontes?.length ? { citation: p.fontes.map(f => f.url) } : {}),
+  }, {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Início', item: 'https://beepdo.app/' },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://beepdo.app/blog/' },
+      { '@type': 'ListItem', position: 3, name: p.categoria, item: `https://beepdo.app/blog/categoria/${slugCat(p.categoria)}` },
+      { '@type': 'ListItem', position: 4, name: p.titulo, item: url },
+    ],
+  }];
   const fontes = (p.fontes || []).length
     ? (() => {
       const l = p.fontes.filter((f, i, a) => a.findIndex(x => x.nome === f.nome) === i)
@@ -354,11 +375,12 @@ POSTS.forEach(p => {
     })() : '';
   pagina({
     arquivo: `blog/${p.slug}`,
-    titulo: `${p.titulo} · Blog do BeepDo`,
+    titulo: p.titulo.length > 52 ? p.titulo : `${p.titulo} · Blog do BeepDo`,
     descricao: p.resumo,
     tipo: 'article',
     imagem: p.imagem,
-    head: `\n<meta property="article:published_time" content="${p.data}">\n<script type="application/ld+json">${JSON.stringify(ld)}</script>`,
+    imagemAlt: p.imagemAlt,
+    head: `\n<meta property="article:published_time" content="${isoPost(p)}">\n<meta property="article:section" content="${esc(p.categoria)}">${(p.palavrasChave || []).map(k => `\n<meta property="article:tag" content="${esc(k)}">`).join('')}\n<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`,
     corpo: `${editorias(p.categoria)}
 <article class="materia"><div class="wrap estreito">
   <div class="migalha"><a href="/">Início</a> › <a href="/blog/">Blog</a> › <a href="/blog/categoria/${slugCat(p.categoria)}">${esc(p.categoria)}</a></div>
@@ -439,6 +461,19 @@ const antigos = fs.existsSync(SITEMAP)
   ? [...fs.readFileSync(SITEMAP, 'utf8').matchAll(/<loc>https:\/\/beepdo\.app\/([^<]*)<\/loc>/g)].map(m => m[1]).filter(u => !u.startsWith('blog/'))
   : [''];
 const urls = [...antigos, 'blog/', ...CATS.map(c => 'blog/categoria/' + slugCat(c)), ...POSTS.map(p => 'blog/' + p.slug)];
-fs.writeFileSync(SITEMAP, `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>https://beepdo.app/${u}</loc></url>`).join('\n')}\n</urlset>\n`);
+const ultimo = Object.fromEntries(POSTS.map(p => ['blog/' + p.slug, p.atualizado || p.data]));
+const maisNovo = POSTS[0] ? POSTS[0].data : hojeBR;
+fs.writeFileSync(SITEMAP, `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => {
+  const lm = ultimo[u] || (u.startsWith('blog/') ? maisNovo : '');
+  return `  <url><loc>https://beepdo.app/${u}</loc>${lm ? `<lastmod>${lm}</lastmod>` : ''}</url>`;
+}).join('\n')}\n</urlset>\n`);
+
+// Sitemap de notícias (Google Notícias): matérias dos últimos 2 dias
+const recentes2 = POSTS.filter(p => p.data >= new Date(Date.now() - 3 * 3600e3 - 2 * 86400e3).toISOString().slice(0, 10));
+fs.writeFileSync(path.join(RAIZ, 'news-sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+${recentes2.map(p => `  <url><loc>https://beepdo.app/blog/${p.slug}</loc><news:news><news:publication><news:name>BeepDo</news:name><news:language>pt</news:language></news:publication><news:publication_date>${isoPost(p)}</news:publication_date><news:title>${xml(p.titulo)}</news:title></news:news></url>`).join('\n')}
+</urlset>
+`);
 
 console.log(`Blog gerado: ${POSTS.length} matérias, ${CATS.length} editorias. Hoje: ${hojeBR}.`);

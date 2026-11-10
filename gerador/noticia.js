@@ -44,7 +44,17 @@ REGRAS:
 - Só fatos confirmados por fontes confiáveis (agências, jornais e portais conhecidos, órgãos oficiais). Nada de boato.
 - Texto escrito do zero, com as suas palavras. Não copie frases das fontes. Não invente citações nem números.
 - Linguagem simples e direta, tom de portal de notícia. Entre 500 e 900 palavras.
-- Explique o que aconteceu, por que importa e o que muda na vida das pessoas. Se fizer sentido, termine com uma parte prática ("o que fazer agora", prazos, dicas de organização).
+- Use pelo menos 2 fontes de veículos DIFERENTES e cruze as informações. Nunca reescreva uma matéria só.
+- Explique o que aconteceu e por que importa. OBRIGATÓRIO: uma seção própria com um <h2> que comece com "O que isso muda" ou "O que fazer agora", com análise e dicas práticas do BeepDo para o leitor (prazos, contas, rotina, trabalho). É a parte que faz a matéria ser nossa e não só um resumo.
+
+SEO (Google):
+- Escolha uma palavra-chave principal: o termo que as pessoas digitariam no Google sobre esse assunto (ex.: "ata do Copom", "Selic", "prova do Enem 2026").
+- Título com até 65 caracteres, com a palavra-chave no começo, claro e sem sensacionalismo.
+- Resumo entre 130 e 155 caracteres, com a palavra-chave, convidando a ler.
+- Slug com 3 a 7 palavras, contendo a palavra-chave, sem datas e sem palavras vazias (de, da, o, a).
+- A palavra-chave aparece no primeiro parágrafo, que já responde o essencial (o quê, quem, quando).
+- 3 a 5 subtítulos <h2> descritivos, de preferência como as perguntas que as pessoas fazem ("Quando sai...", "Quem tem direito...").
+- Parágrafos curtos (2 a 4 frases). Use listas quando ajudar.
 - Pode citar o BeepDo no máximo uma vez, de leve, só se combinar com o assunto (prazos, rotina, lembretes). Em tragédias, crimes, mortes ou temas sensíveis, NÃO cite o BeepDo.
 - Nunca use travessão (— ou –). Use hífen, vírgula ou ponto.
 - Não coloque links, citações entre parênteses nem nomes de sites no meio do texto. As fontes vão só no campo "fontes".
@@ -52,16 +62,16 @@ REGRAS:
 - imagemPrompt: descreva em português uma cena fotográfica ILUSTRATIVA ligada ao tema, com pessoas comuns e lugares genéricos. Proibido: pessoas famosas ou reais, políticos, logotipos, marcas, bandeiras de partido, texto, cenas violentas ou de tragédia.
 
 Responda SOMENTE com um JSON válido, sem nada antes ou depois, neste formato:
-{"titulo":"até 90 caracteres","resumo":"até 160 caracteres","categoria":"uma das editorias","slug":"so-letras-minusculas-e-hifens","corpo":"<p>...</p>","fontes":[{"nome":"só o nome curto do veículo ou órgão, ex.: AFP, Le Monde, Agência Brasil, IBGE","url":"https://..."}],"imagemPrompt":"...","emoji":"um emoji"}`;
+{"palavraChave":"termo principal","tags":["3 a 5 termos relacionados"],"titulo":"até 65 caracteres","resumo":"130 a 155 caracteres","categoria":"uma das editorias","slug":"so-letras-minusculas-e-hifens","corpo":"<p>...</p>","fontes":[{"nome":"só o nome curto do veículo ou órgão, ex.: AFP, Le Monde, Agência Brasil, IBGE","url":"https://..."}],"imagemPrompt":"...","emoji":"um emoji"}`;
 
-async function pedir(modelo) {
+async function pedir(modelo, aviso = '') {
   const r = await fetch('https://api.openai.com/v1/responses', {
     method: 'POST',
     headers: { Authorization: `Bearer ${CHAVE}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: modelo,
       tools: [{ type: 'web_search', user_location: { type: 'approximate', country: 'BR', timezone: 'America/Sao_Paulo' } }],
-      input: PEDIDO,
+      input: aviso ? `${PEDIDO}\n\nATENÇÃO, a tentativa anterior foi recusada: ${aviso}` : PEDIDO,
     }),
   });
   const j = await r.json().catch(() => ({}));
@@ -103,10 +113,56 @@ const limparHtml = h => semTravessao(h)
   .replace(/^\s*<h1>[\s\S]*?<\/h1>/i, '')
   .trim();
 
+// ---------- checagem de cópia ----------
+// Baixa as fontes e compara: trechos de 8 palavras seguidas iguais às fontes contam como "parecidos".
+const normal = t => String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+  .replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ')
+  .replace(/[^a-z0-9%]+/g, ' ').trim().split(' ').filter(Boolean);
+const N = 8;
+async function textoDaFonte(url) {
+  try {
+    const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 15000);
+    const r = await fetch(url, { signal: ctl.signal, headers: { 'User-Agent': 'Mozilla/5.0 (compatible; BeepDoBlog/1.0)', 'Accept-Language': 'pt-BR,pt;q=0.9' } });
+    clearTimeout(t);
+    if (!r.ok || !/html|text/.test(r.headers.get('content-type') || '')) return null;
+    return normal(await r.text());
+  } catch { return null; }
+}
+async function checarCopia(corpo, fontes) {
+  const pal = normal(corpo);
+  const textos = (await Promise.all(fontes.map(f => textoDaFonte(f.url)))).filter(t => t && t.length > 150);
+  if (!textos.length || pal.length < N) return { ok: true, lidas: 0, taxa: 0, trechos: [] };
+  const grams = new Set();
+  textos.forEach(t => { for (let i = 0; i + N <= t.length; i++) grams.add(t.slice(i, i + N).join(' ')); });
+  const marca = new Array(pal.length).fill(false);
+  for (let i = 0; i + N <= pal.length; i++) if (grams.has(pal.slice(i, i + N).join(' '))) for (let k = i; k < i + N; k++) marca[k] = true;
+  const iguais = marca.filter(Boolean).length;
+  const trechos = []; let run = 0, maior = 0;
+  for (let i = 0; i <= pal.length; i++) {
+    if (marca[i]) { run++; continue; }
+    if (run) { maior = Math.max(maior, run); if (trechos.length < 5) trechos.push(pal.slice(i - run, i).join(' ')); }
+    run = 0;
+  }
+  const taxa = iguais / pal.length;
+  return { ok: taxa <= 0.06 && maior < 15, lidas: textos.length, taxa, maior, trechos };
+}
+
 (async () => {
+  let aviso = '';
+  for (let tentativa = 1; tentativa <= 2; tentativa++) {
+    const ok = await tentar(aviso);
+    if (ok === true) return;
+    aviso = ok;
+    console.log(`Tentativa ${tentativa} recusada: ${aviso.slice(0, 300)}`);
+  }
+  console.error('Nenhuma matéria passou nas checagens. Nada publicado neste horário.');
+  process.exit(1);
+})();
+
+async function tentar(aviso) {
   let res, modelo;
   for (const m of MODELOS) {
-    try { res = await pedir(m); modelo = m; break; }
+    try { res = await pedir(m, aviso); modelo = m; break; }
     catch (e) {
       console.log(`modelo ${m}: ${e.message.slice(0, 160)}`);
       if (!/model|does not exist|not found|deprecated|shut down|not supported|access|tool/i.test(e.message)) process.exit(1);
@@ -116,7 +172,7 @@ const limparHtml = h => semTravessao(h)
 
   const bruto = res.texto.slice(res.texto.indexOf('{'), res.texto.lastIndexOf('}') + 1);
   let m;
-  try { m = JSON.parse(bruto); } catch { console.error('Resposta não veio em JSON:\n' + res.texto.slice(0, 800)); process.exit(1); }
+  try { m = JSON.parse(bruto); } catch { return 'A resposta não veio em JSON válido. Responda só com o JSON.'; }
 
   const existentes = new Set(todos().map(p => p.slug));
   let slug = slugar(m.slug || m.titulo || 'materia');
@@ -124,29 +180,38 @@ const limparHtml = h => semTravessao(h)
   const categoria = EDITORIAS.includes(m.categoria) ? m.categoria : sugestao;
   const corpo = limparHtml(m.corpo || '');
   const palavras = corpo.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
-  if (palavras < 250 || !m.titulo) { console.error(`Matéria curta demais (${palavras} palavras) ou sem título. Nada publicado.`); process.exit(1); }
+  if (palavras < 350 || !m.titulo) return `A matéria ficou curta (${palavras} palavras). Escreva entre 500 e 900 palavras.`;
+  if (!/<h2>\s*(o que (isso )?muda|o que fazer)/i.test(corpo)) return 'Faltou a seção própria com <h2> começando com "O que isso muda" ou "O que fazer agora".';
 
   const fontes = [...(Array.isArray(m.fontes) ? m.fontes : []), ...res.citadas]
     .filter(f => f && /^https?:\/\//.test(f.url || ''))
     .map(f => ({ nome: semTravessao(nomeFonte(f.url, f.nome)), url: f.url.replace(/[?&]utm_[^&]+/g, '') }))
     .filter((f, i, a) => a.findIndex(x => x.nome === f.nome) === i).slice(0, 5);
-  if (!fontes.length) { console.error('Matéria sem fontes. Nada publicado.'); process.exit(1); }
+  if (fontes.length < 2) return 'Use pelo menos 2 fontes de veículos diferentes.';
+
+  const copia = await checarCopia(corpo, fontes);
+  console.log(`Checagem de cópia: ${copia.lidas} fonte(s) lida(s), ${(copia.taxa * 100).toFixed(1)}% parecido, maior trecho igual: ${copia.maior || 0} palavras.`);
+  if (!copia.ok) return `O texto ficou parecido demais com as fontes (${(copia.taxa * 100).toFixed(0)}%). Reescreva com outras palavras e outra ordem de ideias. Trechos que ficaram iguais: ${copia.trechos.map(t => '"' + t + '"').join('; ')}`;
 
   const [de, para] = CORES[categoria] || CORES.Tecnologia;
+  const chave = semTravessao(m.palavraChave || '').trim();
   const nova = {
     slug, data, hora, categoria,
-    titulo: semTravessao(m.titulo).slice(0, 120),
-    resumo: semTravessao(m.resumo || '').slice(0, 200),
+    titulo: semTravessao(m.titulo).slice(0, 110),
+    resumo: semTravessao(m.resumo || '').slice(0, 170),
     leitura: Math.max(2, Math.round(palavras / 200)),
     capa: { emoji: m.emoji || '📰', de, para },
     imagemPrompt: semTravessao(m.imagemPrompt || `Cena ilustrativa sobre: ${m.titulo}`),
     imagemAlt: `Imagem ilustrativa: ${semTravessao(m.titulo)}`,
+    palavrasChave: [chave, ...(Array.isArray(m.tags) ? m.tags.map(semTravessao) : [])].filter(Boolean).slice(0, 6),
     fontes,
+    copia: Number((copia.taxa * 100).toFixed(1)),
     automatico: true,
     corpo,
   };
   fs.writeFileSync(todos.ARQ, JSON.stringify([nova, ...todos.noticias()], null, 1) + '\n');
-  console.log(`Matéria nova (${modelo}, ${palavras} palavras, ${categoria}): ${nova.titulo}`);
+  console.log(`Matéria nova (${modelo}, ${palavras} palavras, ${categoria}, palavra-chave "${chave}"): ${nova.titulo}`);
   console.log(`https://beepdo.app/blog/${slug}`);
   if (res.uso) console.log('Tokens:', JSON.stringify(res.uso));
-})();
+  return true;
+}
