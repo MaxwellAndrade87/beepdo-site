@@ -47,6 +47,7 @@ REGRAS:
 - Explique o que aconteceu, por que importa e o que muda na vida das pessoas. Se fizer sentido, termine com uma parte prática ("o que fazer agora", prazos, dicas de organização).
 - Pode citar o BeepDo no máximo uma vez, de leve, só se combinar com o assunto (prazos, rotina, lembretes). Em tragédias, crimes, mortes ou temas sensíveis, NÃO cite o BeepDo.
 - Nunca use travessão (— ou –). Use hífen, vírgula ou ponto.
+- Não coloque links, citações entre parênteses nem nomes de sites no meio do texto. As fontes vão só no campo "fontes".
 - O corpo é HTML simples: só <p>, <h2>, <h3>, <ul>, <ol>, <li>, <strong>, <em>, <blockquote>. Sem links no corpo (as fontes vão separadas). Não repita o título no corpo.
 - imagemPrompt: descreva em português uma cena fotográfica ILUSTRATIVA ligada ao tema, com pessoas comuns e lugares genéricos. Proibido: pessoas famosas ou reais, políticos, logotipos, marcas, bandeiras de partido, texto, cenas violentas ou de tragédia.
 
@@ -67,13 +68,15 @@ async function pedir(modelo) {
   if (!r.ok) throw new Error(`OpenAI ${r.status}: ${j.error?.message || JSON.stringify(j).slice(0, 300)}`);
   const texto = j.output_text ?? (j.output || []).filter(o => o.type === 'message').flatMap(o => o.content || []).map(c => c.text || '').join('\n');
   const citadas = (j.output || []).filter(o => o.type === 'message').flatMap(o => o.content || []).flatMap(c => c.annotations || [])
-    .filter(a => a.type === 'url_citation' && a.url).map(a => ({ nome: a.title || new URL(a.url).hostname, url: a.url }));
+    .filter(a => a.type === 'url_citation' && a.url).map(a => ({ nome: new URL(a.url).hostname.replace(/^www\./, ''), url: a.url }));
   return { texto, citadas, uso: j.usage };
 }
 
 const slugar = t => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 70).replace(/-$/, '');
 const semTravessao = s => String(s).replace(/\s*[—–]\s*/g, ' - ');
 const limparHtml = h => semTravessao(h)
+  .replace(/\s*\(\s*\[[^\]]*\]\([^)]*\)\s*\)/g, '')   // ([site](url)) que a busca coloca
+  .replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, '$1')         // [texto](url)
   .replace(/<\s*(script|style|iframe|object|embed|form)[\s\S]*?<\s*\/\s*\1\s*>/gi, '')
   .replace(/<(?!\/?(p|h2|h3|ul|ol|li|strong|em|b|i|blockquote|br)\b)[^>]*>/gi, '')
   .replace(/<(\w+)\s[^>]*>/g, '<$1>')
