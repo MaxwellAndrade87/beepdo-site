@@ -1,9 +1,14 @@
-name: Blog - capas e páginas
+name: Blog - matérias, capas e páginas
 
 # Roda sozinho quando um post novo entra em gerador/posts.js:
 # gera a foto de capa que faltar, refaz as páginas do blog e publica.
 # Também dá pra rodar na mão em Actions > "Blog - capas e páginas" > Run workflow.
 on:
+  # 3 matérias por dia: 7h07, 12h07 e 18h07 em Brasília (10h07, 15h07 e 21h07 UTC)
+  schedule:
+    - cron: '7 10 * * *'
+    - cron: '7 15 * * *'
+    - cron: '7 21 * * *'
   push:
     branches: [main]
     paths:
@@ -18,6 +23,7 @@ on:
         default: 'gerar capas que faltam'
         options:
           - 'gerar capas que faltam'
+          - 'escrever matéria agora'
           - 'testar OpenAI'
           - 'refazer capa de um post'
           - 'refazer todas as capas'
@@ -56,8 +62,14 @@ jobs:
           TESTE: '1'
         run: node gerador/capas.js
 
+      - name: Escrever matéria do momento
+        if: github.event_name == 'schedule' || inputs.acao == 'escrever matéria agora'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node gerador/noticia.js
+
       - name: Gerar capas
-        if: github.event_name == 'push' || (inputs.acao != 'testar OpenAI' && inputs.acao != 'só refazer páginas')
+        if: github.event_name == 'push' || github.event_name == 'schedule' || (inputs.acao != 'testar OpenAI' && inputs.acao != 'só refazer páginas')
         continue-on-error: true
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -67,15 +79,15 @@ jobs:
         run: node gerador/capas.js
 
       - name: Refazer páginas do blog
-        if: github.event_name == 'push' || inputs.acao != 'testar OpenAI'
+        if: github.event_name == 'push' || github.event_name == 'schedule' || inputs.acao != 'testar OpenAI'
         run: node gerador/blog.js
 
       - name: Publicar
-        if: github.event_name == 'push' || inputs.acao != 'testar OpenAI'
+        if: github.event_name == 'push' || github.event_name == 'schedule' || inputs.acao != 'testar OpenAI'
         run: |
           git config user.name "BeepDo Blog"
           git config user.email "blog-bot@users.noreply.github.com"
-          git add blog sitemap.xml
+          git add blog sitemap.xml gerador/noticias.json
           if git diff --cached --quiet; then echo "Nada mudou."; exit 0; fi
-          git commit -m "Blog: capas e páginas atualizadas [automático]"
+          git commit -m "Blog: matéria, capas e páginas atualizadas [automático]"
           git push
