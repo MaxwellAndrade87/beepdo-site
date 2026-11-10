@@ -1,0 +1,79 @@
+name: Blog - capas e páginas
+
+# Roda sozinho quando um post novo entra em gerador/posts.js:
+# gera a foto de capa que faltar, refaz as páginas do blog e publica.
+# Também dá pra rodar na mão em Actions > "Blog - capas e páginas" > Run workflow.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'gerador/posts.js'
+      - 'gerador/blog.js'
+      - 'blog/portal.css'
+  workflow_dispatch:
+    inputs:
+      acao:
+        description: 'O que fazer'
+        type: choice
+        default: 'gerar capas que faltam'
+        options:
+          - 'gerar capas que faltam'
+          - 'testar OpenAI'
+          - 'refazer capa de um post'
+          - 'só refazer páginas'
+      slug:
+        description: 'Slug do post (só para "refazer capa de um post")'
+        required: false
+      qualidade:
+        description: 'Qualidade da imagem'
+        type: choice
+        default: medium
+        options: [low, medium, high]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blog
+  cancel-in-progress: false
+
+jobs:
+  blog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Testar OpenAI
+        if: github.event_name == 'workflow_dispatch' && inputs.acao == 'testar OpenAI'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TESTE: '1'
+        run: node gerador/capas.js
+
+      - name: Gerar capas
+        if: github.event_name == 'push' || (inputs.acao != 'testar OpenAI' && inputs.acao != 'só refazer páginas')
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          QUALIDADE: ${{ inputs.qualidade || 'medium' }}
+          SO_SLUG: ${{ inputs.acao == 'refazer capa de um post' && inputs.slug || '' }}
+        run: node gerador/capas.js
+
+      - name: Refazer páginas do blog
+        if: github.event_name == 'push' || inputs.acao != 'testar OpenAI'
+        run: node gerador/blog.js
+
+      - name: Publicar
+        if: github.event_name == 'push' || inputs.acao != 'testar OpenAI'
+        run: |
+          git config user.name "BeepDo Blog"
+          git config user.email "blog-bot@users.noreply.github.com"
+          git add blog sitemap.xml
+          if git diff --cached --quiet; then echo "Nada mudou."; exit 0; fi
+          git commit -m "Blog: capas e páginas atualizadas [automático]"
+          git push
