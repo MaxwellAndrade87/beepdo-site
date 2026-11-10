@@ -243,6 +243,7 @@ ${corpo}
   </div>
 </div></footer>
 ${TEMPO_JS}
+<script src="/contador.js" defer></script>
 </body>
 </html>
 `;

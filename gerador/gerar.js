@@ -77,7 +77,7 @@ ${corpo}
     <a href="/excluir-conta">Excluir conta</a>
   </div>
 </div></footer>
-</body>
+${/^(admin|confirmar|redefinir-senha|newsletter-cancelar)/.test(arquivo || '') ? '' : '<script src="/contador.js" defer></script>\n'}</body>
 </html>
 `;
   const destino = `${OUT}/${arquivo}.html`;
