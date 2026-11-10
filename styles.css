@@ -26,7 +26,7 @@ img{max-width:100%;display:block}
 .menu a:hover{color:var(--t)}
 .menu .cta{background:var(--ac);color:#fff;padding:9px 16px;border-radius:999px}
 @media (prefers-color-scheme:dark){.menu .cta{color:#0F0F14}}
-@media (max-width:720px){.menu a:not(.cta){display:none}}
+@media (max-width:720px){.menu{gap:14px}.menu a:not(.cta):not([href="/blog/"]){display:none}.menu a[href="/blog/"]{font-weight:700;color:var(--t)}}
 
 /* hero */
 .hero{position:relative;overflow:hidden;padding:72px 0 56px}

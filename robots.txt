@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
 Sitemap: https://beepdo.app/sitemap.xml
+Sitemap: https://beepdo.app/news-sitemap.xml
