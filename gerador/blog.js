@@ -347,7 +347,11 @@ POSTS.forEach(p => {
     publisher: { '@type': 'Organization', name: 'BeepDo', logo: { '@type': 'ImageObject', url: 'https://beepdo.app/favicon.png' } },
   };
   const fontes = (p.fontes || []).length
-    ? `<div class="fontes"><b>Fontes:</b> ${p.fontes.map(f => `<a href="${esc(f.url)}" rel="noopener" target="_blank">${esc(f.nome)}</a>`).join(' · ')}</div>` : '';
+    ? (() => {
+      const l = p.fontes.filter((f, i, a) => a.findIndex(x => x.nome === f.nome) === i)
+        .map(f => `<a href="${esc(f.url)}" rel="noopener" target="_blank">${esc(f.nome)}</a>`);
+      return `<p class="fontes">Com informações de ${l.length > 1 ? l.slice(0, -1).join(', ') + ' e ' + l[l.length - 1] : l[0]}.</p>`;
+    })() : '';
   pagina({
     arquivo: `blog/${p.slug}`,
     titulo: `${p.titulo} · Blog do BeepDo`,

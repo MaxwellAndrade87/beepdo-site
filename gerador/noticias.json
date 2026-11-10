@@ -16,24 +16,16 @@
   "imagemAlt": "Imagem ilustrativa: Emissões fósseis devem cair em 2026, mas total de CO2 ainda cresce",
   "fontes": [
    {
-    "nome": "globalcarbonbudget.org",
+    "nome": "Global Carbon Project",
     "url": "https://globalcarbonbudget.org/fossil-co2-emissions-decrease-in-2026/"
    },
    {
-    "nome": "AFP, publicada pela SWI swissinfo.ch",
+    "nome": "AFP",
     "url": "https://www.swissinfo.ch/por/emissões-de-origem-fóssil-caíram-em-2026-por-causa-da-guerra-no-irã-e-das-energias-renováveis/92354756"
-   },
-   {
-    "nome": "cger.nies.go.jp",
-    "url": "https://cger.nies.go.jp/gcp/pdf/20261110/Key%20Messages%20Global%20Carbon%20Budget%202026.pdf"
    },
    {
     "nome": "Le Monde",
     "url": "https://www.lemonde.fr/en/environment/article/2026/11/10/fossil-fuel-related-co-emissions-show-slight-global-drop-an-encouraging-but-insufficient-sign_6776431_114.html"
-   },
-   {
-    "nome": "swissinfo.ch",
-    "url": "https://www.swissinfo.ch/por/emiss%C3%B5es-de-origem-f%C3%B3ssil-ca%C3%ADram-em-2026-por-causa-da-guerra-no-ir%C3%A3-e-das-energias-renov%C3%A1veis/92354756"
    }
   ],
   "automatico": true,

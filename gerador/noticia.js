@@ -52,7 +52,7 @@ REGRAS:
 - imagemPrompt: descreva em português uma cena fotográfica ILUSTRATIVA ligada ao tema, com pessoas comuns e lugares genéricos. Proibido: pessoas famosas ou reais, políticos, logotipos, marcas, bandeiras de partido, texto, cenas violentas ou de tragédia.
 
 Responda SOMENTE com um JSON válido, sem nada antes ou depois, neste formato:
-{"titulo":"até 90 caracteres","resumo":"até 160 caracteres","categoria":"uma das editorias","slug":"so-letras-minusculas-e-hifens","corpo":"<p>...</p>","fontes":[{"nome":"Nome do veículo","url":"https://..."}],"imagemPrompt":"...","emoji":"um emoji"}`;
+{"titulo":"até 90 caracteres","resumo":"até 160 caracteres","categoria":"uma das editorias","slug":"so-letras-minusculas-e-hifens","corpo":"<p>...</p>","fontes":[{"nome":"só o nome curto do veículo ou órgão, ex.: AFP, Le Monde, Agência Brasil, IBGE","url":"https://..."}],"imagemPrompt":"...","emoji":"um emoji"}`;
 
 async function pedir(modelo) {
   const r = await fetch('https://api.openai.com/v1/responses', {
@@ -68,9 +68,29 @@ async function pedir(modelo) {
   if (!r.ok) throw new Error(`OpenAI ${r.status}: ${j.error?.message || JSON.stringify(j).slice(0, 300)}`);
   const texto = j.output_text ?? (j.output || []).filter(o => o.type === 'message').flatMap(o => o.content || []).map(c => c.text || '').join('\n');
   const citadas = (j.output || []).filter(o => o.type === 'message').flatMap(o => o.content || []).flatMap(c => c.annotations || [])
-    .filter(a => a.type === 'url_citation' && a.url).map(a => ({ nome: new URL(a.url).hostname.replace(/^www\./, ''), url: a.url }));
+    .filter(a => a.type === 'url_citation' && a.url).map(a => ({ nome: '', url: a.url }));
   return { texto, citadas, uso: j.usage };
 }
+
+// Nome bonito da fonte: "AFP" em vez de "swissinfo.ch" ou "AFP, publicada pela SWI...".
+const VEICULOS = {
+  'agenciabrasil.ebc.com.br': 'Agência Brasil', 'g1.globo.com': 'g1', 'oglobo.globo.com': 'O Globo', 'valor.globo.com': 'Valor Econômico',
+  'folha.uol.com.br': 'Folha de S.Paulo', 'www1.folha.uol.com.br': 'Folha de S.Paulo', 'estadao.com.br': 'Estadão', 'cnnbrasil.com.br': 'CNN Brasil',
+  'bbc.com': 'BBC', 'reuters.com': 'Reuters', 'apnews.com': 'AP', 'afp.com': 'AFP', 'lemonde.fr': 'Le Monde', 'nytimes.com': 'The New York Times',
+  'theguardian.com': 'The Guardian', 'swissinfo.ch': 'Swissinfo', 'dw.com': 'DW', 'infomoney.com.br': 'InfoMoney', 'exame.com': 'Exame',
+  'uol.com.br': 'UOL', 'poder360.com.br': 'Poder360', 'metropoles.com': 'Metrópoles', 'bcb.gov.br': 'Banco Central', 'ibge.gov.br': 'IBGE',
+  'gov.br': 'Governo Federal', 'globalcarbonbudget.org': 'Global Carbon Project', 'who.int': 'OMS', 'un.org': 'ONU', 'tecmundo.com.br': 'TecMundo',
+  'tecnoblog.net': 'Tecnoblog', 'olhardigital.com.br': 'Olhar Digital', 'theverge.com': 'The Verge', 'bloomberg.com': 'Bloomberg', 'ft.com': 'Financial Times',
+};
+const nomeFonte = (url, sugerido) => {
+  const host = new URL(url).hostname.replace(/^www\./, '');
+  const achado = Object.keys(VEICULOS).find(d => host === d || host.endsWith('.' + d));
+  if (achado) return VEICULOS[achado];
+  const s = String(sugerido || '').trim();
+  if (s && s.length <= 30 && !/[,(]|publicad|https?:|\.\w{2,3}$/i.test(s)) return s;
+  const base = host.split('.').slice(-3).find(x => x.length > 3 && !['com', 'org', 'gov', 'net'].includes(x)) || host;
+  return base.charAt(0).toUpperCase() + base.slice(1);
+};
 
 const slugar = t => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 70).replace(/-$/, '');
 const semTravessao = s => String(s).replace(/\s*[—–]\s*/g, ' - ');
@@ -108,8 +128,8 @@ const limparHtml = h => semTravessao(h)
 
   const fontes = [...(Array.isArray(m.fontes) ? m.fontes : []), ...res.citadas]
     .filter(f => f && /^https?:\/\//.test(f.url || ''))
-    .map(f => ({ nome: semTravessao(f.nome || new URL(f.url).hostname).slice(0, 80), url: f.url.replace(/[?&]utm_[^&]+/g, '') }))
-    .filter((f, i, a) => a.findIndex(x => x.url === f.url) === i).slice(0, 5);
+    .map(f => ({ nome: semTravessao(nomeFonte(f.url, f.nome)), url: f.url.replace(/[?&]utm_[^&]+/g, '') }))
+    .filter((f, i, a) => a.findIndex(x => x.nome === f.nome) === i).slice(0, 5);
   if (!fontes.length) { console.error('Matéria sem fontes. Nada publicado.'); process.exit(1); }
 
   const [de, para] = CORES[categoria] || CORES.Tecnologia;
