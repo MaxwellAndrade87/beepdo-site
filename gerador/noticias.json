@@ -1,5 +1,45 @@
 [
  {
+  "slug": "hbo-max-paramount-assinatura-conjunta",
+  "data": "2026-11-10",
+  "hora": "22:12",
+  "categoria": "Tecnologia",
+  "titulo": "HBO Max e Paramount+ terão pacote conjunto em 2027",
+  "resumo": "HBO Max e Paramount+ terão assinatura conjunta no início de 2027. Veja o que foi anunciado, o que falta confirmar e como organizar seus gastos.",
+  "leitura": 3,
+  "capa": {
+   "emoji": "📺",
+   "de": "#6D4AE0",
+   "para": "#8B7CF6"
+  },
+  "imagemPrompt": "Fotografia ilustrativa realista de duas pessoas adultas comuns sentadas no sofá de uma sala de apartamento genérico à noite, comparando gastos no celular e em um caderno sem inscrições legíveis, com controle remoto sobre a mesa e televisão desfocada ao fundo exibindo apenas formas abstratas coloridas. Ambiente acolhedor, iluminação suave, composição horizontal, sem texto, logotipos, marcas ou pessoas reconhecíveis.",
+  "imagemAlt": "Imagem ilustrativa: HBO Max e Paramount+ terão pacote conjunto em 2027",
+  "palavrasChave": [
+   "HBO Max e Paramount+",
+   "streaming",
+   "assinatura conjunta",
+   "assinaturas digitais",
+   "orçamento doméstico"
+  ],
+  "fontes": [
+   {
+    "nome": "Canaltech",
+    "url": "https://canaltech.com.br/apps/hbo-max-e-paramount-terao-plano-conjunto-com-desconto-em-2027/"
+   },
+   {
+    "nome": "Oficina da Net",
+    "url": "https://www.oficinadanet.com.br/hbo-max/74044-hbo-max-paramount-plus-assinatura-conjunta-2027"
+   },
+   {
+    "nome": "CinePOP",
+    "url": "https://cinepop.com.br/assinatura-conjunta-da-hbo-max-e-da-paramount-sera-lancada-no-inicio-de-2027-confirma-david-ellison-775583/"
+   }
+  ],
+  "copia": 0,
+  "automatico": true,
+  "corpo": "<p>HBO Max e Paramount+ terão um pacote de assinatura conjunta no início de 2027, segundo anúncio da Skydance divulgado na segunda-feira, 9 de novembro, e repercutido nesta terça-feira, 10. A proposta é permitir a contratação dos dois serviços em uma mesma oferta, mas ainda não há preço divulgado nem confirmação de lançamento no Brasil.</p><p>Para quem mantém as duas assinaturas, a novidade abre uma possibilidade de rever os gastos com streaming. Ainda assim, faltam informações para saber quanto o consumidor poderá economizar e quais condições serão oferecidas aos clientes atuais.</p><h2>Quando o pacote conjunto será lançado?</h2><p>A previsão apresentada pela companhia é o início de 2027, sem um dia específico. A informação foi divulgada em uma carta aos acionistas, junto com os resultados financeiros do terceiro trimestre.</p><p>O pacote faz parte da aproximação dos serviços após a aquisição da Warner Bros. Discovery pela Paramount. A estratégia começa pela oferta comercial combinada, sem depender da conclusão de toda a integração tecnológica.</p><p><strong>O lançamento no Brasil ainda não está confirmado.</strong> Os mercados que receberão a assinatura conjunta na primeira etapa não foram detalhados. Portanto, a previsão internacional não deve ser tratada como uma data garantida para o público brasileiro.</p><h2>Os dois serviços vão virar um único aplicativo?</h2><p>Não é isso que está previsto para a primeira etapa. A contratação conjunta deve começar com as plataformas ainda separadas, cada uma com seu aplicativo, em vez de reunir imediatamente todos os conteúdos em uma única interface.</p><p>A direção da empresa apresenta o pacote como um primeiro passo para aproximar os serviços. A integração tecnológica está nos planos, mas não há uma data anunciada para a substituição dos dois aplicativos por um produto único.</p><p>Essa diferença importa na hora de avaliar a oferta: contratar dois catálogos em um pacote não significa, necessariamente, navegar por ambos no mesmo lugar. As condições de acesso e a experiência final ainda precisam ser esclarecidas.</p><h2>Quanto vai custar a assinatura conjunta?</h2><p>O valor não foi divulgado. A comunicação da companhia aponta uma proposta comercial mais vantajosa para contratar os dois serviços, mas não informa o tamanho da diferença em relação às assinaturas individuais.</p><p>Também faltam detalhes sobre modalidades com publicidade, regras de cobrança e tratamento dos planos existentes. Por enquanto, não há base para calcular uma economia mensal ou afirmar que todos os assinantes pagarão menos.</p><p>Um pacote pode ser interessante para quem já utiliza as duas plataformas. Para quem acompanha apenas uma delas, porém, a comparação precisa considerar o gasto total, não apenas a promessa de desconto.</p><h2>O que fazer agora com suas assinaturas?</h2><p>A orientação prática do BeepDo é preparar a comparação, sem antecipar uma mudança que ainda não tem condições locais definidas. Faça um levantamento simples do que você paga e do que realmente usa antes de decidir por qualquer nova oferta.</p><ul><li><strong>Registre os valores atuais:</strong> anote o preço efetivamente cobrado por cada serviço, incluindo eventuais descontos.</li><li><strong>Marque as renovações:</strong> crie um lembrete antes da próxima cobrança, principalmente se estiver perto de renovar um plano anual.</li><li><strong>Confira o uso:</strong> observe se as duas plataformas fazem parte da sua rotina ou se uma delas está parada.</li><li><strong>Espere as regras brasileiras:</strong> compare preço, publicidade, telas simultâneas e condições de contratação quando houver anúncio local.</li><li><strong>Verifique a transição:</strong> antes de aderir ao pacote, confirme como ficam as assinaturas anteriores e evite manter contratações sobrepostas.</li></ul><p>A pergunta mais útil não é apenas quanto custa o combo, mas quanto ele muda a sua despesa atual. Se a oferta incluir um serviço que você não pretendia contratar, um desconto sobre o preço combinado pode não representar economia no seu orçamento.</p>"
+ },
+ {
   "slug": "ia-nas-empresas-testes-resultados",
   "data": "2026-11-10",
   "hora": "18:15",
