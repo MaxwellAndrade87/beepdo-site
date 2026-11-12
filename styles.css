@@ -25,6 +25,8 @@ img{max-width:100%;display:block}
 .menu a{color:var(--t2);text-decoration:none;font-weight:500;font-size:15px}
 .menu a:hover{color:var(--t)}
 .menu .cta{background:var(--ac);color:#fff;padding:9px 16px;border-radius:999px}
+.menu .entrar{color:var(--t);font-weight:600;padding:8px 15px;border-radius:999px;border:1px solid var(--bd)}
+.menu .entrar:hover{color:var(--ac)}
 @media (prefers-color-scheme:dark){.menu .cta{color:#0F0F14}}
 @media (max-width:720px){.menu{gap:14px}.menu a:not(.cta):not([href="/blog/"]){display:none}.menu a[href="/blog/"]{font-weight:700;color:var(--t)}}
 

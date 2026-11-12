@@ -48,6 +48,7 @@ function pagina({ arquivo, titulo, descricao, corpo, head = '', tipo = 'website'
     <a href="/#premium">Premium</a>
     <a href="/blog/">Blog</a>
     <a href="/faq">Dúvidas</a>
+    <a class="entrar" href="/app/">Entrar</a>
     <a class="cta" href="/#premium">Ver planos</a>
   </nav>
 </div></header>
