@@ -1,5 +1,45 @@
 [
  {
+  "slug": "ipca-alimentos-luz-orcamento",
+  "data": "2026-11-12",
+  "hora": "18:49",
+  "categoria": "Economia",
+  "titulo": "IPCA sobe 0,14% em outubro, mas alimentos pesam no bolso",
+  "resumo": "IPCA desacelera com energia e gasolina mais baratas, mas alimentos sobem. Entenda os números e veja como ajustar compras e contas no orçamento.",
+  "leitura": 3,
+  "capa": {
+   "emoji": "🛒",
+   "de": "#B26A00",
+   "para": "#E59A1A"
+  },
+  "imagemPrompt": "Cena fotográfica ilustrativa e realista de duas pessoas adultas comuns comparando legumes e preços em um supermercado genérico brasileiro, com tomates, cebolas e cenouras em primeiro plano e uma cesta de compras parcialmente preenchida. Uma pessoa segura um celular com a tela fora de foco. Iluminação natural, estilo de fotografia editorial, enquadramento horizontal, sem textos legíveis, logotipos, marcas ou pessoas famosas.",
+  "imagemAlt": "Imagem ilustrativa: IPCA sobe 0,14% em outubro, mas alimentos pesam no bolso",
+  "palavrasChave": [
+   "IPCA",
+   "inflação",
+   "preço dos alimentos",
+   "conta de luz",
+   "orçamento doméstico"
+  ],
+  "fontes": [
+   {
+    "nome": "Agência Gov",
+    "url": "https://agenciagov.ebc.com.br/noticias/202611/inflacao-desacelera-e-fica-em-0-14-em-outubro"
+   },
+   {
+    "nome": "Exame",
+    "url": "https://exame.com/economia/ipca-desacelera-para-014-em-outubro-com-queda-da-luz-e-da-gasolina/"
+   },
+   {
+    "nome": "UOL",
+    "url": "https://noticias.uol.com.br/ultimas-noticias/reuters/2026/11/12/ipca-sobe-menos-que-o-esperado-em-outubro-com-quedas-em-energia-passagens-aereas-e-combustiveis.htm"
+   }
+  ],
+  "copia": 1.3,
+  "automatico": true,
+  "corpo": "<p>O IPCA, índice oficial da inflação brasileira, subiu 0,14% em outubro, segundo dados divulgados pelo Instituto Brasileiro de Geografia e Estatística (IBGE) nesta quinta-feira, 12 de novembro de 2026. A alta foi menor que a de setembro, de 0,82%, mas os alimentos continuaram encarecendo e limitaram o alívio no orçamento das famílias.</p><p>O resultado reúne movimentos diferentes: enquanto energia elétrica, gasolina e passagens aéreas ficaram mais baratas, produtos importantes da lista do supermercado tiveram aumentos. Por isso, a desaceleração do indicador não significa que todas as despesas passaram a custar menos.</p><h2>Por que o IPCA desacelerou em outubro?</h2><p>A energia elétrica residencial caiu 1,92% e foi o item que mais ajudou a conter a inflação do mês. A mudança da bandeira tarifária amarela para a verde, sem cobrança adicional, contribuiu para essa redução.</p><p>Nos transportes, as passagens aéreas recuaram 9,21% e a gasolina ficou 0,56% mais barata. O comportamento não foi igual entre todos os combustíveis: diesel e etanol registraram aumentos.</p><p>Com essas diferenças, o grupo Transportes apresentou queda de 0,59%, enquanto Habitação recuou 0,51%. São resultados médios da pesquisa, não uma garantia de desconto na mesma proporção para cada consumidor.</p><h2>Quais alimentos ficaram mais caros?</h2><p>Alimentação e bebidas subiu 1,04%, contra 0,83% em setembro, e foi o grupo com maior contribuição para a alta do índice. Considerando apenas os alimentos consumidos em casa, o aumento chegou a 1,31%.</p><p>Alguns produtos tiveram variações bem superiores ao resultado geral:</p><ul><li><strong>Tomate:</strong> alta de 19,57%.</li><li><strong>Cebola:</strong> aumento de 11,29%.</li><li><strong>Arroz:</strong> avanço de 4,81%.</li><li><strong>Carnes:</strong> alta de 2,27%.</li></ul><p>Também houve quedas, como as da cenoura, da batata-inglesa e do café moído. O contraste mostra por que vale observar os itens da compra, e não apenas a variação total da inflação.</p><h2>A inflação menor significa preços mais baixos?</h2><p>Não. Como o IPCA permaneceu positivo, o conjunto de preços pesquisados continuou subindo, apenas em ritmo menor. Uma redução generalizada corresponderia a um índice negativo, situação diferente da registrada em outubro.</p><p>Além disso, a inflação acumulada em 12 meses passou de 4,58% para 4,63%. Esse resultado ficou acima do limite superior de 4,5% do sistema de metas, embora o número mensal tenha desacelerado.</p><p>Não há contradição: a taxa mensal mede a mudança em relação ao mês anterior, enquanto a acumulada acompanha uma janela de 12 meses. No ano, a alta chegou a 4,10%.</p><h2>O que fazer agora para ajustar compras e contas?</h2><p>Para organizar o orçamento, a leitura prática é separar o possível alívio nas despesas de energia e transporte da pressão sobre a alimentação. Não trate o índice menor como dinheiro automaticamente disponível para uma nova compra.</p><p>A proposta do BeepDo é transformar essa conferência em pequenas tarefas, com dia e horário definidos, em vez de deixar a revisão das contas para quando faltar saldo.</p><ol><li><strong>Revise o supermercado antes da próxima compra.</strong> Confira o que já existe em casa, estabeleça um limite de gasto e compare alternativas para os produtos que ficaram mais caros.</li><li><strong>Anote quantidade e preço.</strong> Compare o valor por quilo ou litro, não apenas o total da embalagem. Guarde os registros para acompanhar a sua própria cesta.</li><li><strong>Confira a próxima conta de luz.</strong> Observe consumo, período de leitura e valor cobrado. Evite reservar antecipadamente uma economia que ainda não apareceu na fatura.</li><li><strong>Separe vencimentos e saldo disponível.</strong> Liste as contas que precisam ser pagas antes de comprometer qualquer sobra com despesas adicionais.</li><li><strong>Marque uma revisão semanal curta.</strong> Reserve 15 minutos para atualizar os gastos e ajustar o limite das compras seguintes.</li></ol><p>O próximo IPCA, referente a novembro, está previsto para 11 de dezembro. Até lá, acompanhar os próprios comprovantes ajuda a identificar onde o orçamento precisa de ajustes, sem depender apenas da média nacional.</p>"
+ },
+ {
   "slug": "greve-espanha-moradia-transportes",
   "data": "2026-11-12",
   "hora": "15:12",
