@@ -1,5 +1,49 @@
 [
  {
+  "slug": "jargao-corporativo-siglas-atrapalham-trabalho",
+  "data": "2026-11-11",
+  "hora": "23:14",
+  "categoria": "Produtividade",
+  "titulo": "Jargão corporativo: quando as siglas atrapalham o trabalho",
+  "resumo": "Jargão corporativo motivou encerramento de reuniões na Cisco. Entenda o problema e veja como transformar pedidos confusos em tarefas claras.",
+  "leitura": 3,
+  "capa": {
+   "emoji": "💬",
+   "de": "#4338CA",
+   "para": "#6366F1"
+  },
+  "imagemPrompt": "Fotografia ilustrativa realista de quatro profissionais comuns, de diferentes idades e tons de pele, em uma pequena sala de reuniões de um escritório genérico brasileiro. Uma pessoa pede esclarecimento enquanto outra explica uma ideia, com expressões atentas e ambiente colaborativo. Cadernos abertos e um notebook sobre a mesa, com telas e páginas sem conteúdo legível. Luz natural, enquadramento horizontal, sem pessoas famosas, logotipos, marcas ou texto.",
+  "imagemAlt": "Imagem ilustrativa: Jargão corporativo: quando as siglas atrapalham o trabalho",
+  "palavrasChave": [
+   "jargão corporativo",
+   "comunicação no trabalho",
+   "reuniões",
+   "produtividade",
+   "gestão de equipes"
+  ],
+  "fontes": [
+   {
+    "nome": "Fortune",
+    "url": "https://fortune.com/2026/11/11/ciscos-chief-jeetu-patel-terminate-meeting-over-acronyms-jeff-bezos-jamie-dimon-rules/"
+   },
+   {
+    "nome": "National Geographic",
+    "url": "https://www.nationalgeographic.com/history/article/history-of-corporate-jargon"
+   },
+   {
+    "nome": "Duolingo",
+    "url": "https://blog.duolingo.com/state-of-jargon-report/"
+   },
+   {
+    "nome": "Product School",
+    "url": "https://productschool.substack.com/p/cisco-chief-product-officernext-gen"
+   }
+  ],
+  "copia": 0,
+  "automatico": true,
+  "corpo": "<p>O jargão corporativo levou o presidente da Cisco a encerrar reuniões, segundo relato publicado nesta quarta-feira, 11 de novembro de 2026.</p><p>O episódio abre uma discussão prática para qualquer equipe: uma conversa pode parecer rápida para quem fala e continuar incompreensível para quem precisa executar. Para organizar o trabalho, entender o pedido é tão importante quanto anotar a data da entrega.</p><h2>Por que o jargão corporativo merece atenção?</h2><p>A preocupação com a linguagem não é nova na trajetória de Jeetu Patel. Em uma entrevista publicada em março de 2025, o executivo já defendia uma comunicação simples e apontava que o excesso de siglas e termos técnicos pode afastar novos funcionários.</p><p>Naquela conversa, Patel também destacou o tempo gasto para alinhar pessoas em organizações grandes. A defesa da simplicidade estava ligada à capacidade de trabalhar com eficiência, sem transformar a coordenação das equipes em um obstáculo à execução.</p><p>É importante separar as coisas: o relato divulgado agora não demonstra, por si só, quanto tempo uma empresa economiza ao reduzir siglas. Ele oferece um exemplo de gestão para discutir um problema que também aparece em pesquisas e análises sobre comunicação.</p><h2>O que as pesquisas mostram sobre a confusão?</h2><p>Um levantamento de Duolingo e LinkedIn, divulgado em 2023, ouviu mais de 8 mil profissionais em oito países, incluindo o Brasil. Entre os participantes, 58% consideravam que os colegas exageravam no uso de jargões, enquanto 60% diziam precisar descobrir sozinhos o significado dessas expressões.</p><p>No recorte brasileiro, a lista de termos que geravam confusão incluía feedback, networking, ASAP, briefing e brainstorm. São resultados daquele levantamento, não uma medição atual de todos os trabalhadores brasileiros.</p><p>Uma reportagem publicada em março de 2025, com entrevistas com pesquisadores de linguagem e comportamento organizacional, acrescenta uma distinção: o vocabulário compartilhado pode fortalecer o pertencimento a um grupo, mas também separar quem domina os códigos de quem ainda não os conhece.</p><p>A conclusão não é que toda expressão técnica deva desaparecer. O critério é verificar se ela ajuda os participantes a compreender a conversa ou se esconde informações necessárias para trabalhar.</p><h2>Como transformar um pedido vago em uma tarefa clara?</h2><p>Para aplicar essa discussão à rotina, vale fazer um teste: alguém que não participou da reunião conseguiria executar a tarefa apenas lendo o registro? Se a resposta for não, experimente reescrever o pedido antes de distribuí-lo.</p><p>Em vez de registrar apenas uma orientação como alinhar o briefing com urgência, use uma descrição que esclareça a ação esperada. O exemplo abaixo é uma sugestão editorial, não uma instrução da empresa citada:</p><ul><li><strong>Entrega:</strong> revisar o documento com os requisitos da campanha.</li><li><strong>Responsável:</strong> indicar quem fará a revisão e quem dará a aprovação.</li><li><strong>Prazo:</strong> combinar dia e horário, sem depender de expressões como assim que possível.</li><li><strong>Conclusão:</strong> definir onde a versão aprovada deverá ser salva e quem será avisado.</li></ul><h2>O que fazer agora para evitar retrabalho?</h2><p>A proposta prática do BeepDo é revisar a clareza do pedido antes de criar o lembrete. O alarme deve apontar para uma ação compreensível, com uma entrega definida, e não apenas repetir uma frase vaga da reunião.</p><ol><li><strong>Antes da conversa:</strong> escreva qual decisão precisa ser tomada e explique as siglas indispensáveis.</li><li><strong>Durante a discussão:</strong> peça um exemplo concreto quando um termo não estiver claro.</li><li><strong>Ao encerrar:</strong> confira em voz alta a entrega, o responsável e o prazo combinado.</li><li><strong>Depois:</strong> registre as decisões e combine quando dúvidas ou impedimentos deverão ser comunicados.</li></ol><p>Se você lidera a equipe, experimente perguntar o que falta esclarecer para começar, em vez de apenas perguntar se todos entenderam. Para quem recebeu uma tarefa confusa, uma saída é apresentar sua interpretação e pedir confirmação antes de executar.</p><p>A meta não precisa ser eliminar o vocabulário de cada profissão. Para a próxima reunião, adote um objetivo mais simples: nenhum pedido deve sair da conversa sem que as pessoas envolvidas consigam explicar o que será feito.</p>"
+ },
+ {
   "slug": "enem-revisao-segundo-dia",
   "data": "2026-11-11",
   "hora": "18:51",
