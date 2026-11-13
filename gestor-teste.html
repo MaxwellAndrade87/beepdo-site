@@ -26,6 +26,12 @@ a{color:var(--ac)}
 .nav button.on{background:var(--acs);color:var(--ac);font-weight:600}
 .nav .cnt{margin-left:auto;font-size:11px;font-weight:700;background:var(--ers);color:var(--er);border-radius:999px;padding:2px 7px}
 .side .rodape{margin-top:auto;display:flex;flex-direction:column;gap:6px;padding:0 8px;font-size:12px;color:var(--mu)}
+.side .quem{display:flex;align-items:center;gap:10px;padding-bottom:4px}
+.side .quem b{font-size:14px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side .quem small{font-size:12px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side .ava{width:34px;height:34px;border-radius:50%;background:var(--acs);color:var(--ac);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;flex:none}
+.voltar-app{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;min-height:34px;padding:0 10px;margin:-6px 0 -8px;border-radius:9px;font-size:13px;font-weight:600;color:var(--ac);text-decoration:none}
+.voltar-app:hover{background:var(--acs)}
 .main{flex:1;min-width:0;padding:28px 34px 60px;display:flex;flex-direction:column;gap:18px}
 .topo{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px}
 h1{margin:0;font-size:24px;font-weight:700}
@@ -99,6 +105,14 @@ table.t tr.click{cursor:pointer}table.t tr.click:hover td{background:#FAFAFC}
 .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#1B1B23;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:80;opacity:0;transition:opacity .2s;pointer-events:none}
 .toast.on{opacity:1}
 .modal:has(.largo){max-width:940px}
+.fa-topo{display:flex;flex-direction:column;gap:14px}
+.esticavel{overflow:auto;resize:vertical;min-height:200px;max-height:none;flex:none}
+.esticavel::-webkit-resizer{background:linear-gradient(135deg,transparent 50%,var(--mu) 50%,var(--mu) 60%,transparent 60%,transparent 72%,var(--mu) 72%,var(--mu) 82%,transparent 82%)}
+.esticavel .t tr.tit td{position:sticky;top:0;z-index:1;background:var(--sf)}
+details.avisos{border:1px solid var(--bd);border-radius:12px;padding:10px 12px}
+details.avisos summary{cursor:pointer;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;list-style:none}
+details.avisos summary::-webkit-details-marker{display:none}
+.modal:has(.fa-rodape) .fa-rodape{position:sticky;bottom:-22px;background:var(--sf);padding:12px 0 2px;margin-bottom:-2px;border-top:1px solid var(--bd)}
 @media print{
   @page{size:A4 landscape;margin:8mm}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -138,9 +152,12 @@ const SB_KEY = 'sb_publishable_vuSQaDWky4xRYPwCPvbr8g_5AUFizC5';
 // Aberto dentro do app BeepDo: a sessão vem do app (sem login de novo) e quem renova o token é o app.
 const NO_APP = !!(window.ReactNativeWebView && window.__BEEPDO_APP && window.__BEEPDO_APP.sessao);
 function avisarApp(msg) { try { window.ReactNativeWebView.postMessage(JSON.stringify(msg)); } catch (e) {} }
+// Mesma sessão do BeepDo no navegador (beepdo.app/app): entrou num, está logado no outro.
+const CHAVE_SESSAO = 'sb-kbbclredwktimecdqtwq-auth-token';
+try { const antiga = localStorage.getItem('beepdo-gestor'); if (antiga && !localStorage.getItem(CHAVE_SESSAO)) localStorage.setItem(CHAVE_SESSAO, antiga); if (antiga) localStorage.removeItem('beepdo-gestor'); } catch (e) {}
 const sb = supabase.createClient(SB_URL, SB_KEY, { auth: NO_APP
   ? { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: 'beepdo-gestor-app' }
-  : { persistSession: true, autoRefreshToken: true, storageKey: 'beepdo-gestor', detectSessionInUrl: true, flowType: 'pkce' } });
+  : { persistSession: true, autoRefreshToken: true, storageKey: CHAVE_SESSAO, detectSessionInUrl: true, flowType: 'pkce' } });
 
 /* ============ utilidades ============ */
 const $ = (s, r = document) => r.querySelector(s);
@@ -465,9 +482,10 @@ function render() {
   const sx = window.scrollX, sy = window.scrollY;
   const scr = document.querySelector('[data-scroll]'); const sl = scr ? scr.scrollLeft : 0;
   raiz.innerHTML = '<div class="app"><aside class="side">' +
+    (NO_APP ? '' : '<a class="voltar-app" href="/app/"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Voltar ao BeepDo</a>') +
     (NO_APP ? '' : '<div class="brand"><svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="#5B3FB0" stroke-width="3"/><path d="M10 16.5l4 4 8-9" fill="none" stroke="#5B3FB0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>BeepDo</b><small>Área do Gestor</small></div></div>') +
     '<nav class="nav" aria-label="Área do Gestor">' + VIEWS.map(([k, l]) => '<button data-a="ir" data-v="' + k + '" class="' + (S.view === k ? 'on' : '') + '">' + l + (k === 'tarefas' && naoExec ? '<span class="cnt">' + naoExec + '</span>' : '') + '</button>').join('') + '</nav>' +
-    '<div class="rodape"><span>' + esc(S.cfg.equipeNome) + '</span><span id="salvo" class="salvo">Tudo salvo</span><span>' + esc(S.user.email || '') + '</span><a href="#" data-a="sair">' + (NO_APP ? 'Fechar' : 'Sair') + '</a></div>' +
+    '<div class="rodape"><div class="quem" title="' + esc(S.user.email || '') + '"><span class="ava" aria-hidden="true">' + esc(nomeUsuario().charAt(0).toUpperCase()) + '</span><span class="col" style="gap:1px;min-width:0"><b>' + esc(nomeUsuario()) + '</b><small>' + esc(S.cfg.equipeNome) + '</small></span></div><span id="salvo" class="salvo">Tudo salvo</span><a href="#" data-a="sair">' + (NO_APP ? 'Fechar' : 'Sair') + '</a></div>' +
     '</aside><main class="main">' + (V[S.view] || V.painel)() + '</main></div>' + (S.ui.modal ? '<div class="modal-fundo" data-a="fecharModal"><div class="modal" role="dialog" aria-modal="true" data-stop>' + M[S.ui.modal.t]() + '</div></div>' : '');
   const scr2 = document.querySelector('[data-scroll]'); if (scr2 && S.ui.manterScroll) scr2.scrollLeft = sl;
   S.ui.manterScroll = false;
@@ -607,7 +625,7 @@ V.escala = () => {
     '<div class="col"><b>Travas</b><span class="sub">Descanso mínimo de ' + S.cfg.travas.interjornada + 'h entre jornadas e no máximo ' + S.cfg.travas.maxSeguidos + ' dias seguidos. O que passar disso vira alerta vermelho.</span></div></div>' : '';
   const leg = opcoesCodigo(filtro !== 'todos' ? setorPorId(filtro) : null).filter((c) => !/3$/.test(c) && !trabOculto(c)).map((c) => tag(c, c === 'x' ? 'Folga' : c + (siglaInfo(c).tipo !== 'posto' && siglaInfo(c).nome ? ' ' + siglaInfo(c).nome : ''))).join('');
   return '<div class="topo"><div class="row"><button class="btn" data-a="mes" data-d="-1" aria-label="Mês anterior">‹</button><div><h1>Escala · ' + MESES[m - 1] + ' ' + a + '</h1><div class="sub">Gerada automaticamente · ' + nAj + ' ajuste(s) manuais</div></div><button class="btn" data-a="mes" data-d="1" aria-label="Próximo mês">›</button></div>' +
-    '<div class="row"><button class="btn' + (S.ui.regras ? ' pri' : '') + '" data-a="togRegras">Regras da escala</button><button class="btn" data-a="desfazer">Desfazer ajustes</button><button class="btn" data-a="conferir">Conferir com o Excel</button><button class="btn" data-a="fimAno">Folgas de fim de ano</button>' + (NO_APP ? '' : '<button class="btn" data-a="imprimir">Imprimir</button><button class="btn" data-a="imagem">Baixar imagem</button>') + '<button class="btn pri" data-a="exportar">Exportar .xlsx</button></div></div>' +
+    '<div class="row"><button class="btn' + (S.ui.regras ? ' pri' : '') + '" data-a="togRegras">Regras da escala</button><button class="btn" data-a="desfazer">Desfazer ajustes</button><button class="btn" data-a="conferir" title="Carrega a escala que você mexeu no Excel e confere com a do BeepDo">Carregar</button><button class="btn" data-a="fimAno">Folgas de fim de ano</button>' + (NO_APP ? '' : '<button class="btn" data-a="imprimir">Imprimir</button><button class="btn" data-a="imagem">Baixar imagem</button>') + '<button class="btn pri" data-a="exportar">Exportar .xlsx</button></div></div>' +
     regras +
     '<div class="row" style="justify-content:space-between"><div class="seg">' + [['todos', setores().length > 1 ? 'Todos os postos' : 'Todos os turnos']].concat(setores().length > 1 ? setores().map((x) => [x.id, x.nome]) : []).map(([k, l]) => '<button class="' + (filtro === k ? 'on' : '') + '" data-a="filtroT" data-t="' + k + '">' + esc(l) + '</button>').join('') + '</div><div class="legenda">' + leg + '</div></div>' +
     '<div class="card flush" data-scroll><table class="esc">' + thead + corpo + '</table></div>' + pop +
@@ -1205,14 +1223,15 @@ M.fimAno = () => {
     }).join('') + (precisa ? '<tr><td class="sub" style="font-size:12px">No posto por dia</td><td colspan="3"><div class="row" style="gap:4px">' + cob.map((c) => '<span class="tag" title="' + br(c.s) + '" style="' + (c.n < min ? 'background:var(--ers);color:var(--er)' : c.n < precisa ? 'background:#FFF1D6;color:#8A5A00' : 'background:#E3F4E8;color:#1F6B3A') + '">' + br(c.s) + ': ' + c.n + '</span>').join('') + '</div></td></tr>' : '');
   }).join('');
   const total = pl.turnos.reduce((a, x) => a + x.gente.filter((y) => y.dias.length).length, 0);
-  return '<div class="largo"></div><h2>Folgas de fim de ano</h2><span class="sub">Metade da equipe folga no Natal e a outra metade no Ano Novo. Só vira folga o dia em que a pessoa trabalharia; quem já está de folga do ciclo não gasta banco de horas.</span>' +
+  return '<div class="largo"></div><div class="fa-topo"><h2>Folgas de fim de ano</h2><span class="sub">Metade da equipe folga no Natal e a outra metade no Ano Novo. Só vira folga o dia em que a pessoa trabalharia; quem já está de folga do ciclo não gasta banco de horas.</span>' +
     '<div class="row" style="gap:18px;align-items:flex-end">' + passo('faAno', 'Virada', mm.ano + '/' + (mm.ano + 1)) + passo('faN', 'Dias de folga', mm.n) + passo('faAntes', 'Quantos antes do dia', mm.antes) +
     '<label class="f" style="min-width:150px">Lançar como<select class="i" data-c="faSigla">' + siglasAusencia().filter((x) => x.tipo === 'ausencia').map((x) => '<option value="' + esc(x.sigla) + '"' + (mm.sigla === x.sigla ? ' selected' : '') + '>' + esc(x.sigla + ' · ' + x.nome) + '</option>').join('') + '</select></label></div>' +
     '<div class="col" style="gap:6px"><div class="row" style="gap:6px"><b style="font-size:13px;min-width:72px">Natal</b>' + dias(pl.jan.N, mm.ano + '-12-25') + '</div><div class="row" style="gap:6px"><b style="font-size:13px;min-width:72px">Ano Novo</b>' + dias(pl.jan.A, (mm.ano + 1) + '-01-01') + '</div>' +
-    '<span class="sub" style="font-size:12px">' + (mm.antes) + ' antes, o dia' + (mm.n - mm.antes - 1 > 0 ? ' e ' + (mm.n - mm.antes - 1) + ' depois' : '') + '. Mude em "Quantos antes do dia".</span></div>' +
-    '<div class="card flush" style="overflow:auto"><table class="t"><tbody>' + corpo + '</tbody></table></div>' +
-    (avisos.length ? '<div class="col" style="gap:6px">' + avisos.slice(0, 12).map((x) => '<div class="alerta a-er"><i></i><span>' + esc(x) + '</span></div>').join('') + '</div>' : '<span style="color:var(--ok)">Todos os turnos cobertos nos dois períodos.</span>') +
-    '<div class="row" style="justify-content:space-between"><button class="btn" data-a="faRedividir">Dividir de novo</button><div class="row"><button class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri" data-a="faLancar">Lançar folgas de ' + total + (total === 1 ? ' pessoa' : ' pessoas') + '</button></div></div>';
+    '<span class="sub" style="font-size:12px">' + (mm.antes) + ' antes, o dia' + (mm.n - mm.antes - 1 > 0 ? ' e ' + (mm.n - mm.antes - 1) + ' depois' : '') + '. Mude em "Quantos antes do dia".</span></div></div>' +
+    '<div class="card flush esticavel" style="height:' + (S.ui.faAltura || 360) + 'px" data-c="faAltura"><table class="t"><tbody>' + corpo + '</tbody></table></div>' +
+    '<span class="sub" style="font-size:12px;margin-top:-8px">Arraste o canto de baixo da lista pra aumentar.</span>' +
+    (avisos.length ? '<details class="avisos"' + (S.ui.faAvisos ? ' open' : '') + ' data-c="faAvisos"><summary><span class="pill p-er">' + avisos.length + '</span> ' + (avisos.length === 1 ? 'aviso' : 'avisos') + ' de cobertura ou banco de horas <span class="sub">(toque pra ver)</span></summary><div class="col" style="gap:6px;margin-top:8px">' + avisos.slice(0, 30).map((x) => '<div class="alerta a-er"><i></i><span>' + esc(x) + '</span></div>').join('') + '</div></details>' : '<span style="color:var(--ok)">Todos os turnos cobertos nos dois períodos.</span>') +
+    '<div class="row fa-rodape" style="justify-content:space-between"><button class="btn" data-a="faRedividir">Dividir de novo</button><div class="row"><button class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri" data-a="faLancar">Lançar folgas de ' + total + (total === 1 ? ' pessoa' : ' pessoas') + '</button></div></div>';
 };
 A.faLancar = () => {
   const mm = S.ui.modal, pl = faPlano(mm), tag = faTag(mm);
@@ -1228,7 +1247,7 @@ A.faLancar = () => {
   salvar('ausencias'); render(); toast(n ? 'Folgas de fim de ano lançadas. Confira dezembro e janeiro.' : 'Nenhuma folga pra lançar.');
 };
 
-/* ============ CONFERIR COM O EXCEL ============ */
+/* ============ CARREGAR (escala mexida no Excel) ============ */
 // A pessoa cola (ou envia) a escala que mexeu no Excel. O BeepDo compara com a dele,
 // aplica o que mudou como ajuste, redistribui o resto e mostra os alertas novos.
 const cfNorm = (s) => String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ').trim().toUpperCase();
@@ -1344,7 +1363,7 @@ function cfAplicar(lido) {
   Object.keys(alvos).forEach((pid) => {
     const p = S.equipe.find((x) => x.id === pid); if (!p) return;
     let run = null;
-    const fecha = () => { if (run) { S.ausencias.push({ id: uid(), pessoaId: pid, sigla: run.sig, de: run.de, ate: run.ate, obs: 'Conferido com o Excel' }); nTurno++; run = null; } };
+    const fecha = () => { if (run) { S.ausencias.push({ id: uid(), pessoaId: pid, sigla: run.sig, de: run.de, ate: run.ate, obs: 'Carregado do Excel' }); nTurno++; run = null; } };
     Object.keys(alvos[pid]).sort().forEach((s) => {
       const al = alvos[pid][s]; if (!al.t) { fecha(); return; }
       const a = ausenciaDe(pid, s), noTurno = a && (siglaInfo(a.sigla) || {}).tipo === 'turno' ? siglaInfo(a.sigla).destino : turnoEm(p, s);
@@ -1404,17 +1423,17 @@ C.cfArquivo = (el) => {
 A.cfVoltar = () => { S.ui.modal.lido = null; S.ui.modal.difs = null; render(); };
 M.conferir = () => {
   const mm = S.ui.modal, [a, m] = mesAtual();
-  if (!mm.lido) return '<h2>Conferir com o Excel</h2><span class="sub">Mexeu na escala pelo Excel? No Excel, selecione da coluna dos nomes até o último dia (com a linha das datas), copie e cole aqui. O BeepDo mostra o que está diferente, aplica, redistribui os outros postos e avisa se der interjornada ou dias seguidos demais.</span>' +
+  if (!mm.lido) return '<h2>Carregar escala</h2><span class="sub">Mexeu na escala pelo Excel? No Excel, selecione da coluna dos nomes até o último dia (com a linha das datas), copie e cole aqui. O BeepDo mostra o que está diferente, aplica, redistribui os outros postos e avisa se der interjornada ou dias seguidos demais.</span>' +
     '<textarea class="i" id="cfTexto" data-c="cfTexto" rows="7" placeholder="Cole aqui (Ctrl+V)" style="font-family:ui-monospace,monospace;font-size:12px;white-space:pre;height:auto;padding:10px">' + esc(mm.texto) + '</textarea>' +
     '<label class="f">Ou envie a planilha (.xlsx)<input class="i" type="file" accept=".xlsx,.xls,.xlsm" data-c="cfArquivo" style="padding:8px"></label>' +
     '<span class="sub" style="font-size:12px">Datas sem ano valem pro mês da tela (' + MESES[m - 1] + ' ' + a + ') e os meses vizinhos.</span>' +
     '<div class="row" style="justify-content:flex-end"><button class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri" data-a="cfComparar">Comparar</button></div>';
   const l = mm.lido, difs = mm.difs || [];
-  if (l.erro) return '<h2>Conferir com o Excel</h2><div class="alerta a-er"><i></i><span>' + esc(l.erro) + '</span></div><div class="row" style="justify-content:flex-end"><button class="btn pri" data-a="cfVoltar">Voltar</button></div>';
+  if (l.erro) return '<h2>Carregar escala</h2><div class="alerta a-er"><i></i><span>' + esc(l.erro) + '</span></div><div class="row" style="justify-content:flex-end"><button class="btn pri" data-a="cfVoltar">Voltar</button></div>';
   const nome = (pid) => (S.equipe.find((x) => x.id === pid) || {}).nome || '?';
   const desc = Object.keys(l.desconhecidas);
   const nPess = Object.keys(l.alvos).length;
-  return '<div class="largo"></div><h2>Conferir com o Excel</h2><span class="sub">Li ' + nPess + (nPess === 1 ? ' pessoa' : ' pessoas') + ' de ' + br(l.dias[0]) + ' a ' + brA(l.dias[l.dias.length - 1]) + '. ' + (difs.length ? difs.length + (difs.length === 1 ? ' célula diferente' : ' células diferentes') + ' da escala do BeepDo.' : 'Está tudo igual à escala do BeepDo.') + '</span>' +
+  return '<div class="largo"></div><h2>Carregar escala</h2><span class="sub">Li ' + nPess + (nPess === 1 ? ' pessoa' : ' pessoas') + ' de ' + br(l.dias[0]) + ' a ' + brA(l.dias[l.dias.length - 1]) + '. ' + (difs.length ? difs.length + (difs.length === 1 ? ' célula diferente' : ' células diferentes') + ' da escala do BeepDo.' : 'Está tudo igual à escala do BeepDo.') + '</span>' +
     (l.semPar.length ? '<div class="alerta a-wa"><i></i><span>Não achei na equipe: ' + esc(l.semPar.slice(0, 12).join(', ')) + '. Essas linhas ficaram de fora (confira o nome em Equipe).</span></div>' : '') +
     (desc.length ? '<div class="alerta a-wa"><i></i><span>Siglas que o BeepDo não conhece: ' + esc(desc.slice(0, 12).join(', ')) + '. Ficaram de fora; crie em Configurações se quiser usar.</span></div>' : '') +
     (difs.length ? '<div class="card flush" style="max-height:44vh;overflow:auto"><table class="t"><thead><tr><th>Dia</th><th>Pessoa</th><th>No BeepDo</th><th></th><th>No Excel</th></tr></thead><tbody>' + difs.slice(0, 300).map((d) => '<tr><td>' + SEM[dow(d.s)] + ' ' + br(d.s) + '</td><td><b>' + esc(nome(d.pid)) + '</b></td><td>' + tag(d.de) + (d.tPara ? ' <span class="sub">' + esc(labelTurno(d.tDe)) + '</span>' : '') + '</td><td class="sub">→</td><td>' + (d.para != null ? tag(d.para) : '') + (d.tPara ? ' <span class="sub">' + esc(labelTurno(d.tPara)) + '</span>' : '') + '</td></tr>').join('') + '</tbody></table></div>' : '') +
@@ -1441,6 +1460,9 @@ A.cfDescartar = () => { const r = S.ui.modal && S.ui.modal.r; if (r) { S.ajustes
 // Fechar a janela do resultado (clique fora ou Esc) vale como descartar.
 const _fecharModal = A.fecharModal;
 A.fecharModal = (el, ev) => { if (S.ui.modal && S.ui.modal.t === 'conferido') { if (ev && ev.target.closest('[data-stop]') && el.classList.contains('modal-fundo')) return; A.cfDescartar(); return; } _fecharModal(el, ev); };
+
+document.addEventListener('mouseup', () => { const el = document.querySelector('.esticavel[data-c="faAltura"]'); if (el) S.ui.faAltura = Math.round(el.getBoundingClientRect().height); }, true);
+document.addEventListener('toggle', (ev) => { if (ev.target && ev.target.matches && ev.target.matches('details.avisos')) S.ui.faAvisos = ev.target.open; }, true);
 
 /* ============ IMPRIMIR E IMAGEM ============ */
 A.imprimir = () => { S.ui.pop = null; render(); setTimeout(() => window.print(), 50); };
@@ -1496,6 +1518,14 @@ function telaPremium() {
     '<span class="sub">Assine no app BeepDo (Perfil &gt; Premium) usando esta mesma conta: <b>' + esc(S.user.email || '') + '</b>. Depois é só voltar aqui.</span>' +
     '<div class="row" style="gap:8px;justify-content:flex-end"><a href="#" class="btn" data-a="sair">' + (NO_APP ? 'Fechar' : 'Sair') + '</a><button class="btn pri" onclick="location.reload()">Já assinei, verificar</button></div></div>';
 }
+/** Nome da pessoa: o do perfil do BeepDo; sem ele, o do cadastro; por último, o começo do e-mail. */
+function nomeUsuario() {
+  const u = S.user || {}, m = u.user_metadata || {};
+  const n = (S.nome || m.username || m.full_name || m.name || '').trim();
+  if (n) return n;
+  const e = (u.email || '').split('@')[0].replace(/[._\-]+/g, ' ').replace(/\d+/g, '').trim();
+  return e ? e.charAt(0).toUpperCase() + e.slice(1) : 'Gestor';
+}
 async function entrar(user) {
   if (S.user && S.user.id === user.id) return;
   S.user = user;
@@ -1505,6 +1535,7 @@ async function entrar(user) {
     if (erroAcesso) throw erroAcesso;
     if (!liberado) { $('#raiz').innerHTML = telaPremium(); return; }
     await carregar();
+    try { const { data: pf } = await sb.from('user_profiles').select('username').eq('id', user.id).maybeSingle(); if (pf && pf.username) S.nome = pf.username; } catch (e) {}
   } catch (e) { $('#raiz').innerHTML = '<div class="login card col"><h2>Não consegui carregar</h2><span class="sub">' + esc(e.message || e) + '</span><button class="btn" onclick="location.reload()">Tentar de novo</button></div>'; return; }
   _escCache = {};
   render();
