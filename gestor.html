@@ -18,7 +18,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 a{color:var(--ac)}
 .app{display:flex;min-height:100vh}
 .side{width:236px;flex:none;background:var(--sf);border-right:1px solid var(--bd);padding:22px 14px;display:flex;flex-direction:column;gap:20px;position:sticky;top:0;height:100vh}
-.brand{display:flex;gap:10px;align-items:center;padding:0 8px}
+.brand{display:flex;gap:10px;align-items:center;padding:6px 8px;margin:-6px 0;border-radius:10px;color:inherit;text-decoration:none}
+a.brand:hover{background:#F4F4F8}
 .brand b{font-size:16px;display:block}.brand small{color:var(--mu);font-size:12px}
 .nav{display:flex;flex-direction:column;gap:2px}
 .nav button{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:42px;padding:0 12px;border-radius:10px;font-size:14px;font-weight:500;color:#3A3A48}
@@ -26,6 +27,10 @@ a{color:var(--ac)}
 .nav button.on{background:var(--acs);color:var(--ac);font-weight:600}
 .nav .cnt{margin-left:auto;font-size:11px;font-weight:700;background:var(--ers);color:var(--er);border-radius:999px;padding:2px 7px}
 .side .rodape{margin-top:auto;display:flex;flex-direction:column;gap:6px;padding:0 8px;font-size:12px;color:var(--mu)}
+.side .quem{display:flex;align-items:center;gap:10px;padding-bottom:4px}
+.side .quem b{font-size:14px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side .quem small{font-size:12px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side .ava{width:34px;height:34px;border-radius:50%;background:var(--acs);color:var(--ac);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;flex:none}
 .main{flex:1;min-width:0;padding:28px 34px 60px;display:flex;flex-direction:column;gap:18px}
 .topo{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px}
 h1{margin:0;font-size:24px;font-weight:700}
@@ -98,6 +103,29 @@ table.t tr.click{cursor:pointer}table.t tr.click:hover td{background:#FAFAFC}
 .modal{background:var(--sf);border-radius:16px;padding:22px;width:100%;max-width:560px;max-height:92vh;overflow:auto;display:flex;flex-direction:column;gap:14px}
 .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#1B1B23;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:80;opacity:0;transition:opacity .2s;pointer-events:none}
 .toast.on{opacity:1}
+.modal:has(.largo){max-width:940px}
+.fa-topo{display:flex;flex-direction:column;gap:14px}
+.esticavel{overflow:auto;resize:vertical;min-height:200px;max-height:none;flex:none}
+.esticavel::-webkit-resizer{background:linear-gradient(135deg,transparent 50%,var(--mu) 50%,var(--mu) 60%,transparent 60%,transparent 72%,var(--mu) 72%,var(--mu) 82%,transparent 82%)}
+.esticavel .t tr.tit td{position:sticky;top:0;z-index:1;background:var(--sf)}
+details.avisos{border:1px solid var(--bd);border-radius:12px;padding:10px 12px}
+details.avisos summary{cursor:pointer;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;list-style:none}
+details.avisos summary::-webkit-details-marker{display:none}
+.modal:has(.fa-rodape) .fa-rodape{position:sticky;bottom:-22px;background:var(--sf);padding:12px 0 2px;margin-bottom:-2px;border-top:1px solid var(--bd)}
+@media print{
+  @page{size:A4 landscape;margin:8mm}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .side,.btn,.seg,.pop,.toast,.modal-fundo,.legenda,.card:not([data-scroll]){display:none!important}
+  .app{display:block}.main{padding:0!important;max-width:none}
+  .topo .sub{display:none}
+  [data-scroll]{overflow:visible!important;border:none!important;box-shadow:none!important;padding:0!important}
+  .esc{font-size:7.5px;border-spacing:1px;width:100%}
+  .esc th{min-width:0;padding:1px 0}.esc th .d{font-size:8px}
+  .esc th.nm,.esc td.nm{position:static;min-width:0;font-size:9px;padding:0 4px;white-space:nowrap}
+  .esc td.c{height:17px;border-radius:2px}.esc td.c.ov{box-shadow:none}
+  .esc td.tot{min-width:0;font-size:8px}.esc tr.tit td{position:static;padding:6px 4px 2px;font-size:9px}
+  .esc td.cob{height:12px;font-size:8px}
+}
 .salvo{font-size:12px;color:var(--mu)}
 .login{max-width:380px;margin:12vh auto;padding:28px}
 .menu-mob{display:none}
@@ -123,9 +151,12 @@ const SB_KEY = 'sb_publishable_vuSQaDWky4xRYPwCPvbr8g_5AUFizC5';
 // Aberto dentro do app BeepDo: a sessão vem do app (sem login de novo) e quem renova o token é o app.
 const NO_APP = !!(window.ReactNativeWebView && window.__BEEPDO_APP && window.__BEEPDO_APP.sessao);
 function avisarApp(msg) { try { window.ReactNativeWebView.postMessage(JSON.stringify(msg)); } catch (e) {} }
+// Mesma sessão do BeepDo no navegador (beepdo.app/app): entrou num, está logado no outro.
+const CHAVE_SESSAO = 'sb-kbbclredwktimecdqtwq-auth-token';
+try { const antiga = localStorage.getItem('beepdo-gestor'); if (antiga && !localStorage.getItem(CHAVE_SESSAO)) localStorage.setItem(CHAVE_SESSAO, antiga); if (antiga) localStorage.removeItem('beepdo-gestor'); } catch (e) {}
 const sb = supabase.createClient(SB_URL, SB_KEY, { auth: NO_APP
   ? { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: 'beepdo-gestor-app' }
-  : { persistSession: true, autoRefreshToken: true, storageKey: 'beepdo-gestor', detectSessionInUrl: true, flowType: 'pkce' } });
+  : { persistSession: true, autoRefreshToken: true, storageKey: CHAVE_SESSAO, detectSessionInUrl: true, flowType: 'pkce' } });
 
 /* ============ utilidades ============ */
 const $ = (s, r = document) => r.querySelector(s);
@@ -169,7 +200,7 @@ function feriado(s) { return feriadosDoAno(+s.slice(0, 4))[s] || null; }
 const CICLOS_PRONTOS = { '6x2': [[6, 2]], '6x1 / 5x2': [[6, 1], [5, 2]], '5x2': [[5, 2]], '12x36': [[1, 1]], '6x1': [[6, 1]] };
 function cfgPadrao() {
   return {
-    v: 1,
+    v: 2,
     equipeNome: 'Minha equipe',
     setores: [{ id: 's1', nome: 'Brassagem', ciclo: { nome: '6x2', blocos: [[6, 2]] },
       postos: [
@@ -191,6 +222,8 @@ function cfgPadrao() {
       { sigla: 'T', nome: 'Treinamento', tipo: 'treinamento', cor: '#E6D6FA' },
       { sigla: 'CEL', nome: 'Convocação eleitoral', tipo: 'ausencia', cor: '#EFE6C8' },
       { sigla: 'AT', nome: 'Atestado', tipo: 'ausencia', cor: '#FDE2DC' },
+      { sigla: 'ATC', nome: 'Atestado Covid', tipo: 'ausencia', cor: '#F9C9BF' },
+      { sigla: 'TF', nome: 'Trabalho na folga', tipo: 'trabalho', cor: '#F6D9A8' },
       { sigla: 'TA', nome: 'Remanejado p/ turno A', tipo: 'turno', destino: 'A', cor: '#5A5A66' },
       { sigla: 'TB', nome: 'Remanejado p/ turno B', tipo: 'turno', destino: 'B', cor: '#44444F' },
       { sigla: 'TC', nome: 'Remanejado p/ turno C', tipo: 'turno', destino: 'C', cor: '#2A2A33' }
@@ -236,6 +269,7 @@ async function carregar() {
     delete salvo.ciclo; delete salvo.postos; delete salvo.sup;
   }
   S.cfg = Object.assign(base, salvo);
+  if ((salvo.v || 1) < 2 && Array.isArray(salvo.siglas)) { cfgPadrao().siglas.filter((x) => x.sigla === 'ATC' || x.sigla === 'TF').forEach((x) => { if (!S.cfg.siglas.some((y) => y.sigla === x.sigla)) S.cfg.siglas.push(x); }); S.cfg.v = 2; }
   S.cfg.setores.forEach((x) => { x.postos = x.postos || []; x.sup = Object.assign({ ativo: true, prefixo: 'SUP', nome: 'Suporte', cor: '#FBE3EA' }, x.sup || {}); x.trab = Object.assign({ sigla: 'TRAB', nome: 'Trabalhando', cor: '#E3F4E8' }, x.trab || {}); x.ciclo = x.ciclo || { nome: '6x2', blocos: [[6, 2]] }; });
   S.cfg.turnos.forEach((t) => { if (!t.setor) t.setor = S.cfg.setores[0].id; });
   S.cfg.bh = Object.assign(cfgPadrao().bh, S.cfg.bh || {});
@@ -265,7 +299,7 @@ function siglaInfo(c) {
   const tb = setores().find((x) => x.trab && x.trab.sigla === c); if (tb) return { sigla: c, nome: tb.trab.nome, tipo: 'posto', cor: tb.trab.cor };
   return S.cfg.siglas.find((x) => x.sigla === c) || { sigla: c, nome: c, tipo: 'ausencia', cor: '#EEEEF3' };
 }
-function trabalhando(c) { const i = siglaInfo(c); return !!i && (i.tipo === 'posto' || i.tipo === 'treinamento' || i.tipo === 'turno'); }
+function trabalhando(c) { const i = siglaInfo(c); return !!i && (i.tipo === 'posto' || i.tipo === 'treinamento' || i.tipo === 'turno' || i.tipo === 'trabalho'); }
 function tagStyle(c) { const i = siglaInfo(c) || { cor: '#EEEEF3' }; return 'background:' + i.cor + ';color:' + corTexto(i.cor); }
 function tag(c, txt) { return '<span class="tag" style="' + tagStyle(c) + '">' + esc(txt == null ? (c === 'x' ? 'Folga' : c) : txt) + '</span>'; }
 
@@ -406,11 +440,11 @@ function excBH(pid) { return (S.cfg.bh.excecoes || {})[pid] || {}; }
 function limDia(pid) { const e = excBH(pid); return e.heDia != null ? e.heDia : S.cfg.bh.heDia; }
 function diaBH(pid, s) {
   const c = codigo(pid, s), inf = siglaInfo(c) || {}, J = S.cfg.jornada;
-  const prev = trabalhando(c) ? J : 0;
+  const prev = trabalhando(c) && inf.tipo !== 'trabalho' ? J : 0;
   const lanc = S.bh.lanc[pid + '|' + s];
-  const real = lanc != null ? lanc : prev;
+  const real = lanc != null ? lanc : (inf.tipo === 'trabalho' ? J : prev);
   let delta = real - prev;
-  if (inf.descontaBH) delta -= J;
+  if (inf.descontaBH) { const pe = S.equipe.find((x) => x.id === pid); if (!pe || trabalhaCiclo(pe, s)) delta -= J; }
   if (feriado(s) && S.cfg.feriadoModo === 'bh' && real > 0 && prev > 0) delta += J;
   return { c, prev, real, he: real - prev, delta, lancado: lanc != null };
 }
@@ -447,9 +481,9 @@ function render() {
   const sx = window.scrollX, sy = window.scrollY;
   const scr = document.querySelector('[data-scroll]'); const sl = scr ? scr.scrollLeft : 0;
   raiz.innerHTML = '<div class="app"><aside class="side">' +
-    (NO_APP ? '' : '<div class="brand"><svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="#5B3FB0" stroke-width="3"/><path d="M10 16.5l4 4 8-9" fill="none" stroke="#5B3FB0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>BeepDo</b><small>Área do Gestor</small></div></div>') +
+    (NO_APP ? '' : '<a class="brand" href="/app/" title="Ir para o BeepDo"><svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="#5B3FB0" stroke-width="3"/><path d="M10 16.5l4 4 8-9" fill="none" stroke="#5B3FB0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>BeepDo</b><small>Área do Gestor</small></div></a>') +
     '<nav class="nav" aria-label="Área do Gestor">' + VIEWS.map(([k, l]) => '<button data-a="ir" data-v="' + k + '" class="' + (S.view === k ? 'on' : '') + '">' + l + (k === 'tarefas' && naoExec ? '<span class="cnt">' + naoExec + '</span>' : '') + '</button>').join('') + '</nav>' +
-    '<div class="rodape"><span>' + esc(S.cfg.equipeNome) + '</span><span id="salvo" class="salvo">Tudo salvo</span><span>' + esc(S.user.email || '') + '</span><a href="#" data-a="sair">' + (NO_APP ? 'Fechar' : 'Sair') + '</a></div>' +
+    '<div class="rodape"><div class="quem" title="' + esc(S.user.email || '') + '"><span class="ava" aria-hidden="true">' + esc(nomeUsuario().charAt(0).toUpperCase()) + '</span><span class="col" style="gap:1px;min-width:0"><b>' + esc(nomeUsuario()) + '</b><small>' + esc(S.cfg.equipeNome) + '</small></span></div><span id="salvo" class="salvo">Tudo salvo</span><a href="#" data-a="sair">' + (NO_APP ? 'Fechar' : 'Sair') + '</a></div>' +
     '</aside><main class="main">' + (V[S.view] || V.painel)() + '</main></div>' + (S.ui.modal ? '<div class="modal-fundo" data-a="fecharModal"><div class="modal" role="dialog" aria-modal="true" data-stop>' + M[S.ui.modal.t]() + '</div></div>' : '');
   const scr2 = document.querySelector('[data-scroll]'); if (scr2 && S.ui.manterScroll) scr2.scrollLeft = sl;
   S.ui.manterScroll = false;
@@ -589,7 +623,7 @@ V.escala = () => {
     '<div class="col"><b>Travas</b><span class="sub">Descanso mínimo de ' + S.cfg.travas.interjornada + 'h entre jornadas e no máximo ' + S.cfg.travas.maxSeguidos + ' dias seguidos. O que passar disso vira alerta vermelho.</span></div></div>' : '';
   const leg = opcoesCodigo(filtro !== 'todos' ? setorPorId(filtro) : null).filter((c) => !/3$/.test(c) && !trabOculto(c)).map((c) => tag(c, c === 'x' ? 'Folga' : c + (siglaInfo(c).tipo !== 'posto' && siglaInfo(c).nome ? ' ' + siglaInfo(c).nome : ''))).join('');
   return '<div class="topo"><div class="row"><button class="btn" data-a="mes" data-d="-1" aria-label="Mês anterior">‹</button><div><h1>Escala · ' + MESES[m - 1] + ' ' + a + '</h1><div class="sub">Gerada automaticamente · ' + nAj + ' ajuste(s) manuais</div></div><button class="btn" data-a="mes" data-d="1" aria-label="Próximo mês">›</button></div>' +
-    '<div class="row"><button class="btn' + (S.ui.regras ? ' pri' : '') + '" data-a="togRegras">Regras da escala</button><button class="btn" data-a="desfazer">Desfazer ajustes</button><button class="btn pri" data-a="exportar">Exportar .xlsx</button></div></div>' +
+    '<div class="row"><button class="btn' + (S.ui.regras ? ' pri' : '') + '" data-a="togRegras">Regras da escala</button><button class="btn" data-a="desfazer">Desfazer ajustes</button><button class="btn" data-a="conferir" title="Carrega a escala que você mexeu no Excel e confere com a do BeepDo">Carregar</button><button class="btn" data-a="fimAno">Folgas de fim de ano</button>' + (NO_APP ? '' : '<button class="btn" data-a="imprimir">Imprimir</button><button class="btn" data-a="imagem">Baixar imagem</button>') + '<button class="btn pri" data-a="exportar">Exportar .xlsx</button></div></div>' +
     regras +
     '<div class="row" style="justify-content:space-between"><div class="seg">' + [['todos', setores().length > 1 ? 'Todos os postos' : 'Todos os turnos']].concat(setores().length > 1 ? setores().map((x) => [x.id, x.nome]) : []).map(([k, l]) => '<button class="' + (filtro === k ? 'on' : '') + '" data-a="filtroT" data-t="' + k + '">' + esc(l) + '</button>').join('') + '</div><div class="legenda">' + leg + '</div></div>' +
     '<div class="card flush" data-scroll><table class="esc">' + thead + corpo + '</table></div>' + pop +
@@ -970,7 +1004,7 @@ V.config = () => {
     '<div class="grid2">' +
     '<div class="card col"><h2>Siglas e cores</h2>' +
     c.siglas.map((x, i) => '<div class="row" style="gap:6px;flex-wrap:nowrap"><input class="i" type="color" data-c="sCor" data-i="' + i + '" value="' + x.cor + '"><input class="i" style="width:64px" data-c="sSig" data-i="' + i + '" value="' + esc(x.sigla) + '"' + (x.sigla === 'x' ? ' disabled title="Folga do ciclo"' : '') + '><input class="i" data-c="sNome" data-i="' + i + '" value="' + esc(x.nome) + '">' +
-      '<select class="i" style="width:130px" data-c="sTipo" data-i="' + i + '">' + [['ausencia', 'Ausência'], ['folga', 'Folga'], ['treinamento', 'Treinamento'], ['turno', 'Vai p/ turno']].map(([k, l]) => '<option value="' + k + '"' + (x.tipo === k ? ' selected' : '') + '>' + l + '</option>').join('') + '</select>' +
+      '<select class="i" style="width:130px" data-c="sTipo" data-i="' + i + '">' + [['ausencia', 'Ausência'], ['folga', 'Folga'], ['treinamento', 'Treinamento'], ['trabalho', 'Trabalho na folga'], ['turno', 'Vai p/ turno']].map(([k, l]) => '<option value="' + k + '"' + (x.tipo === k ? ' selected' : '') + '>' + l + '</option>').join('') + '</select>' +
       (x.tipo === 'turno' ? '<select class="i" style="width:150px" data-c="sDest" data-i="' + i + '">' + c.turnos.map((t) => '<option value="' + t.id + '"' + (x.destino === t.id ? ' selected' : '') + '>' + esc(labelTurno(t.id)) + '</option>').join('') + '</select>' : '') +
       (x.tipo === 'ausencia' ? '<label class="row" style="gap:4px;font-size:11px;white-space:nowrap" title="Desconta a jornada do banco de horas"><input type="checkbox" data-c="sBH" data-i="' + i + '"' + (x.descontaBH ? ' checked' : '') + '>-BH</label>' : '') +
       (x.sigla !== 'x' ? '<button class="btn ghost sm danger" data-a="sRem" data-i="' + i + '" aria-label="Remover">✕</button>' : '') + '</div>').join('') +
@@ -1099,6 +1133,366 @@ A.expBaixar = () => {
   S.ui.modal = null; render(); toast('Planilha gerada');
 };
 
+/* ============ FOLGAS DE FIM DE ANO ============ */
+// Distribui folgas (BH) em volta do Natal e do Ano Novo: metade da equipe folga
+// num, metade no outro. Só vira folga o dia em que a pessoa trabalharia.
+const FA_NOME = { N: 'Natal', A: 'Ano Novo' };
+function faJanelas(mm) {
+  const fazer = (dia) => { const r = []; for (let i = -mm.antes; i < mm.n - mm.antes; i++) r.push(addD(dia, i)); return r; };
+  return { N: fazer(mm.ano + '-12-25'), A: fazer((mm.ano + 1) + '-01-01') };
+}
+function faTag(mm) { return 'Fim de ano ' + mm.ano; }
+/** A escala sem as folgas de fim de ano já lançadas (pra simular em cima do que seria o normal). */
+function faSemLancadas(mm, fn) {
+  const guardadas = S.ausencias;
+  S.ausencias = guardadas.filter((x) => x.obs !== faTag(mm));
+  _escCache = {};
+  try { return fn(); } finally { S.ausencias = guardadas; _escCache = {}; }
+}
+function faNoPosto(pid, s) { return !!diaEscala(s).posto[pid]; }
+function faCobertura(mm, tid, s, jan) {
+  const d = diaEscala(s);
+  return Object.keys(d.posto).filter((pid) => d.turno[pid] === tid && d.posto[pid] && !(mm.grupos[pid] && jan[mm.grupos[pid]].includes(s))).length;
+}
+function faDividir(mm) {
+  const jan = faJanelas(mm);
+  mm.grupos = {};
+  faSemLancadas(mm, () => {
+    S.cfg.turnos.forEach((t) => {
+      const gente = S.equipe.filter((p) => p.ativo !== false && turnoEm(p, jan.N[0]) === t.id).sort((a, b) => a.nome.localeCompare(b.nome));
+      const qtd = { N: 0, A: 0 };
+      gente.forEach((p) => {
+        const dias = { N: jan.N.filter((s) => faNoPosto(p.id, s)).length, A: jan.A.filter((s) => faNoPosto(p.id, s)).length };
+        if (!dias.N && !dias.A) return; // férias, afastado: não entra na divisão
+        const pior = (g) => { mm.grupos[p.id] = g; const v = Math.min.apply(null, jan[g].map((s) => faCobertura(mm, t.id, s, jan))); delete mm.grupos[p.id]; return v; };
+        const cN = pior('N'), cA = pior('A');
+        let g = cN !== cA ? (cN > cA ? 'N' : 'A') : qtd.N !== qtd.A ? (qtd.N < qtd.A ? 'N' : 'A') : 'N';
+        // equilíbrio: um grupo nunca fica com 2 a mais que o outro no mesmo turno
+        if (qtd[g] - qtd[g === 'N' ? 'A' : 'N'] >= 1) g = g === 'N' ? 'A' : 'N';
+        mm.grupos[p.id] = g; qtd[g]++;
+      });
+    });
+  });
+}
+A.fimAno = () => {
+  if (!S.equipe.length) { toast('Cadastre a equipe primeiro'); return; }
+  const hj = hojeStr(), ano = hj.slice(5) > '01-05' ? +hj.slice(0, 4) : +hj.slice(0, 4) - 1;
+  const bh = S.cfg.siglas.find((x) => x.descontaBH) || S.cfg.siglas.find((x) => x.tipo === 'ausencia');
+  S.ui.modal = { t: 'fimAno', ano, n: 3, antes: 1, sigla: bh ? bh.sigla : 'BH', grupos: {} };
+  faDividir(S.ui.modal); render();
+};
+A.faAno = (el) => { const mm = S.ui.modal; mm.ano += +el.dataset.d; faDividir(mm); render(); };
+A.faN = (el) => { const mm = S.ui.modal; mm.n = Math.max(1, Math.min(7, mm.n + +el.dataset.d)); mm.antes = Math.min(mm.antes, mm.n - 1); faDividir(mm); render(); };
+A.faAntes = (el) => { const mm = S.ui.modal; mm.antes = Math.max(0, Math.min(mm.n - 1, mm.antes + +el.dataset.d)); faDividir(mm); render(); };
+A.faGrupo = (el) => { const mm = S.ui.modal; if (el.dataset.g) mm.grupos[el.dataset.p] = el.dataset.g; else delete mm.grupos[el.dataset.p]; render(); };
+A.faRedividir = () => { faDividir(S.ui.modal); render(); };
+C.faSigla = (el) => { S.ui.modal.sigla = el.value; render(); };
+function faPlano(mm) {
+  const jan = faJanelas(mm);
+  return faSemLancadas(mm, () => {
+    const fim = jan.A[jan.A.length - 1];
+    const turnos = S.cfg.turnos.map((t) => {
+      const gente = S.equipe.filter((p) => p.ativo !== false && turnoEm(p, jan.N[0]) === t.id).sort((a, b) => a.nome.localeCompare(b.nome)).map((p) => {
+        const g = mm.grupos[p.id] || '';
+        return { p, g, dias: g ? jan[g].filter((s) => faNoPosto(p.id, s)) : [], antes: saldoBH(p.id, fim) };
+      });
+      const cob = jan.N.concat(jan.A).map((s) => ({ s, n: faCobertura(mm, t.id, s, jan) }));
+      return { t, gente, cob, precisa: princ(setorDoTurno(t.id)).length };
+    });
+    // saldo de verdade: simula com as folgas lançadas (folgar no feriado também perde o bônus do feriado)
+    turnos.forEach(({ gente }) => gente.forEach(({ p, dias }) => dias.forEach((s) => S.ausencias.push({ id: 'fa', pessoaId: p.id, sigla: mm.sigla, de: s, ate: s }))));
+    _escCache = {};
+    turnos.forEach(({ gente }) => gente.forEach((x) => { x.saldo = saldoBH(x.p.id, fim); x.horas = Math.round((x.antes - x.saldo) * 10) / 10; }));
+    return { jan, turnos };
+  });
+}
+M.fimAno = () => {
+  const mm = S.ui.modal, pl = faPlano(mm);
+  const passo = (a, rot, v) => '<div class="col" style="gap:4px"><span style="font-size:12px;font-weight:600">' + rot + '</span><div class="stepper"><button data-a="' + a + '" data-d="-1" aria-label="Diminuir">−</button><span>' + v + '</span><button data-a="' + a + '" data-d="1" aria-label="Aumentar">+</button></div></div>';
+  const dias = (l, feriado) => l.map((s) => '<span class="tag" style="' + (s === feriado ? 'background:var(--ac);color:#fff' : 'background:var(--acs);color:var(--ac)') + '">' + SEM[dow(s)] + ' ' + br(s) + '</span>').join(' ');
+  let avisos = [];
+  const corpo = pl.turnos.filter((x) => x.gente.length).map(({ t, gente, cob, precisa }) => {
+    const min = Math.max(1, precisa - 1);
+    cob.forEach((c) => { if (precisa && c.n < min) avisos.push(br(c.s) + ' · ' + labelTurno(t.id) + ': só ' + c.n + ' no posto (precisa de pelo menos ' + min + ')'); });
+    return '<tr class="tit"><td colspan="4">' + esc(labelTurno(t.id)) + '</td></tr>' + gente.map(({ p, g, dias: ds, horas, saldo }) => {
+      if (saldo < S.cfg.bh.minimo && horas) avisos.push(p.nome + ': o banco de horas fica em ' + sh(saldo) + ' (mínimo ' + sh(S.cfg.bh.minimo) + ')');
+      return '<tr><td><b>' + esc(p.nome) + '</b></td><td><div class="seg" style="padding:2px">' + [['N', 'Natal'], ['A', 'Ano Novo'], ['', 'Sem folga']].map(([k, l]) => '<button class="' + (g === k ? 'on' : '') + '" style="min-height:28px;padding:0 10px" data-a="faGrupo" data-p="' + p.id + '" data-g="' + k + '">' + l + '</button>').join('') + '</div></td>' +
+        '<td class="sub">' + (g ? (ds.length ? ds.map(br).join(', ') : 'já está de folga nesses dias') : '-') + '</td><td style="text-align:right">' + (horas ? '<span class="pill ' + (saldo < S.cfg.bh.minimo ? 'p-er' : 'p-mu') + '">-' + horas + 'h → ' + sh(saldo) + '</span>' : '') + '</td></tr>';
+    }).join('') + (precisa ? '<tr><td class="sub" style="font-size:12px">No posto por dia</td><td colspan="3"><div class="row" style="gap:4px">' + cob.map((c) => '<span class="tag" title="' + br(c.s) + '" style="' + (c.n < min ? 'background:var(--ers);color:var(--er)' : c.n < precisa ? 'background:#FFF1D6;color:#8A5A00' : 'background:#E3F4E8;color:#1F6B3A') + '">' + br(c.s) + ': ' + c.n + '</span>').join('') + '</div></td></tr>' : '');
+  }).join('');
+  const total = pl.turnos.reduce((a, x) => a + x.gente.filter((y) => y.dias.length).length, 0);
+  return '<div class="largo"></div><div class="fa-topo"><h2>Folgas de fim de ano</h2><span class="sub">Metade da equipe folga no Natal e a outra metade no Ano Novo. Só vira folga o dia em que a pessoa trabalharia; quem já está de folga do ciclo não gasta banco de horas.</span>' +
+    '<div class="row" style="gap:18px;align-items:flex-end">' + passo('faAno', 'Virada', mm.ano + '/' + (mm.ano + 1)) + passo('faN', 'Dias de folga', mm.n) + passo('faAntes', 'Quantos antes do dia', mm.antes) +
+    '<label class="f" style="min-width:150px">Lançar como<select class="i" data-c="faSigla">' + siglasAusencia().filter((x) => x.tipo === 'ausencia').map((x) => '<option value="' + esc(x.sigla) + '"' + (mm.sigla === x.sigla ? ' selected' : '') + '>' + esc(x.sigla + ' · ' + x.nome) + '</option>').join('') + '</select></label></div>' +
+    '<div class="col" style="gap:6px"><div class="row" style="gap:6px"><b style="font-size:13px;min-width:72px">Natal</b>' + dias(pl.jan.N, mm.ano + '-12-25') + '</div><div class="row" style="gap:6px"><b style="font-size:13px;min-width:72px">Ano Novo</b>' + dias(pl.jan.A, (mm.ano + 1) + '-01-01') + '</div>' +
+    '<span class="sub" style="font-size:12px">' + (mm.antes) + ' antes, o dia' + (mm.n - mm.antes - 1 > 0 ? ' e ' + (mm.n - mm.antes - 1) + ' depois' : '') + '. Mude em "Quantos antes do dia".</span></div></div>' +
+    '<div class="card flush esticavel" style="height:' + (S.ui.faAltura || 360) + 'px" data-c="faAltura"><table class="t"><tbody>' + corpo + '</tbody></table></div>' +
+    '<span class="sub" style="font-size:12px;margin-top:-8px">Arraste o canto de baixo da lista pra aumentar.</span>' +
+    (avisos.length ? '<details class="avisos"' + (S.ui.faAvisos ? ' open' : '') + ' data-c="faAvisos"><summary><span class="pill p-er">' + avisos.length + '</span> ' + (avisos.length === 1 ? 'aviso' : 'avisos') + ' de cobertura ou banco de horas <span class="sub">(toque pra ver)</span></summary><div class="col" style="gap:6px;margin-top:8px">' + avisos.slice(0, 30).map((x) => '<div class="alerta a-er"><i></i><span>' + esc(x) + '</span></div>').join('') + '</div></details>' : '<span style="color:var(--ok)">Todos os turnos cobertos nos dois períodos.</span>') +
+    '<div class="row fa-rodape" style="justify-content:space-between"><button class="btn" data-a="faRedividir">Dividir de novo</button><div class="row"><button class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri" data-a="faLancar">Lançar folgas de ' + total + (total === 1 ? ' pessoa' : ' pessoas') + '</button></div></div>';
+};
+A.faLancar = () => {
+  const mm = S.ui.modal, pl = faPlano(mm), tag = faTag(mm);
+  S.ausencias = S.ausencias.filter((x) => x.obs !== tag); // lançar de novo troca o que já tinha
+  let n = 0;
+  pl.turnos.forEach(({ gente }) => gente.forEach(({ p, dias }) => {
+    let ini = null, ant = null;
+    const fecha = () => { if (ini) { S.ausencias.push({ id: uid(), pessoaId: p.id, sigla: mm.sigla, de: ini, ate: ant, obs: tag }); n++; } };
+    dias.forEach((s) => { if (ant && addD(ant, 1) === s) { ant = s; return; } fecha(); ini = ant = s; });
+    fecha();
+  }));
+  S.ui.modal = null; S.ui.mes = mm.ano + '-12'; S.view = 'escala';
+  salvar('ausencias'); render(); toast(n ? 'Folgas de fim de ano lançadas. Confira dezembro e janeiro.' : 'Nenhuma folga pra lançar.');
+};
+
+/* ============ CARREGAR (escala mexida no Excel) ============ */
+// A pessoa cola (ou envia) a escala que mexeu no Excel. O BeepDo compara com a dele,
+// aplica o que mudou como ajuste, redistribui o resto e mostra os alertas novos.
+const cfNorm = (s) => String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ').trim().toUpperCase();
+const CF_MES = { JAN: 1, FEV: 2, MAR: 3, ABR: 4, MAI: 5, JUN: 6, JUL: 7, AGO: 8, SET: 9, OUT: 10, NOV: 11, DEZ: 12 };
+function cfData(v, ref) {
+  if (v instanceof Date && !isNaN(v)) return ymd(new Date(v.getTime() + 12 * 36e5));
+  const t = cfNorm(v);
+  let d, m, a;
+  let x = t.match(/^(\d{1,2})[\/.\-](\d{1,2})(?:[\/.\-](\d{2,4}))?$/);
+  if (x) { d = +x[1]; m = +x[2]; a = x[3] ? (+x[3] < 100 ? 2000 + +x[3] : +x[3]) : null; }
+  else { x = t.match(/^(\d{1,2})[\/.\-\s]?(?:DE\s)?(JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ)/); if (!x) return null; d = +x[1]; m = CF_MES[x[2]]; }
+  if (!(d >= 1 && d <= 31 && m >= 1 && m <= 12)) return null;
+  if (!a) { // sem ano: o mais perto do mês que está na tela
+    const [ra, rm] = ref; let melhor = null;
+    [ra - 1, ra, ra + 1].forEach((y) => { const dist = Math.abs((y - ra) * 12 + (m - rm)); if (melhor == null || dist < melhor[0]) melhor = [dist, y]; });
+    a = melhor[1];
+  }
+  if (d > diasNoMes(a, m)) return null;
+  return a + '-' + pad(m) + '-' + pad(d);
+}
+function cfPessoa(nome, ativos) {
+  const n = cfNorm(nome); if (!n) return null;
+  const ex = ativos.filter((p) => cfNorm(p.nome) === n); if (ex.length === 1) return ex[0];
+  const pa = ativos.filter((p) => { const q = cfNorm(p.nome); return q.startsWith(n + ' ') || n.startsWith(q + ' ') || q.split(' ')[0] === n.split(' ')[0]; });
+  return pa.length === 1 ? pa[0] : null;
+}
+function cfTurno(txt) {
+  const n = cfNorm(txt); if (!n) return null;
+  const t = S.cfg.turnos.find((x) => cfNorm(x.nome) === n || cfNorm(labelTurno(x.id)) === n || 'TURNO ' + cfNorm(x.id) === n);
+  return t ? t.id : null;
+}
+function cfCodigo(txt, mapa) {
+  const n = cfNorm(txt); if (!n) return null;
+  if (n === 'X' || n === 'FOLGA') return 'x';
+  if (mapa[n]) return mapa[n];
+  if (mapa[n + '1']) return mapa[n + '1']; // "SUP" sozinho vale SUP1
+  return undefined; // sigla que o BeepDo não conhece
+}
+/** Lê a grade (linhas de células) e devolve o que cada pessoa tem em cada dia. */
+function cfLer(linhas) {
+  const ref = mesAtual(), ativos = S.equipe.filter((p) => p.ativo !== false);
+  const mapa = {}; opcoesCodigo().forEach((c) => { mapa[cfNorm(c)] = c; });
+  let cab = -1, cols = {};
+  for (let i = 0; i < linhas.length && cab < 0; i++) {
+    const c = {}; let n = 0;
+    linhas[i].forEach((v, j) => { const s = cfData(v, ref); if (s) { c[j] = s; n++; } });
+    if (n >= 3) { cab = i; cols = c; }
+  }
+  const out = { alvos: {}, desconhecidas: {}, semPar: [], dias: [], erro: null };
+  if (cab < 0) {
+    // sem a linha das datas: vale se a linha de cada pessoa tem exatamente os dias do mês da tela
+    const n = diasNoMes(ref[0], ref[1]);
+    const li = linhas.find((l) => cfPessoa(l.find((v) => cfNorm(v)), ativos));
+    const j0 = li ? li.findIndex((v) => cfNorm(v)) : -1;
+    if (!li || li.length - j0 - 1 < n) { out.erro = 'Não achei a linha das datas. Copie junto a linha com os dias (1/10, 2/10...).'; return out; }
+    for (let k = 0; k < n; k++) cols[j0 + 1 + k] = ref[0] + '-' + pad(ref[1]) + '-' + pad(k + 1);
+  }
+  const jMin = Math.min.apply(null, Object.keys(cols).map(Number));
+  if (jMin < 1) { out.erro = 'Copie também a coluna com os nomes, à esquerda dos dias.'; return out; }
+  out.dias = Object.values(cols).sort();
+  let turno = null; const cand = {};
+  for (let i = cab + 1; i < linhas.length; i++) {
+    const l = linhas[i], nome = l.slice(0, jMin).map((v) => String(v == null ? '' : v).trim()).filter(Boolean).pop();
+    if (!nome) continue;
+    const t = cfTurno(nome); if (t) { turno = t; continue; }
+    const p = cfPessoa(nome, ativos);
+    const temCod = Object.keys(cols).some((j) => cfNorm(l[j]));
+    if (!p) { if (temCod && !out.semPar.includes(nome)) out.semPar.push(nome); else if (!temCod) turno = null; continue; }
+    Object.keys(cols).forEach((j) => {
+      const c = cfCodigo(l[j], mapa);
+      if (c === null) return;
+      if (c === undefined) { const k = String(l[j]).trim(); out.desconhecidas[k] = (out.desconhecidas[k] || 0) + 1; return; }
+      ((cand[p.id] = cand[p.id] || {})[cols[j]] = cand[p.id][cols[j]] || []).push({ c, t: turno });
+    });
+  }
+  // a mesma pessoa pode aparecer em duas linhas (remanejada): vale a linha onde ela tem posto
+  Object.keys(cand).forEach((pid) => Object.keys(cand[pid]).forEach((s) => {
+    const l = cand[pid][s], tipo = (x) => (siglaInfo(x.c) || {}).tipo;
+    const e = l.find((x) => ehPosto(x.c)) || l.find((x) => tipo(x) !== 'turno') || l[0];
+    (out.alvos[pid] = out.alvos[pid] || {})[s] = tipo(e) === 'turno' ? { c: null, t: siglaInfo(e.c).destino } : { c: e.c, t: ehPosto(e.c) ? e.t : null };
+  }));
+  return out;
+}
+function cfMostrado(pid, s) { const d = diaEscala(s); return d.posto[pid] || d.cod[pid] || 'x'; }
+/** O que está diferente entre o Excel e a escala do BeepDo agora. */
+function cfDiferencas(alvos) {
+  const difs = [], anc = ancora();
+  Object.keys(alvos).forEach((pid) => Object.keys(alvos[pid]).sort().forEach((s) => {
+    if (s < anc) return;
+    const al = alvos[pid][s], d = diaEscala(s), tAtual = d.turno[pid];
+    const mudaTurno = !!al.t && al.t !== tAtual, mudaCod = al.c != null && cfMostrado(pid, s) !== al.c;
+    if (mudaTurno || mudaCod) difs.push({ pid, s, de: cfMostrado(pid, s), para: al.c, tDe: tAtual, tPara: mudaTurno ? al.t : null });
+  }));
+  return difs.sort((a, b) => a.s.localeCompare(b.s));
+}
+/** Tira um dia de dentro de uma ausência (encurta ou parte em duas). */
+function cfTirarDia(a, s) {
+  S.ausencias = S.ausencias.filter((x) => x !== a);
+  if (a.de < s) S.ausencias.push(Object.assign({}, a, { id: uid(), ate: addD(s, -1) }));
+  if (!a.ate || a.ate > s) S.ausencias.push(Object.assign({}, a, { id: uid(), de: addD(s, 1) }));
+}
+function cfAlertas(dias) {
+  const meses = [...new Set(dias.map((s) => s.slice(0, 7)))], out = [];
+  meses.forEach((k) => { const [a, m] = k.split('-').map(Number); escalaMes(a, m).alertas.forEach((x) => out.push(x.txt)); });
+  return out;
+}
+/** Aplica na memória (sem gravar). Devolve o resumo pra pessoa decidir se fica. */
+function cfAplicar(lido) {
+  const alvos = lido.alvos, dias = lido.dias;
+  const antes = { aj: JSON.stringify(S.ajustes), au: JSON.stringify(S.ausencias), alertas: cfAlertas(dias) };
+  let nTurno = 0, nCod = 0; const semSigla = new Set();
+  // 1) remanejos: quem aparece trabalhando em outro turno
+  Object.keys(alvos).forEach((pid) => {
+    const p = S.equipe.find((x) => x.id === pid); if (!p) return;
+    let run = null;
+    const fecha = () => { if (run) { S.ausencias.push({ id: uid(), pessoaId: pid, sigla: run.sig, de: run.de, ate: run.ate, obs: 'Carregado do Excel' }); nTurno++; run = null; } };
+    Object.keys(alvos[pid]).sort().forEach((s) => {
+      const al = alvos[pid][s]; if (!al.t) { fecha(); return; }
+      const a = ausenciaDe(pid, s), noTurno = a && (siglaInfo(a.sigla) || {}).tipo === 'turno' ? siglaInfo(a.sigla).destino : turnoEm(p, s);
+      if (noTurno === al.t) { fecha(); return; }
+      if (a && (siglaInfo(a.sigla) || {}).tipo === 'turno') cfTirarDia(a, s);
+      if (turnoEm(p, s) === al.t) { fecha(); nTurno++; return; } // voltou pro turno dele
+      const sig = siglaDoTurno(al.t);
+      if (!sig || (siglaInfo(sig) || {}).tipo !== 'turno') { semSigla.add(labelTurno(al.t)); fecha(); return; }
+      if (run && run.sig === sig && addD(run.ate, 1) === s) run.ate = s; else { fecha(); run = { sig, de: s, ate: s }; }
+    });
+    fecha();
+  });
+  // 2) postos e siglas, dia a dia: aplica, deixa o BeepDo redistribuir e confere de novo
+  const comAlvo = dias.filter((s) => s >= ancora());
+  if (comAlvo.length) {
+    _escCache = {};
+    simular(addD(comAlvo[0], -1));
+    for (let s = comAlvo[0]; s <= comAlvo[comAlvo.length - 1]; s = addD(s, 1)) {
+      const c = _escCache, foto = { ontem: Object.assign({}, c.ontem), ultSup: Object.assign({}, c.ultSup) };
+      simular(s);
+      for (let volta = 0; volta < 4; volta++) {
+        let mexeu = false;
+        Object.keys(alvos).forEach((pid) => { const al = alvos[pid][s]; if (!al || al.c == null) return; if (cfMostrado(pid, s) !== al.c) { S.ajustes[pid + '|' + s] = al.c; mexeu = true; nCod++; } });
+        if (!mexeu) break;
+        c.ontem = Object.assign({}, foto.ontem); c.ultSup = Object.assign({}, foto.ultSup); c.ate = addD(s, -1); delete c.dias[s];
+        simular(s);
+      }
+    }
+  }
+  _escCache = {};
+  const depois = cfAlertas(dias), sobra = cfDiferencas(alvos);
+  return { antes, nTurno, nCod, semSigla: [...semSigla], novos: depois.filter((x) => !antes.alertas.includes(x)), resolvidos: antes.alertas.filter((x) => !depois.includes(x)), total: depois.length, sobra };
+}
+A.conferir = () => { if (!S.equipe.length) { toast('Cadastre a equipe primeiro'); return; } S.ui.modal = { t: 'conferir', texto: '', lido: null, difs: null }; render(); };
+C.cfTexto = (el) => { if (S.ui.modal) S.ui.modal.texto = el.value; };
+function cfComparar(linhas) {
+  const mm = S.ui.modal, lido = cfLer(linhas);
+  mm.lido = lido; mm.difs = lido.erro ? null : cfDiferencas(lido.alvos);
+  render();
+}
+A.cfComparar = () => { const el = $('#cfTexto'); if (el) S.ui.modal.texto = el.value; const t = S.ui.modal.texto; if (!t.trim()) { toast('Cole as células do Excel ou escolha a planilha'); return; } cfComparar(t.split(/\r?\n/).map((l) => l.split('\t'))); };
+C.cfArquivo = (el) => {
+  const f = el.files && el.files[0]; if (!f) return;
+  if (!window.XLSX) { toast('Carregando o leitor, tente de novo em 2 segundos'); return; }
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const wb = XLSX.read(new Uint8Array(r.result), { type: 'array', cellDates: true });
+      // usa a aba com mais nomes da equipe
+      const ativos = S.equipe.filter((p) => p.ativo !== false); let melhor = null;
+      wb.SheetNames.forEach((n) => { const l = XLSX.utils.sheet_to_json(wb.Sheets[n], { header: 1, raw: true, defval: '' }); const pts = l.filter((x) => x.slice(0, 4).some((v) => typeof v === 'string' && cfPessoa(v, ativos))).length; if (!melhor || pts > melhor[0]) melhor = [pts, l]; });
+      S.ui.modal.texto = ''; cfComparar(melhor ? melhor[1] : []);
+    } catch (e) { toast('Não consegui ler essa planilha'); }
+  };
+  r.readAsArrayBuffer(f);
+};
+A.cfVoltar = () => { S.ui.modal.lido = null; S.ui.modal.difs = null; render(); };
+M.conferir = () => {
+  const mm = S.ui.modal, [a, m] = mesAtual();
+  if (!mm.lido) return '<h2>Carregar escala</h2><span class="sub">Mexeu na escala pelo Excel? No Excel, selecione da coluna dos nomes até o último dia (com a linha das datas), copie e cole aqui. O BeepDo mostra o que está diferente, aplica, redistribui os outros postos e avisa se der interjornada ou dias seguidos demais.</span>' +
+    '<textarea class="i" id="cfTexto" data-c="cfTexto" rows="7" placeholder="Cole aqui (Ctrl+V)" style="font-family:ui-monospace,monospace;font-size:12px;white-space:pre;height:auto;padding:10px">' + esc(mm.texto) + '</textarea>' +
+    '<label class="f">Ou envie a planilha (.xlsx)<input class="i" type="file" accept=".xlsx,.xls,.xlsm" data-c="cfArquivo" style="padding:8px"></label>' +
+    '<span class="sub" style="font-size:12px">Datas sem ano valem pro mês da tela (' + MESES[m - 1] + ' ' + a + ') e os meses vizinhos.</span>' +
+    '<div class="row" style="justify-content:flex-end"><button class="btn" data-a="fecharModal">Cancelar</button><button class="btn pri" data-a="cfComparar">Comparar</button></div>';
+  const l = mm.lido, difs = mm.difs || [];
+  if (l.erro) return '<h2>Carregar escala</h2><div class="alerta a-er"><i></i><span>' + esc(l.erro) + '</span></div><div class="row" style="justify-content:flex-end"><button class="btn pri" data-a="cfVoltar">Voltar</button></div>';
+  const nome = (pid) => (S.equipe.find((x) => x.id === pid) || {}).nome || '?';
+  const desc = Object.keys(l.desconhecidas);
+  const nPess = Object.keys(l.alvos).length;
+  return '<div class="largo"></div><h2>Carregar escala</h2><span class="sub">Li ' + nPess + (nPess === 1 ? ' pessoa' : ' pessoas') + ' de ' + br(l.dias[0]) + ' a ' + brA(l.dias[l.dias.length - 1]) + '. ' + (difs.length ? difs.length + (difs.length === 1 ? ' célula diferente' : ' células diferentes') + ' da escala do BeepDo.' : 'Está tudo igual à escala do BeepDo.') + '</span>' +
+    (l.semPar.length ? '<div class="alerta a-wa"><i></i><span>Não achei na equipe: ' + esc(l.semPar.slice(0, 12).join(', ')) + '. Essas linhas ficaram de fora (confira o nome em Equipe).</span></div>' : '') +
+    (desc.length ? '<div class="alerta a-wa"><i></i><span>Siglas que o BeepDo não conhece: ' + esc(desc.slice(0, 12).join(', ')) + '. Ficaram de fora; crie em Configurações se quiser usar.</span></div>' : '') +
+    (difs.length ? '<div class="card flush" style="max-height:44vh;overflow:auto"><table class="t"><thead><tr><th>Dia</th><th>Pessoa</th><th>No BeepDo</th><th></th><th>No Excel</th></tr></thead><tbody>' + difs.slice(0, 300).map((d) => '<tr><td>' + SEM[dow(d.s)] + ' ' + br(d.s) + '</td><td><b>' + esc(nome(d.pid)) + '</b></td><td>' + tag(d.de) + (d.tPara ? ' <span class="sub">' + esc(labelTurno(d.tDe)) + '</span>' : '') + '</td><td class="sub">→</td><td>' + (d.para != null ? tag(d.para) : '') + (d.tPara ? ' <span class="sub">' + esc(labelTurno(d.tPara)) + '</span>' : '') + '</td></tr>').join('') + '</tbody></table></div>' : '') +
+    '<div class="row" style="justify-content:space-between"><button class="btn" data-a="cfVoltar">Voltar</button><div class="row"><button class="btn" data-a="fecharModal">Cancelar</button>' + (difs.length ? '<button class="btn pri" data-a="cfAplicar">Aplicar e ver os alertas</button>' : '') + '</div></div>';
+};
+A.cfAplicar = () => {
+  const mm = S.ui.modal, r = cfAplicar(mm.lido);
+  S.ui.mes = mm.lido.dias[0].slice(0, 7);
+  S.ui.modal = { t: 'conferido', r, lido: mm.lido };
+  render();
+};
+M.conferido = () => {
+  const r = S.ui.modal.r, nome = (pid) => (S.equipe.find((x) => x.id === pid) || {}).nome || '?';
+  return '<div class="largo"></div><h2>Mudanças aplicadas (ainda não salvas)</h2><span class="sub">' + r.nCod + (r.nCod === 1 ? ' ajuste' : ' ajustes') + ' de posto ou sigla' + (r.nTurno ? ' e ' + r.nTurno + (r.nTurno === 1 ? ' troca' : ' trocas') + ' de turno' : '') + '. Quem você não mexeu foi redistribuído pelo BeepDo nos postos que sobraram.</span>' +
+    (r.semSigla.length ? '<div class="alerta a-wa"><i></i><span>Faltou a sigla de remanejo pra: ' + esc(r.semSigla.join(', ')) + '. Crie em Configurações (tipo "turno") e confira de novo.</span></div>' : '') +
+    (r.sobra.length ? '<div class="alerta a-wa"><i></i><span>' + r.sobra.length + ' célula(s) ainda diferentes do Excel: ' + esc(r.sobra.slice(0, 6).map((d) => nome(d.pid) + ' ' + br(d.s)).join(', ')) + '.</span></div>' : '') +
+    '<h2 style="font-size:15px">' + (r.novos.length ? 'Alertas novos por causa da mudança (' + r.novos.length + ')' : 'Nenhum alerta novo') + '</h2>' +
+    (r.novos.length ? '<div class="col" style="gap:6px;max-height:36vh;overflow:auto">' + r.novos.slice(0, 40).map((x) => '<div class="alerta a-er"><i></i><span>' + esc(x) + '</span></div>').join('') + '</div>' : '<span style="color:var(--ok)">Sem interjornada curta, sem dias seguidos demais e sem posto novo descoberto.</span>') +
+    (r.resolvidos.length ? '<span class="sub">' + r.resolvidos.length + ' alerta(s) que existiam deixaram de existir.</span>' : '') +
+    '<div class="row" style="justify-content:flex-end"><button class="btn" data-a="cfDescartar">Descartar</button><button class="btn pri" data-a="cfSalvar">Salvar na escala</button></div>';
+};
+A.cfSalvar = () => { S.ui.modal = null; S.view = 'escala'; salvar('ajustes'); salvar('ausencias'); render(); toast('Escala atualizada com o que veio do Excel'); };
+A.cfDescartar = () => { const r = S.ui.modal && S.ui.modal.r; if (r) { S.ajustes = JSON.parse(r.antes.aj); S.ausencias = JSON.parse(r.antes.au); _escCache = {}; } S.ui.modal = null; render(); toast('Nada foi mudado'); };
+// Fechar a janela do resultado (clique fora ou Esc) vale como descartar.
+const _fecharModal = A.fecharModal;
+A.fecharModal = (el, ev) => { if (S.ui.modal && S.ui.modal.t === 'conferido') { if (ev && ev.target.closest('[data-stop]') && el.classList.contains('modal-fundo')) return; A.cfDescartar(); return; } _fecharModal(el, ev); };
+
+document.addEventListener('mouseup', () => { const el = document.querySelector('.esticavel[data-c="faAltura"]'); if (el) S.ui.faAltura = Math.round(el.getBoundingClientRect().height); }, true);
+document.addEventListener('toggle', (ev) => { if (ev.target && ev.target.matches && ev.target.matches('details.avisos')) S.ui.faAvisos = ev.target.open; }, true);
+
+/* ============ IMPRIMIR E IMAGEM ============ */
+A.imprimir = () => { S.ui.pop = null; render(); setTimeout(() => window.print(), 50); };
+A.imagem = () => {
+  const [a, m] = mesAtual(), em = escalaMes(a, m), filtro = S.ui.filtroT || 'todos';
+  const turnos = em.turnos.filter((x) => (filtro === 'todos' || x.t.setor === filtro) && x.linhas.length);
+  const E = 2, LN = 150, LC = 46, AL = 26, M0 = 16, TIT = 44;
+  const linhas = turnos.reduce((n, x) => n + 1 + x.linhas.length, 0);
+  const W = M0 * 2 + LN + em.dias.length * LC, H = M0 * 2 + TIT + AL * 2 + linhas * AL;
+  const cv = document.createElement('canvas'); cv.width = W * E; cv.height = H * E;
+  const g = cv.getContext('2d'); g.scale(E, E);
+  g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, W, H);
+  g.textBaseline = 'middle';
+  g.fillStyle = '#1B1B23'; g.font = '700 18px Inter, system-ui, sans-serif'; g.textAlign = 'left';
+  g.fillText('Escala · ' + MESES[m - 1] + ' ' + a + ' · ' + S.cfg.equipeNome, M0, M0 + 14);
+  const caixa = (x, y, w, cor, txt, corTxt, peso) => { g.fillStyle = cor; g.fillRect(x + 1, y + 1, w - 2, AL - 2); if (txt) { g.fillStyle = corTxt; g.font = (peso || 600) + ' 11px Inter, system-ui, sans-serif'; g.textAlign = 'center'; g.fillText(txt, x + w / 2, y + AL / 2 + 0.5); } };
+  let y = M0 + TIT;
+  em.dias.forEach((s, i) => { const f = feriado(s), fds = dow(s) === 0 || dow(s) === 6, x = M0 + LN + i * LC; caixa(x, y, LC, f ? '#FBE3EA' : '#EFEAFB', br(s), '#1B1B23', 700); caixa(x, y + AL, LC, f ? '#FBE3EA' : '#EFEAFB', f ? 'fer.' : SEM[dow(s)], fds || f ? '#B3261E' : '#5A5A66'); });
+  y += AL * 2;
+  turnos.forEach(({ t, linhas: ls }) => {
+    g.fillStyle = '#D9D9E0'; g.fillRect(M0, y + 1, W - M0 * 2, AL - 2);
+    g.fillStyle = '#1B1B23'; g.font = '700 12px Inter, system-ui, sans-serif'; g.textAlign = 'left'; g.fillText(labelTurno(t.id), M0 + 8, y + AL / 2);
+    y += AL;
+    ls.forEach(({ p, cods }) => {
+      g.fillStyle = '#1B1B23'; g.font = '500 12px Inter, system-ui, sans-serif'; g.textAlign = 'left'; g.fillText(p.nome.length > 20 ? p.nome.slice(0, 19) + '…' : p.nome, M0 + 8, y + AL / 2);
+      cods.forEach((c, i) => { const oc = trabOculto(c), cor = oc ? '#FFFFFF' : ((siglaInfo(c) || {}).cor || '#EEEEF3'); caixa(M0 + LN + i * LC, y, LC, cor, oc ? '' : c, corTexto(cor), 700); });
+      y += AL;
+    });
+  });
+  cv.toBlob((b) => { const u = URL.createObjectURL(b), l = document.createElement('a'); l.href = u; l.download = 'Escala_' + MESES[m - 1] + '_' + a + '.png'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(() => URL.revokeObjectURL(u), 2000); toast('Imagem gerada'); }, 'image/png');
+};
+
 /* ============ eventos ============ */
 document.addEventListener('click', (ev) => {
   const el = ev.target.closest('[data-a]');
@@ -1112,7 +1506,7 @@ document.addEventListener('submit', (ev) => {
   const f = ev.target.closest('[data-f]'); if (!f) return; ev.preventDefault();
   ({ login: onLogin, pessoa: onPessoa, importar: onImportar, ausencia: onAusencia, tarefa: onTarefa, reuniao: onReuniao, feriado: onFeriado })[f.dataset.f](f);
 });
-document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && (S.ui.modal || S.ui.pop)) { S.ui.modal = null; S.ui.pop = null; render(); } });
+document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && (S.ui.modal || S.ui.pop)) { if (S.ui.modal && S.ui.modal.t === 'conferido') { A.cfDescartar(); return; } S.ui.modal = null; S.ui.pop = null; render(); } });
 
 /* ============ início ============ */
 function telaPremium() {
@@ -1121,6 +1515,14 @@ function telaPremium() {
     '<span class="sub">Escala da equipe, banco de horas, ausências e reuniões ficam liberados para quem assina o BeepDo Premium.</span>' +
     '<span class="sub">Assine no app BeepDo (Perfil &gt; Premium) usando esta mesma conta: <b>' + esc(S.user.email || '') + '</b>. Depois é só voltar aqui.</span>' +
     '<div class="row" style="gap:8px;justify-content:flex-end"><a href="#" class="btn" data-a="sair">' + (NO_APP ? 'Fechar' : 'Sair') + '</a><button class="btn pri" onclick="location.reload()">Já assinei, verificar</button></div></div>';
+}
+/** Nome da pessoa: o do perfil do BeepDo; sem ele, o do cadastro; por último, o começo do e-mail. */
+function nomeUsuario() {
+  const u = S.user || {}, m = u.user_metadata || {};
+  const n = (S.nome || m.username || m.full_name || m.name || '').trim();
+  if (n) return n;
+  const e = (u.email || '').split('@')[0].replace(/[._\-]+/g, ' ').replace(/\d+/g, '').trim();
+  return e ? e.charAt(0).toUpperCase() + e.slice(1) : 'Gestor';
 }
 async function entrar(user) {
   if (S.user && S.user.id === user.id) return;
@@ -1131,6 +1533,7 @@ async function entrar(user) {
     if (erroAcesso) throw erroAcesso;
     if (!liberado) { $('#raiz').innerHTML = telaPremium(); return; }
     await carregar();
+    try { const { data: pf } = await sb.from('user_profiles').select('username').eq('id', user.id).maybeSingle(); if (pf && pf.username) S.nome = pf.username; } catch (e) {}
   } catch (e) { $('#raiz').innerHTML = '<div class="login card col"><h2>Não consegui carregar</h2><span class="sub">' + esc(e.message || e) + '</span><button class="btn" onclick="location.reload()">Tentar de novo</button></div>'; return; }
   _escCache = {};
   render();
