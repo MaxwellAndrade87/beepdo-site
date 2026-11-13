@@ -1,5 +1,50 @@
 [
  {
+  "slug": "dolar-alta-gastos-moeda-estrangeira",
+  "data": "2026-11-12",
+  "hora": "22:46",
+  "categoria": "Economia",
+  "titulo": "Dólar fecha a R$ 5,65: como revisar gastos em moeda estrangeira",
+  "resumo": "Dólar termina a R$ 5,65, maior patamar desde junho de 2025. Entenda os motivos da alta e veja como organizar pagamentos e compras em moeda estrangeira.",
+  "leitura": 3,
+  "capa": {
+   "emoji": "💵",
+   "de": "#B26A00",
+   "para": "#E59A1A"
+  },
+  "imagemPrompt": "Cena fotográfica ilustrativa de duas pessoas adultas comuns à mesa de uma cozinha brasileira genérica, à noite, organizando o orçamento de uma viagem com calculadora, caderno aberto, celular e papéis sem inscrições legíveis. Expressões atentas e tranquilas, iluminação doméstica acolhedora, composição horizontal e realista. Sem marcas, logotipos, texto, pessoas famosas ou símbolos políticos.",
+  "imagemAlt": "Imagem ilustrativa: Dólar fecha a R$ 5,65: como revisar gastos em moeda estrangeira",
+  "palavrasChave": [
+   "dólar",
+   "câmbio",
+   "economia brasileira",
+   "orçamento",
+   "viagens",
+   "contas públicas"
+  ],
+  "fontes": [
+   {
+    "nome": "Agência Brasil",
+    "url": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-11/dolar-dispara-158-e-fecha-r-565-maior-nivel-em-17-meses"
+   },
+   {
+    "nome": "InfoMoney",
+    "url": "https://www.infomoney.com.br/mercados/dolar-hoje-abertura-fechamento-comercial-turismo-12112026/"
+   },
+   {
+    "nome": "GZH",
+    "url": "https://gauchazh.clicrbs.com.br/viral/noticia/2026/11/dolar-hoje-siga-ao-vivo-o-valor-da-cotacao-cmwdhx3q201az015epu2uum6k.html"
+   },
+   {
+    "nome": "Banco Central",
+    "url": "https://bcb.gov.br/meubc/faqs/p/o-que-e-valor-efetivo-total-vet"
+   }
+  ],
+  "copia": 3.3,
+  "automatico": true,
+  "corpo": "<p>O dólar fechou a quinta-feira, 12 de novembro de 2026, a R$ 5,6507, com alta de 1,58%, no maior patamar desde junho de 2025. A moeda americana avançou diante das dúvidas dos investidores sobre as medidas fiscais apresentadas pelo governo brasileiro e do fortalecimento da divisa no exterior.</p><p>Para quem tem viagem marcada, pagamentos internacionais ou compras em moeda estrangeira no planejamento, o movimento pede uma revisão das contas. A cotação do noticiário, porém, não representa necessariamente o preço final que o consumidor encontrará ao contratar uma operação de câmbio.</p><h2>Por que o dólar subiu?</h2><p>No Brasil, os investidores avaliaram o pacote de medidas fiscais apresentado pelo governo na quarta-feira, 11 de novembro. A proposta prevê impacto entre R$ 50 bilhões e R$ 60 bilhões em 2027, combinando aumento de receitas e redução de despesas.</p><p>O conjunto não prevê alteração nas metas de resultado primário, o saldo das contas públicas antes do pagamento de juros. As dúvidas sobre o alcance das medidas e sua aprovação no Congresso contribuíram para a pressão sobre o real.</p><p>O cenário externo também pesou. A moeda americana ganhou força internacionalmente, enquanto os investidores reavaliavam as perspectivas para os juros dos Estados Unidos diante da persistência da inflação e das sinalizações de dirigentes do banco central americano.</p><h2>O que a cotação de R$ 5,65 significa?</h2><p>O fechamento confirma uma mudança expressiva em relação à véspera, quando a moeda havia terminado perto de R$ 5,56. Mas o valor arredondado de R$ 5,65 deve ser entendido como uma referência do mercado, não como uma oferta garantida para qualquer cliente.</p><p>Na compra de moeda estrangeira, é preciso considerar também os tributos e as tarifas da operação. Por isso, comparar apenas a taxa de câmbio anunciada pode levar a uma escolha mais cara no resultado final.</p><p>O indicador adequado para essa comparação é o <strong>Valor Efetivo Total, conhecido como VET</strong>. Ele reúne câmbio, tarifas e tributos e mostra quantos reais serão desembolsados por unidade da moeda estrangeira.</p><h2>O que isso muda no planejamento das contas?</h2><p>A leitura prática é separar o que já tem prazo do que ainda é apenas uma intenção de compra. Uma despesa internacional próxima exige conferir o valor atualizado; uma compra opcional permite reavaliar a necessidade antes de assumir o compromisso.</p><p>Isso não significa que seja possível antecipar a próxima cotação. Para organizar o orçamento, o ponto de partida mais útil é conhecer os valores, as condições de cobrança e as datas das próprias despesas.</p><ol><li><strong>Liste os compromissos:</strong> anote pagamentos em moeda estrangeira, valores e vencimentos, incluindo reservas e serviços contratados.</li><li><strong>Peça uma simulação completa:</strong> compare o desembolso final e o VET entre instituições, não apenas a cotação em destaque.</li><li><strong>Confira as condições:</strong> antes de confirmar uma compra, verifique a moeda de cobrança e como o fornecedor ou a instituição informa a conversão.</li><li><strong>Marque uma revisão:</strong> reserve um momento antes do vencimento para atualizar a estimativa e verificar se o gasto continua cabendo no orçamento.</li></ol><p>No BeepDo, um lembrete para revisar cada pagamento pode ajudar a transformar essa checagem em tarefa concreta, sem depender da memória. A ideia é acompanhar os compromissos, não cada oscilação do mercado.</p><h2>O que acompanhar nos próximos dias?</h2><p>A tramitação das medidas fiscais e as sinalizações sobre os juros americanos seguem entre os assuntos relevantes para entender o movimento do câmbio. Nenhum deles, isoladamente, garante uma direção para a moeda.</p><p>Para o consumidor, a conclusão é mais simples: antes de fechar uma operação, atualize a simulação e confira o custo completo. Uma decisão baseada no valor efetivamente cobrado é mais útil para o orçamento do que uma tentativa de acertar o menor preço do dólar.</p>"
+ },
+ {
   "slug": "ipca-alimentos-luz-orcamento",
   "data": "2026-11-12",
   "hora": "18:49",
