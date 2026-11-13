@@ -1,5 +1,45 @@
 [
  {
+  "slug": "vazamento-no-tesouro-dados-expostos",
+  "data": "2026-11-13",
+  "hora": "18:24",
+  "categoria": "Dia a dia",
+  "titulo": "Vazamento no Tesouro: quais dados foram expostos",
+  "resumo": "Vazamento no Tesouro atingiu cadastros e chaves Pix. Entenda o que foi confirmado e como verificar mensagens suspeitas antes de fornecer dados.",
+  "leitura": 3,
+  "capa": {
+   "emoji": "🔐",
+   "de": "#BE185D",
+   "para": "#E5487F"
+  },
+  "imagemPrompt": "Fotografia ilustrativa realista de uma pessoa adulta comum sentada à mesa de uma casa brasileira simples, conferindo uma mensagem no celular ao lado de um caderno fechado e de um notebook. Expressão atenta e tranquila, iluminação doméstica de início da noite, enquadramento próximo das mãos e do ambiente. Telas sem conteúdo legível, sem textos, logotipos, marcas ou pessoas conhecidas.",
+  "imagemAlt": "Imagem ilustrativa: Vazamento no Tesouro: quais dados foram expostos",
+  "palavrasChave": [
+   "vazamento no Tesouro",
+   "segurança digital",
+   "dados pessoais",
+   "Pix",
+   "prevenção a golpes"
+  ],
+  "fontes": [
+   {
+    "nome": "CNN Brasil",
+    "url": "https://www.cnnbrasil.com.br/economia/money/macroeconomia/tesouro-identifica-acesso-indevido-a-30-mil-cadastros-e-4-mil-chaves-pix/"
+   },
+   {
+    "nome": "Times Brasil | CNBC",
+    "url": "https://timesbrasil.com.br/brasil/tesouro-nacional-identifica-acesso-indevido-a-dados-pessoais-e-expoe-4-mil-chaves-pix/"
+   },
+   {
+    "nome": "Gazeta News",
+    "url": "https://www.gazetanews.com/noticias/brasil/2026/11/amp/525106-tesouro-nacional-identifica-vazamento-de-dados-de-30-mil-cadastros.html"
+   }
+  ],
+  "copia": 0,
+  "automatico": true,
+  "corpo": "<p>O vazamento no Tesouro divulgado na noite de quinta-feira, 12 de novembro, expôs informações de aproximadamente 30 mil registros de usuários e uma base com cerca de 4 mil chaves Pix. A Secretaria do Tesouro Nacional afirma que o episódio não causou perdas financeiras, mas alerta para o risco de abordagens fraudulentas com aparência de comunicação oficial.</p><p>Para o cidadão, o cuidado mais importante é não tratar uma mensagem como verdadeira apenas porque ela apresenta informações pessoais corretas. O próprio órgão advertiu que os dados expostos podem dar mais credibilidade a tentativas de enganar os destinatários.</p><h2>Por que o caso exige atenção nas mensagens?</h2><p>O risco apontado pelo Tesouro está no uso das informações para convencer alguém a entregar outros dados, revelar uma senha ou fazer um pagamento. A preocupação, portanto, não se limita ao acesso inicial aos registros: envolve também possíveis contatos posteriores.</p><p>Na prática, saber o nome ou o CPF de uma pessoa não comprova que o remetente representa uma instituição. Como orientação preventiva, qualquer pedido recebido deve ser conferido por um caminho independente, sem aproveitar o telefone ou o endereço indicado na própria mensagem suspeita.</p><h2>Quais informações ficaram expostas?</h2><p>O episódio alcançou dois conjuntos diferentes. Um deles reúne usuários do e-Serviços, ferramenta usada para encaminhar pedidos ao Tesouro e consultar seu andamento. Nesse grupo, foram expostos dados de identificação e contato, incluindo nome, CPF e e-mail.</p><p>O outro conjunto era utilizado para análises internas. Ele guardava aproximadamente 4 mil chaves Pix, além de informações sobre pagamentos federais associados aos destinatários.</p><p><strong>Essas quantidades não permitem afirmar que houve 34 mil pessoas atingidas.</strong> Uma contagem se refere a cadastros e a outra, a chaves. Sem informação sobre eventual coincidência entre os grupos, somar os números produziria um total de pessoas que não foi confirmado.</p><h2>Quando o problema foi descoberto?</h2><p>A identificação ocorreu em 4 de novembro de 2026. A divulgação pública veio em 12 de novembro, oito dias depois. O Tesouro atribuiu esse intervalo às verificações do ocorrido, à apuração interna e às providências para interromper o acesso e recuperar a segurança do ambiente.</p><p>Segundo a secretaria, o acesso foi bloqueado e a proteção recebeu reforços. O órgão também informou que seus sistemas estruturantes permaneceram preservados. Essa declaração, porém, não elimina a necessidade de cautela com o possível uso das informações que ficaram expostas.</p><h2>O que fazer agora para conferir pedidos e cobranças?</h2><p>A recomendação editorial é incorporar uma etapa de verificação antes de responder a contatos inesperados. Não é necessário resolver uma suposta pendência no impulso, especialmente quando a abordagem mistura informações pessoais verdadeiras com pressão para agir imediatamente.</p><ul><li><strong>Interrompa a resposta automática:</strong> antes de enviar documentos, códigos ou dinheiro, identifique exatamente o que está sendo solicitado.</li><li><strong>Procure o atendimento por conta própria:</strong> abra o aplicativo que já utiliza ou localize o canal oficial da instituição, sem seguir instruções do remetente.</li><li><strong>Separe cobrança de confirmação:</strong> confira se existe uma obrigação real antes de incluir o pagamento na rotina de contas.</li><li><strong>Guarde o histórico:</strong> se precisar pedir esclarecimentos, preserve a mensagem e anote quando ela chegou, sem encaminhar dados pessoais para outras pessoas.</li></ul><p>Para quem administra pagamentos da família ou de um pequeno negócio, vale combinar uma regra simples: pedidos recebidos por mensagem só entram na lista de pagamentos depois da checagem. Se a confirmação ficar pendente, registre a tarefa de verificar, não a de pagar.</p><h2>Onde esclarecer dúvidas sobre o incidente?</h2><p>O canal indicado para perguntas é o Fala.BR. Por ele, o cidadão pode encaminhar a demanda à área responsável pela proteção de dados no Ministério da Fazenda. Ao registrar o pedido, descreva a dúvida de forma objetiva e evite acrescentar informações pessoais desnecessárias.</p><p>A investigação técnica ainda busca esclarecer de onde partiu o acesso e qual foi seu alcance. Até que haja novas conclusões oficiais, é importante distinguir o que está confirmado de suposições: houve exposição de registros, enquanto a ausência de impacto financeiro foi informada pelo Tesouro.</p>"
+ },
+ {
   "slug": "escala-cinco-dois-jornada-trabalho",
   "data": "2026-11-13",
   "hora": "14:39",
