@@ -184,7 +184,7 @@ function feriado(s) { return feriadosDoAno(+s.slice(0, 4))[s] || null; }
 const CICLOS_PRONTOS = { '6x2': [[6, 2]], '6x1 / 5x2': [[6, 1], [5, 2]], '5x2': [[5, 2]], '12x36': [[1, 1]], '6x1': [[6, 1]] };
 function cfgPadrao() {
   return {
-    v: 1,
+    v: 2,
     equipeNome: 'Minha equipe',
     setores: [{ id: 's1', nome: 'Brassagem', ciclo: { nome: '6x2', blocos: [[6, 2]] },
       postos: [
@@ -206,6 +206,8 @@ function cfgPadrao() {
       { sigla: 'T', nome: 'Treinamento', tipo: 'treinamento', cor: '#E6D6FA' },
       { sigla: 'CEL', nome: 'Convocação eleitoral', tipo: 'ausencia', cor: '#EFE6C8' },
       { sigla: 'AT', nome: 'Atestado', tipo: 'ausencia', cor: '#FDE2DC' },
+      { sigla: 'ATC', nome: 'Atestado Covid', tipo: 'ausencia', cor: '#F9C9BF' },
+      { sigla: 'TF', nome: 'Trabalho na folga', tipo: 'trabalho', cor: '#F6D9A8' },
       { sigla: 'TA', nome: 'Remanejado p/ turno A', tipo: 'turno', destino: 'A', cor: '#5A5A66' },
       { sigla: 'TB', nome: 'Remanejado p/ turno B', tipo: 'turno', destino: 'B', cor: '#44444F' },
       { sigla: 'TC', nome: 'Remanejado p/ turno C', tipo: 'turno', destino: 'C', cor: '#2A2A33' }
@@ -251,6 +253,7 @@ async function carregar() {
     delete salvo.ciclo; delete salvo.postos; delete salvo.sup;
   }
   S.cfg = Object.assign(base, salvo);
+  if ((salvo.v || 1) < 2 && Array.isArray(salvo.siglas)) { cfgPadrao().siglas.filter((x) => x.sigla === 'ATC' || x.sigla === 'TF').forEach((x) => { if (!S.cfg.siglas.some((y) => y.sigla === x.sigla)) S.cfg.siglas.push(x); }); S.cfg.v = 2; }
   S.cfg.setores.forEach((x) => { x.postos = x.postos || []; x.sup = Object.assign({ ativo: true, prefixo: 'SUP', nome: 'Suporte', cor: '#FBE3EA' }, x.sup || {}); x.trab = Object.assign({ sigla: 'TRAB', nome: 'Trabalhando', cor: '#E3F4E8' }, x.trab || {}); x.ciclo = x.ciclo || { nome: '6x2', blocos: [[6, 2]] }; });
   S.cfg.turnos.forEach((t) => { if (!t.setor) t.setor = S.cfg.setores[0].id; });
   S.cfg.bh = Object.assign(cfgPadrao().bh, S.cfg.bh || {});
@@ -280,7 +283,7 @@ function siglaInfo(c) {
   const tb = setores().find((x) => x.trab && x.trab.sigla === c); if (tb) return { sigla: c, nome: tb.trab.nome, tipo: 'posto', cor: tb.trab.cor };
   return S.cfg.siglas.find((x) => x.sigla === c) || { sigla: c, nome: c, tipo: 'ausencia', cor: '#EEEEF3' };
 }
-function trabalhando(c) { const i = siglaInfo(c); return !!i && (i.tipo === 'posto' || i.tipo === 'treinamento' || i.tipo === 'turno'); }
+function trabalhando(c) { const i = siglaInfo(c); return !!i && (i.tipo === 'posto' || i.tipo === 'treinamento' || i.tipo === 'turno' || i.tipo === 'trabalho'); }
 function tagStyle(c) { const i = siglaInfo(c) || { cor: '#EEEEF3' }; return 'background:' + i.cor + ';color:' + corTexto(i.cor); }
 function tag(c, txt) { return '<span class="tag" style="' + tagStyle(c) + '">' + esc(txt == null ? (c === 'x' ? 'Folga' : c) : txt) + '</span>'; }
 
@@ -421,9 +424,9 @@ function excBH(pid) { return (S.cfg.bh.excecoes || {})[pid] || {}; }
 function limDia(pid) { const e = excBH(pid); return e.heDia != null ? e.heDia : S.cfg.bh.heDia; }
 function diaBH(pid, s) {
   const c = codigo(pid, s), inf = siglaInfo(c) || {}, J = S.cfg.jornada;
-  const prev = trabalhando(c) ? J : 0;
+  const prev = trabalhando(c) && inf.tipo !== 'trabalho' ? J : 0;
   const lanc = S.bh.lanc[pid + '|' + s];
-  const real = lanc != null ? lanc : prev;
+  const real = lanc != null ? lanc : (inf.tipo === 'trabalho' ? J : prev);
   let delta = real - prev;
   if (inf.descontaBH) { const pe = S.equipe.find((x) => x.id === pid); if (!pe || trabalhaCiclo(pe, s)) delta -= J; }
   if (feriado(s) && S.cfg.feriadoModo === 'bh' && real > 0 && prev > 0) delta += J;
@@ -985,7 +988,7 @@ V.config = () => {
     '<div class="grid2">' +
     '<div class="card col"><h2>Siglas e cores</h2>' +
     c.siglas.map((x, i) => '<div class="row" style="gap:6px;flex-wrap:nowrap"><input class="i" type="color" data-c="sCor" data-i="' + i + '" value="' + x.cor + '"><input class="i" style="width:64px" data-c="sSig" data-i="' + i + '" value="' + esc(x.sigla) + '"' + (x.sigla === 'x' ? ' disabled title="Folga do ciclo"' : '') + '><input class="i" data-c="sNome" data-i="' + i + '" value="' + esc(x.nome) + '">' +
-      '<select class="i" style="width:130px" data-c="sTipo" data-i="' + i + '">' + [['ausencia', 'Ausência'], ['folga', 'Folga'], ['treinamento', 'Treinamento'], ['turno', 'Vai p/ turno']].map(([k, l]) => '<option value="' + k + '"' + (x.tipo === k ? ' selected' : '') + '>' + l + '</option>').join('') + '</select>' +
+      '<select class="i" style="width:130px" data-c="sTipo" data-i="' + i + '">' + [['ausencia', 'Ausência'], ['folga', 'Folga'], ['treinamento', 'Treinamento'], ['trabalho', 'Trabalho na folga'], ['turno', 'Vai p/ turno']].map(([k, l]) => '<option value="' + k + '"' + (x.tipo === k ? ' selected' : '') + '>' + l + '</option>').join('') + '</select>' +
       (x.tipo === 'turno' ? '<select class="i" style="width:150px" data-c="sDest" data-i="' + i + '">' + c.turnos.map((t) => '<option value="' + t.id + '"' + (x.destino === t.id ? ' selected' : '') + '>' + esc(labelTurno(t.id)) + '</option>').join('') + '</select>' : '') +
       (x.tipo === 'ausencia' ? '<label class="row" style="gap:4px;font-size:11px;white-space:nowrap" title="Desconta a jornada do banco de horas"><input type="checkbox" data-c="sBH" data-i="' + i + '"' + (x.descontaBH ? ' checked' : '') + '>-BH</label>' : '') +
       (x.sigla !== 'x' ? '<button class="btn ghost sm danger" data-a="sRem" data-i="' + i + '" aria-label="Remover">✕</button>' : '') + '</div>').join('') +
