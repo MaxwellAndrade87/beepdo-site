@@ -492,7 +492,7 @@ function render() {
 const V = {}, M = {};
 A.fecharModal = (el, ev) => { if (ev && ev.target.closest('[data-stop]') && el.classList.contains('modal-fundo')) return; S.ui.modal = null; render(); };
 A.ir = (el) => { S.view = el.dataset.v; S.ui.pop = null; S.ui.sel = null; render(); window.scrollTo(0, 0); };
-A.sair = async (el, ev) => { ev.preventDefault(); if (NO_APP) { avisarApp({ tipo: 'fechar' }); return; } await sb.auth.signOut(); S.user = null; render(); };
+A.sair = async (el, ev) => { ev.preventDefault(); if (NO_APP) { avisarApp({ tipo: 'fechar' }); return; } await sb.auth.signOut({ scope: 'local' }); S.user = null; render(); };
 
 function telaLogin() {
   return '<div class="card login col">' +
