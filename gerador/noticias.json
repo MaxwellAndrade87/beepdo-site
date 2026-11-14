@@ -1,5 +1,42 @@
 [
  {
+  "slug": "voos-eua-cancelamentos-pane-aerea",
+  "data": "2026-11-14",
+  "hora": "16:52",
+  "categoria": "Mundo",
+  "titulo": "Voos nos EUA: cancelamentos continuam após pane aérea",
+  "resumo": "Voos nos EUA seguem com cancelamentos após falha no controle aéreo. Entenda os reflexos no Brasil e como reorganizar sua viagem neste fim de semana.",
+  "leitura": 3,
+  "capa": {
+   "emoji": "✈️",
+   "de": "#2563EB",
+   "para": "#4F86F7"
+  },
+  "imagemPrompt": "Fotografia editorial ilustrativa de pessoas comuns aguardando em uma sala de embarque de aeroporto internacional genérico, um casal consultando o celular ao lado de malas de mão, outros viajantes sentados ao fundo e aeronaves desfocadas através das janelas, luz natural de fim de tarde, ambiente realista e tranquilo, sem pessoas famosas, sem logotipos, sem marcas, sem texto legível e sem elementos políticos.",
+  "imagemAlt": "Imagem ilustrativa: Voos nos EUA: cancelamentos continuam após pane aérea",
+  "palavrasChave": [
+   "voos nos EUA",
+   "aviação",
+   "Estados Unidos",
+   "cancelamento de voos",
+   "viagens internacionais",
+   "aeroportos"
+  ],
+  "fontes": [
+   {
+    "nome": "CNN Brasil",
+    "url": "https://www.cnnbrasil.com.br/noticias/mais-de-4-mil-voos-sao-cancelados-nos-eua-neste-sabado-14/"
+   },
+   {
+    "nome": "UOL",
+    "url": "https://noticias.uol.com.br/internacional/ultimas-noticias/2026/11/13/suspensao-decolagens-espaco-aereo-eua.ghtm"
+   }
+  ],
+  "copia": 1.3,
+  "automatico": true,
+  "corpo": "<p>Os voos nos EUA continuam afetados neste sábado, 14 de novembro de 2026, depois que uma falha de comunicação no controle aéreo interrompeu decolagens em todo o país na sexta-feira. Cerca de 4.050 viagens com origem ou destino nos Estados Unidos foram canceladas neste sábado, segundo dados da plataforma FlightAware divulgados durante a tarde.</p><p>A suspensão nacional já foi retirada, mas isso não significa que cada voo voltou ao horário original. Para brasileiros com embarque, conexão ou retorno marcado, a recomendação é confirmar o itinerário inteiro antes de sair de casa.</p><h2>O que aconteceu com os voos nos Estados Unidos?</h2><p>A Administração Federal de Aviação dos Estados Unidos, a FAA, determinou a interrupção das decolagens na sexta-feira, 13 de novembro, após problemas nos sistemas de comunicação do controle de tráfego aéreo. A restrição começou pouco antes das 18h e foi retirada por volta das 22h30, no horário de Brasília.</p><p>A medida paralisou novas partidas por mais de quatro horas. Depois da liberação, as companhias precisaram reorganizar a programação, enquanto passageiros buscavam alternativas para viagens canceladas e conexões comprometidas.</p><p>O secretário de Transportes americano, Sean Duffy, afirmou neste sábado que uma manutenção para substituir linhas antigas de cobre por fibra óptica estava sendo realizada em pelo menos uma instalação remota da FAA. Ele apontou a infraestrutura antiga como uma possível causa da interrupção, sem apresentar essa explicação como conclusão definitiva de toda a investigação.</p><h2>Por que os cancelamentos continuam após a liberação?</h2><p>A autorização para decolar resolve a restrição operacional, mas não elimina de imediato o acúmulo de viagens. Neste sábado, o governo americano informou que a recuperação seria gradual, enquanto as empresas ainda enfrentavam dificuldades para reorganizar os voos.</p><p>Para o passageiro, a diferença é importante: aeroporto aberto não equivale a embarque confirmado. É preciso verificar a situação específica da reserva, inclusive quando o primeiro trecho aparece como mantido.</p><h2>Como a interrupção afetou viagens no Brasil?</h2><p>Os reflexos chegaram aos aeroportos brasileiros. A concessionária de Guarulhos informou neste sábado que a operação do terminal estava normalizada, depois de nove cancelamentos relacionados aos problemas no tráfego aéreo americano na sexta-feira.</p><p>A Azul informou cancelamentos em ligações com Fort Lauderdale e anunciou reacomodação em voos extras no fim de semana. A Latam comunicou que passageiros afetados por cancelamentos seriam avisados diretamente para remarcar sem custo adicional. Essas medidas correspondem aos comunicados dessas empresas, não a uma regra única para todas as reservas.</p><h2>O que fazer agora para reorganizar a viagem?</h2><p>A orientação prática do BeepDo é separar a reorganização em tarefas pequenas, com prioridade para o embarque e os compromissos que dependem dele. Não trate a retirada da suspensão nacional como confirmação suficiente para manter todo o planejamento.</p><ul><li><strong>Confira todos os trechos:</strong> consulte a reserva nos canais oficiais da companhia e confirme também conexões e o aeroporto de chegada.</li><li><strong>Peça alternativas por escrito:</strong> antes de aceitar uma remarcação, verifique data, horário local, destino final e eventuais condições adicionais.</li><li><strong>Revise reservas relacionadas:</strong> confira os prazos para alterar hotel, traslado e aluguel de carro. Procure os fornecedores antes de vencer uma janela de cancelamento.</li><li><strong>Avise quem depende da sua chegada:</strong> informe familiares, clientes ou equipe de trabalho e combine quando enviará uma nova atualização.</li><li><strong>Guarde os registros:</strong> reúna mensagens da empresa, comprovantes, protocolos e recibos de despesas em uma pasta.</li></ul><p>Crie um lembrete para consultar novamente o voo antes do deslocamento ao aeroporto. Ao registrar os novos horários, indique a cidade e o fuso utilizado para não confundir a partida local com o horário de Brasília.</p><p>Antes de comprar outra passagem por conta própria, peça à companhia uma confirmação das alternativas disponíveis para sua reserva. A prioridade é tomar decisões com o itinerário atualizado, não apenas com a notícia de que as decolagens foram liberadas.</p>"
+ },
+ {
   "slug": "prazos-processuais-cnj-suspende-contagem",
   "data": "2026-11-14",
   "hora": "13:33",
