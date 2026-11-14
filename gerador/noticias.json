@@ -1,5 +1,46 @@
 [
  {
+  "slug": "black-friday-fiscalizacao-descontos-compras",
+  "data": "2026-11-13",
+  "hora": "22:24",
+  "categoria": "Dia a dia",
+  "titulo": "Black Friday: fiscalização cobra clareza nos descontos",
+  "resumo": "Black Friday terá fiscalização de ofertas e alertas sobre pagamentos. Veja como comparar preços e organizar as compras antes de 27 de novembro.",
+  "leitura": 3,
+  "capa": {
+   "emoji": "🛒",
+   "de": "#BE185D",
+   "para": "#E5487F"
+  },
+  "imagemPrompt": "Fotografia ilustrativa realista de duas pessoas adultas comuns comparando produtos em um notebook e consultando um celular à mesa de uma cozinha brasileira simples. Caderno aberto com páginas sem inscrições legíveis, calculadora e uma pequena caixa de papelão sem identificação. Expressões de atenção e planejamento, iluminação doméstica acolhedora, enquadramento horizontal. Sem texto, logotipos, marcas ou pessoas conhecidas; telas desfocadas.",
+  "imagemAlt": "Imagem ilustrativa: Black Friday: fiscalização cobra clareza nos descontos",
+  "palavrasChave": [
+   "Black Friday",
+   "compras online",
+   "defesa do consumidor",
+   "promoções",
+   "planejamento de compras",
+   "segurança no Pix"
+  ],
+  "fontes": [
+   {
+    "nome": "Governo Federal",
+    "url": "https://sites.joaopessoa.pb.gov.br/procon/o-procon-jp-iniciou-a-operacao-pre-black-frida/"
+   },
+   {
+    "nome": "Exame",
+    "url": "https://exame.com/negocios/maior-supermercado-do-brasil-tera-5-mil-ofertas-e-lojas-abertas-por-90-horas-na-black-friday/"
+   },
+   {
+    "nome": "VTV News",
+    "url": "https://vtvnews.com.br/noticias/procon-santos-alerta-para-golpe-do-pix-e-da-dicas-para-comprar-com-seguranca-na-black-friday-2026/"
+   }
+  ],
+  "copia": 2.5,
+  "automatico": true,
+  "corpo": "<p>A Black Friday entrou no radar da fiscalização antes da principal data de promoções, marcada para 27 de novembro. Nesta sexta-feira, 13 de novembro de 2026, o Procon de João Pessoa informou que iniciou uma operação preventiva e notificou quatro estabelecimentos por problemas na apresentação de preços e descontos.</p><p>No mesmo dia, o Procon da Assembleia Legislativa de Minas Gerais publicou orientações sobre falsas ofertas e riscos nas compras. O movimento acontece enquanto grandes varejistas preparam campanhas prolongadas, tornando ainda mais importante separar desconto comprovado de publicidade atraente.</p><h2>O que a fiscalização encontrou nas ofertas?</h2><p>Em João Pessoa, as notificações envolveram falta de informações sobre preços anteriores e pouca transparência na apresentação dos descontos. A operação tem caráter educativo e preventivo, com fiscalização prevista para continuar no período que antecede a Black Friday.</p><p>O objetivo é verificar se a redução anunciada corresponde ao que realmente era cobrado. Sem uma referência confiável, o consumidor tem mais dificuldade para saber se está diante de uma oportunidade ou apenas de uma etiqueta promocional.</p><p>O órgão municipal orienta quem identificar possíveis irregularidades a registrar fotos e vídeos e encaminhar uma denúncia. As quatro notificações relatadas são de uma ação local e não representam um levantamento nacional sobre o comportamento das lojas.</p><h2>Por que comparar preços antes de 27 de novembro?</h2><p>A preparação do comércio mostra que as campanhas podem ultrapassar a sexta-feira principal. O Carrefour anunciou mais de 5 mil ofertas e uma operação com mais de 90 hipermercados abertos por 90 horas consecutivas, entre 26 e 29 de novembro.</p><p>Essa programação é específica da rede, não uma regra para todo o varejo. Para o consumidor, a recomendação prática é acompanhar o produto desejado antes da campanha e verificar as condições de cada estabelecimento.</p><p>Compare sempre o mesmo modelo, com capacidade, tamanho e acessórios equivalentes. Inclua frete e eventuais serviços no cálculo, porque a comparação útil é entre os valores finais que sairão do orçamento, não apenas entre percentuais destacados no anúncio.</p><h2>Que cuidado tomar antes de confirmar um Pix?</h2><p>Outro alerta, divulgado pelo Procon-Santos e repercutido nesta sexta-feira, trata da alteração do QR Code ou do código Pix copia e cola durante compras online. Nesse tipo de fraude, a loja pode existir e o valor parecer correto, mas o pagamento ser direcionado a outra conta.</p><p>A orientação é conferir quem receberá o dinheiro na tela do banco antes de autorizar a transferência. Se o beneficiário parecer incompatível com a compra, interrompa o pagamento e confirme os dados diretamente com a loja por um canal oficial.</p><p>O alerta não significa que todo pagamento intermediado por outra empresa seja irregular. Significa que o nome do destinatário também precisa entrar na checagem, em vez de o consumidor olhar somente o preço.</p><h2>O que fazer agora para organizar as compras?</h2><p>A análise prática é simples: transforme a preparação em pequenas tarefas antes de abrir as promoções. Isso ajuda a decidir com critérios definidos, sem depender da pressa criada por uma contagem regressiva.</p><ul><li><strong>Faça uma lista curta:</strong> registre o que realmente precisa comprar e deixe os itens opcionais separados.</li><li><strong>Defina um limite:</strong> estabeleça quanto pode gastar no total, considerando compromissos já assumidos.</li><li><strong>Salve referências:</strong> anote preço, modelo, loja e condições de pagamento, com capturas de tela identificadas pela data.</li><li><strong>Marque uma revisão:</strong> reserve um horário antes de 27 de novembro para comparar novamente os produtos da lista.</li><li><strong>Confira a entrega:</strong> se a compra for um presente, avalie o prazo informado antes de concluir o pedido.</li><li><strong>Guarde os documentos:</strong> reúna anúncio, confirmação, comprovante e previsão de entrega em uma pasta.</li></ul><p>Depois da compra, programe uma conferência para a data prevista de recebimento. A melhor oportunidade não é necessariamente a que anuncia o maior desconto, mas a que atende a uma necessidade, tem condições claras e cabe no planejamento.</p>"
+ },
+ {
   "slug": "vazamento-no-tesouro-dados-expostos",
   "data": "2026-11-13",
   "hora": "18:24",
