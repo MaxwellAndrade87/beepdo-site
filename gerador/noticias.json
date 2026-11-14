@@ -1,5 +1,49 @@
 [
  {
+  "slug": "prazos-processuais-cnj-suspende-contagem",
+  "data": "2026-11-14",
+  "hora": "13:33",
+  "categoria": "Brasil",
+  "titulo": "Prazos processuais: CNJ suspende contagem após pane",
+  "resumo": "Prazos processuais tiveram a contagem suspensa após falhas na Microsoft. Veja quando ela será retomada e como conferir os compromissos do seu processo.",
+  "leitura": 3,
+  "capa": {
+   "emoji": "📋",
+   "de": "#1F9D63",
+   "para": "#2BB673"
+  },
+  "imagemPrompt": "Fotografia ilustrativa realista de duas pessoas adultas comuns conferindo documentos e uma agenda sobre a mesa de um escritório simples de atendimento, com um notebook aberto e pastas organizadas. Ambiente brasileiro genérico, luz natural suave, expressão de atenção e colaboração. Sem pessoas reais identificáveis, sem marcas, logotipos, textos legíveis ou símbolos políticos.",
+  "imagemAlt": "Imagem ilustrativa: Prazos processuais: CNJ suspende contagem após pane",
+  "palavrasChave": [
+   "prazos processuais",
+   "CNJ",
+   "Justiça",
+   "Microsoft 365",
+   "suspensão de prazos"
+  ],
+  "fontes": [
+   {
+    "nome": "CNJ",
+    "url": "https://atos.cnj.jus.br/atos/detalhar/7181"
+   },
+   {
+    "nome": "Migalhas",
+    "url": "https://www.migalhas.com.br/amp/quentes/468607/cnj-suspende-prazos-processuais-no-pais-por-instabilidade-da-microsoft"
+   },
+   {
+    "nome": "Correio do Povo",
+    "url": "https://www.correiodopovo.com.br/not%C3%ADcias/pol%C3%ADtica/fachin-suspende-prazos-no-stf-apos-falhas-da-microsoft-1.1764568"
+   },
+   {
+    "nome": "OAB",
+    "url": "https://www.oab.org.br/noticia/64795/cnj-atende-pedido-da-oab-e-suspende-prazos-processuais-em-todo-o-pais-por-falha-no-outlook"
+   }
+  ],
+  "copia": 4,
+  "automatico": true,
+  "corpo": "<p>Os <strong>prazos processuais</strong> tiveram a contagem suspensa nos dias 12 e 13 de novembro de 2026 em todo o país por determinação do Conselho Nacional de Justiça, o CNJ. A decisão foi assinada na sexta-feira, 13, pelo ministro Edson Fachin, após falhas nos serviços da Microsoft usados pelo Judiciário. A contagem será retomada na segunda-feira, 16 de novembro.</p><p>A medida atende a uma solicitação da Ordem dos Advogados do Brasil, a OAB, e foi formalizada pela Portaria da Presidência nº 551/2026. Para quem acompanha uma ação, o ponto principal é conferir o calendário atualizado com o profissional responsável, sem presumir que todos os compromissos foram adiados.</p><h2>Por que o CNJ suspendeu os prazos processuais?</h2><p>A instabilidade começou na quinta-feira, 12 de novembro, e atingiu ferramentas de comunicação e de trabalho do Microsoft 365 utilizadas por órgãos da Justiça. O problema prejudicou atividades que dependem desses serviços, motivando o pedido de suspensão apresentado pela OAB.</p><p>A entidade argumentou que manter os sistemas de processo eletrônico disponíveis não basta para assegurar o funcionamento das atividades judiciais. Falhas no e-mail e em plataformas de comunicação também podem dificultar o atendimento às partes, os contatos com unidades judiciárias e o agendamento de audiências.</p><p>A decisão do CNJ reconhece esse impacto sobre a rotina dos tribunais e da advocacia. O foco da portaria é a contagem dos prazos, não uma determinação de fechamento geral do Judiciário.</p><h2>Quando a contagem será retomada?</h2><p>A portaria estabelece <strong>16 de novembro de 2026, segunda-feira</strong>, como a data de retomada. A suspensão abrange os dias 12 e 13 de novembro em todo o território nacional.</p><p>No Supremo Tribunal Federal, Fachin também editou uma norma específica para os processos da Corte, a Resolução nº 923/2026. Ela integra a resposta do Judiciário aos problemas provocados pela instabilidade.</p><p>Para organizar a agenda, é importante distinguir a retomada da contagem do vencimento de cada obrigação. A data final de um prazo deve ser confirmada no processo pelo advogado ou pela defensoria responsável, considerando a determinação aplicável ao caso.</p><h2>E quem enfrentou problemas fora desses dois dias?</h2><p>O CNJ previu a possibilidade de análise de situações que não estejam abrangidas pela suspensão, mas tenham sido comprovadamente afetadas pela instabilidade. Esses casos serão examinados pelo juiz ou pelo relator responsável, conforme a legislação processual.</p><p>Isso não representa uma extensão automática da medida. Quem identificar um prejuízo deve comunicar o ocorrido ao responsável pelo processo e reunir os registros disponíveis para que ele avalie a necessidade de apresentar um pedido.</p><h2>O que fazer agora para revisar sua agenda?</h2><p>A orientação prática do BeepDo é separar três tarefas: confirmar o prazo, atualizar o calendário e guardar a confirmação. Um lembrete ajuda na organização, mas não substitui a conferência jurídica da nova data.</p><ul><li><strong>Fale com quem acompanha a ação:</strong> pergunte se a suspensão altera alguma entrega ou manifestação pendente.</li><li><strong>Confira cada compromisso separadamente:</strong> não trate audiência, atendimento e entrega de documentos como se fossem a mesma obrigação.</li><li><strong>Guarde registros das falhas:</strong> preserve mensagens de erro, horários e protocolos, caso sejam necessários para explicar uma dificuldade.</li><li><strong>Atualize os lembretes após a confirmação:</strong> registre a data validada e reserve tempo para reunir os documentos solicitados.</li></ul><p>Para quem precisa enviar informações ao advogado ou à defensoria, vale manter a preparação em andamento. A suspensão pode alterar a contagem processual, mas aproveitar o intervalo para organizar documentos evita concentrar todas as pendências na retomada.</p>"
+ },
+ {
   "slug": "black-friday-fiscalizacao-descontos-compras",
   "data": "2026-11-13",
   "hora": "22:24",
