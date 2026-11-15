@@ -1,5 +1,41 @@
 [
  {
+  "slug": "vagas-emprego-fortaleza-sine",
+  "data": "2026-11-15",
+  "hora": "17:20",
+  "categoria": "Trabalho",
+  "titulo": "Vagas de emprego em Fortaleza: Sine reúne 2.827 chances",
+  "resumo": "Confira as vagas de emprego em Fortaleza, os documentos necessários e a agenda de seleções presenciais do Sine para organizar sua candidatura.",
+  "leitura": 3,
+  "capa": {
+   "emoji": "💼",
+   "de": "#0E7490",
+   "para": "#14A3C2"
+  },
+  "imagemPrompt": "Fotografia ilustrativa realista de pessoas adultas comuns aguardando atendimento em um centro de emprego genérico brasileiro, com pastas e currículos sem texto legível, ambiente organizado e acolhedor, luz natural, diversidade de idades e tons de pele, sem pessoas famosas, logotipos, marcas, placas legíveis ou símbolos políticos.",
+  "imagemAlt": "Imagem ilustrativa: Vagas de emprego em Fortaleza: Sine reúne 2.827 chances",
+  "palavrasChave": [
+   "vagas de emprego em Fortaleza",
+   "Sine Municipal",
+   "emprego",
+   "Fortaleza",
+   "processos seletivos"
+  ],
+  "fontes": [
+   {
+    "nome": "O Estado",
+    "url": "https://oestadoce.com.br/home-carrossel/fortaleza-inicia-semana-com-mais-de-28-mil-vagas-de-emprego/"
+   },
+   {
+    "nome": "GCmais",
+    "url": "https://gcmais.com.br/colunas/marcia-catunda/prefeitura-de-fortaleza-disponibiliza-2-827-oportunidades-de-trabalho-com-selecoes-presenciais-pelo-sine-municipal"
+   }
+  ],
+  "copia": 5.1,
+  "automatico": true,
+  "corpo": "<p>As <strong>vagas de emprego em Fortaleza</strong> disponíveis pelo Sine Municipal somam 2.827 oportunidades para a terceira semana de novembro, conforme informações divulgadas e atualizadas neste domingo, 15 de novembro. São 213 profissões em 296 empresas, com seleções presenciais programadas a partir de segunda-feira, 16.</p><p>Há oportunidades em atendimento, limpeza, alimentação, comércio e construção civil. Para quem procura trabalho, o ponto de atenção é separar a consulta geral às vagas dos processos que já têm horário, endereço e requisitos definidos.</p><h2>Quais funções têm mais vagas?</h2><p>Operador de telemarketing ativo e receptivo concentra o maior número de oportunidades: 606. Na sequência aparecem auxiliar de limpeza, com 202, e auxiliar de cozinha, com 131.</p><p>Também estão na relação ajudante de carga e descarga de mercadoria, com 87 postos, e operador de caixa, com 75. A lista inclui ainda servente de obras, servente de limpeza, garçom, auxiliar de linha de produção e pedreiro.</p><p>O volume anunciado reúne diferentes funções e empresas. Portanto, não deve ser interpretado como uma seleção única: antes de preparar a candidatura, vale identificar a ocupação desejada e conferir as exigências correspondentes.</p><h2>Quando começam as seleções presenciais?</h2><p>A programação começa na segunda-feira, 16 de novembro, no Sine Aldeota, na Avenida Santos Dumont, 2500, sala 17. Dois processos estão previstos para as 13h:</p><ul><li><strong>Restaurante Parrileiro:</strong> 28 vagas, distribuídas entre ajudante de cozinha, serviços gerais, cumim, garçom e cozinheiro. Exige ensino fundamental completo e experiência formal ou informal na função.</li><li><strong>Meia Sola:</strong> dez vagas para operador de caixa, com exigência de ensino médio completo e experiência na atividade.</li></ul><p>Na terça-feira, 17 de novembro, o mesmo endereço recebe seleção do Empório do Pão, às 13h. São 160 oportunidades, divididas entre atendente de padaria, cozinheiro geral, auxiliar de cozinha e atendente de cafeteria, com ensino médio completo e experiência formal ou informal.</p><p>Como os dois processos de segunda começam no mesmo horário, quem tiver interesse em ambos deve consultar previamente a unidade sobre a possibilidade de participação. Não é recomendável montar a agenda presumindo que será possível fazer as duas entrevistas.</p><h2>Quais documentos levar ao Sine?</h2><p>A orientação para o atendimento presencial é apresentar documento oficial com foto, CPF, carteira de trabalho física ou digital e currículo atualizado impresso. O funcionamento informado é de segunda a sexta-feira, das 8h às 12h e das 13h às 17h.</p><p>Para esclarecer dúvidas antes do deslocamento, os contatos divulgados são o telefone <strong>(85) 3771-6644</strong> e o WhatsApp <strong>(85) 99248-2066</strong>. Confirme especialmente a vaga pretendida, os requisitos e o local da seleção.</p><h2>O que fazer agora para organizar a candidatura?</h2><p>A recomendação prática do BeepDo é transformar cada oportunidade em um compromisso separado, em vez de guardar apenas uma lista de empresas. Registre cargo, endereço, horário, documentos e o que falta preparar.</p><ol><li><strong>Escolha por compatibilidade:</strong> priorize funções que combinem com sua escolaridade e experiência. Isso ajuda a concentrar tempo e dinheiro de transporte nas candidaturas mais adequadas.</li><li><strong>Revise o currículo:</strong> confira telefone e e-mail e destaque experiências relacionadas à função. Se o anúncio aceitar experiência informal, descreva com clareza as atividades que você realmente realizou.</li><li><strong>Prepare a saída:</strong> deixe documentos e cópias separados e calcule o trajeto com margem para imprevistos. Programe um aviso para sair de casa, não apenas para o início da entrevista.</li><li><strong>Registre o próximo passo:</strong> depois do atendimento, anote a orientação recebida, eventual retorno e a data combinada para novo contato.</li></ol><p>Antes de aceitar uma proposta, peça informações sobre remuneração, jornada, benefícios e local de trabalho. Use essas respostas para avaliar a oportunidade junto com os custos e o tempo de deslocamento, sem decidir apenas pelo número de vagas anunciado.</p>"
+ },
+ {
   "slug": "starship-spacex-captura-retorno-orbita",
   "data": "2026-11-15",
   "hora": "13:59",
