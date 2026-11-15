@@ -1,5 +1,46 @@
 [
  {
+  "slug": "starship-spacex-captura-retorno-orbita",
+  "data": "2026-11-15",
+  "hora": "13:59",
+  "categoria": "Tecnologia",
+  "titulo": "Starship: SpaceX captura nave após retorno da órbita",
+  "resumo": "Starship voltou da órbita e foi capturada por uma torre no Texas. Entenda o avanço da SpaceX e por que ele ainda não garante lançamentos mais baratos.",
+  "leitura": 3,
+  "capa": {
+   "emoji": "🚀",
+   "de": "#6D4AE0",
+   "para": "#8B7CF6"
+  },
+  "imagemPrompt": "Fotografia ilustrativa realista de duas pessoas adultas comuns observando o céu em uma área aberta próxima a um centro espacial genérico, com uma torre metálica de lançamento distante e estruturas técnicas desfocadas ao fundo, luz suave de fim de tarde, atmosfera de curiosidade científica, sem representar um evento real, sem pessoas famosas, sem logotipos, sem marcas, sem bandeiras e sem texto.",
+  "imagemAlt": "Imagem ilustrativa: Starship: SpaceX captura nave após retorno da órbita",
+  "palavrasChave": [
+   "Starship",
+   "Starship",
+   "SpaceX",
+   "exploração espacial",
+   "foguetes reutilizáveis",
+   "internet por satélite"
+  ],
+  "fontes": [
+   {
+    "nome": "Reuters",
+    "url": "https://www.streetinsider.com/Reuters/SpaceX%2BStarship%2Breturns%2Bto%2Blanding%2Bpad%2Bfrom%2Borbit%2C%2Bacing%2Btest%2Bfor%2Breusable%2Brockets/27346215.html"
+   },
+   {
+    "nome": "ABC13",
+    "url": "https://abc13.com/post/spacexs-starship-flight-15-expected-return-back-launch-pad-saturday-afternoon/20040267/"
+   },
+   {
+    "nome": "USA Today",
+    "url": "https://tech.yahoo.com/science/articles/spacex-catches-starship-first-time-224047414.html"
+   }
+  ],
+  "copia": 0,
+  "automatico": true,
+  "corpo": "<p>A <strong>Starship</strong>, da SpaceX, foi capturada pelos braços mecânicos de uma torre no Texas no sábado, 14 de novembro, depois de passar mais de 22 horas em órbita. Foi a primeira recuperação desse tipo da nave, a parte superior do sistema. O resultado representa um avanço no projeto de reutilização, mas a missão não conseguiu recuperar também o propulsor.</p><p>O teste terminou com uma conquista e uma limitação importante: trazer o veículo de volta não significa que ele já esteja pronto para voar novamente. Para quem acompanha tecnologia, essa diferença ajuda a separar uma demonstração bem-sucedida de uma operação comercial consolidada.</p><h2>Como foi a captura da Starship?</h2><p>O lançamento aconteceu na sexta-feira, 13 de novembro, em Starbase, no sul do Texas. Depois de permanecer em órbita até o sábado, a nave atravessou novamente a atmosfera e retornou ao local de lançamento.</p><p>Na aproximação final, acionou os motores, assumiu a posição vertical e desceu até ser sustentada pelos braços da torre, conhecida como Mechazilla. A manobra substitui um pouso convencional por uma captura coordenada entre o veículo e a estrutura em terra.</p><p>Era o 15º voo de teste do programa. A missão também colocou em órbita uma nova leva de satélites Starlink, usados no serviço de conexão à internet da empresa.</p><h2>Por que o resultado ainda não é reutilização completa?</h2><p>O conjunto tem duas partes principais: a nave Starship e o propulsor Super Heavy, responsável pelo impulso inicial do lançamento. A intenção era recuperar ambos na mesma missão, mas isso não aconteceu.</p><p>Na sexta-feira, o Super Heavy interrompeu automaticamente sua tentativa de retorno à torre e foi desviado para o Golfo do México. A recuperação da nave, no dia seguinte, não elimina essa falha na outra etapa do voo.</p><p>Há ainda uma distinção entre recuperar e reutilizar. Na cobertura local, funcionários informaram que a nave capturada provavelmente será aposentada e poderá ser exposta em Starbase, em vez de realizar outra missão.</p><h2>O que falta para transformar o teste em rotina?</h2><p><strong>O objetivo do projeto é voltar a usar as duas partes do foguete</strong>, reduzindo a necessidade de fabricar equipamentos novos para cada lançamento. A captura demonstra uma capacidade necessária para esse plano, não a conclusão de todo o desenvolvimento.</p><p>O escudo térmico, que protege a nave durante a reentrada, ainda exige aperfeiçoamentos para permitir reutilização com pouca manutenção. Também falta demonstrar a recuperação dos dois estágios em um mesmo voo.</p><p>Por isso, o próximo sinal relevante não será apenas outra imagem de chegada à torre. Será a comprovação de que recuperação, inspeção e preparação para novas missões podem funcionar de maneira repetida.</p><h2>O que isso muda para quem usa tecnologia?</h2><p>Na avaliação prática, o avanço merece atenção, mas não deve ser interpretado como anúncio de internet mais barata ou de mudança imediata nos serviços disponíveis no Brasil. Uma etapa do desenvolvimento espacial não equivale a uma nova oferta ao consumidor.</p><p>Para quem depende de conexão para trabalhar ou estuda contratar internet por satélite, a orientação é tomar decisões pelas condições atuais, sem antecipar benefícios que ainda precisam se concretizar:</p><ul><li><strong>Compare o custo completo:</strong> mensalidade, equipamento, instalação e eventuais cobranças adicionais.</li><li><strong>Confira as condições do endereço:</strong> verifique disponibilidade e requisitos antes de cancelar a conexão existente.</li><li><strong>Proteja a rotina de trabalho:</strong> planeje uma alternativa para reuniões e entregas caso a conexão principal falhe.</li><li><strong>Acompanhe anúncios comerciais separadamente:</strong> registre quando revisar o plano, em vez de trocar de serviço com base apenas no sucesso de um teste.</li></ul><p>Se houver uma contratação em análise, um lembrete no BeepDo pode ajudar a revisar proposta e orçamento antes da decisão. A conquista espacial é concreta; seu efeito sobre a conta doméstica ainda não está demonstrado.</p>"
+ },
+ {
   "slug": "trump-xi-putin-reuniao-armas-nucleares",
   "data": "2026-11-14",
   "hora": "21:59",
