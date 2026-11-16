@@ -1,5 +1,45 @@
 [
  {
+  "slug": "previsao-do-tempo-chuva-forte",
+  "data": "2026-11-16",
+  "hora": "20:42",
+  "categoria": "Brasil",
+  "titulo": "Previsão do tempo: semana terá chuva forte em várias regiões",
+  "resumo": "A previsão do tempo indica chuva forte em várias regiões nesta semana. Veja as áreas com maiores volumes e como planejar deslocamentos e compromissos.",
+  "leitura": 3,
+  "capa": {
+   "emoji": "🌧️",
+   "de": "#1F9D63",
+   "para": "#2BB673"
+  },
+  "imagemPrompt": "Fotografia ilustrativa realista de pessoas comuns com guarda-chuvas caminhando em uma calçada de bairro urbano brasileiro genérico, céu nublado, chuva moderada e reflexos no piso molhado, comércios sem identificação ao fundo, enquadramento horizontal e luz natural suave. Sem alagamento, cenas de risco, marcas, logotipos ou textos legíveis.",
+  "imagemAlt": "Imagem ilustrativa: Previsão do tempo: semana terá chuva forte em várias regiões",
+  "palavrasChave": [
+   "previsão do tempo",
+   "chuvas intensas",
+   "temporais",
+   "rotina",
+   "Brasil"
+  ],
+  "fontes": [
+   {
+    "nome": "Governo Federal",
+    "url": "https://portal.inmet.gov.br/noticias/inmet-divulga-previs%C3%A3o-para-semana-de-16-a-23-de-novembro-de-2026"
+   },
+   {
+    "nome": "Climatempo",
+    "url": "https://www.climatempo.com.br/noticia/temporal/semana-tera-fortes-pancadas-de-chuva-em-muitas-areas-do-brasil"
+   },
+   {
+    "nome": "Diário do Grande ABC",
+    "url": "https://maquina03.dgabc.com.br/Noticia/4368987/chuva-abre-a-semana-no-grande-abc-nesta-segunda-feira-16-veja-previsao"
+   }
+  ],
+  "copia": 1.4,
+  "automatico": true,
+  "corpo": "<p>A <strong>previsão do tempo</strong> divulgada pelo Instituto Nacional de Meteorologia nesta segunda-feira, 16 de novembro, indica uma semana de chuvas em várias regiões do Brasil. Até o dia 23, áreas de Goiás, Tocantins e Bahia estão entre as que podem registrar os maiores volumes, enquanto o Sul também deve enfrentar temporais.</p><p>O cenário exige acompanhar as atualizações locais antes de organizar deslocamentos e atividades ao ar livre. As estimativas são para diferentes períodos e áreas: não significam que todos os municípios de um estado terão chuva com a mesma intensidade.</p><h2>Onde estão previstos os maiores volumes de chuva?</h2><p>O boletim semanal aponta acumulados próximos de 200 milímetros no centro e norte de Goiás, no centro e sul do Tocantins e no oeste e sudoeste da Bahia. Esses valores representam a soma prevista para o período, não uma quantidade esperada de uma só vez.</p><p>Também há previsão de volumes superiores a 150 milímetros em áreas do norte e noroeste de Minas Gerais e em trechos do Espírito Santo, como a região Serrana e o Caparaó. No Distrito Federal, a estimativa varia entre 50 e 80 milímetros.</p><p>No Sul, a projeção indica tempestades a partir do fim da tarde de quarta-feira, 18 de novembro, inicialmente no sudoeste gaúcho, com avanço para áreas de Santa Catarina. Outro sistema deve reforçar a instabilidade no dia 20.</p><h2>Por que a semana deve ter tantas pancadas?</h2><p>A combinação de ar quente, umidade elevada e circulação de ventos favorece a formação de nuvens carregadas. A análise meteorológica publicada nesta segunda-feira também aponta corredores de umidade e áreas de baixa pressão que ajudam a organizar a instabilidade.</p><p>As pancadas tendem a ocorrer com frequência durante a tarde e a noite em muitas áreas. Isso não estabelece um horário fixo para a chuva: o comportamento pode mudar de uma cidade para outra e ao longo da semana.</p><p>Outro cuidado é não avaliar uma tempestade apenas pelo total previsto. Um episódio concentrado, com vento forte e descargas elétricas, merece atenção mesmo quando o acumulado semanal parece menor que o de outras regiões.</p><h2>Como a semana começou no Grande ABC?</h2><p>No Grande ABC, em São Paulo, a segunda-feira já começou com chuva em diferentes pontos. Durante a manhã, houve registro de chuva e trovoadas em cidades como Santo André, São Bernardo e São Caetano.</p><p>A previsão local apontava precipitação intercalada com aberturas e temperaturas máximas entre 22°C e 24°C nas sete cidades. Para terça-feira, 17 de novembro, a tendência apresentada era de diminuição da instabilidade, embora ainda houvesse possibilidade de pancadas.</p><p>O contraste ajuda a entender por que uma previsão nacional não substitui a consulta municipal. Uma melhora pontual em determinada cidade não significa que a instabilidade terminou no restante do estado ou do país.</p><h2>O que fazer agora para organizar a rotina?</h2><p>A orientação prática é transformar a previsão em uma etapa do planejamento, sem tratar estimativas como certezas. Antes de mudar um compromisso, confira a atualização para o município e os avisos dos órgãos locais.</p><ul><li><strong>Revise os deslocamentos:</strong> consulte as condições antes de sair e, se possível, deixe uma margem entre compromissos que exigem atravessar a cidade.</li><li><strong>Prepare uma alternativa:</strong> combine previamente como avisar sobre atrasos ou remarcar atividades externas, entregas e visitas.</li><li><strong>Separe prazo de horário:</strong> se uma tarefa precisa ser concluída em determinado dia, avalie antecipá-la em vez de depender da última janela disponível.</li><li><strong>Confira a previsão novamente:</strong> programe um lembrete para consultar as atualizações na noite anterior e antes do deslocamento.</li></ul><p>Para quem trabalha na rua, vale conversar com a equipe sobre ajustes possíveis na agenda. A ideia não é cancelar tudo por antecipação, mas evitar que uma mudança nas condições do tempo encontre o dia inteiro sem alternativa.</p>"
+ },
+ {
   "slug": "bolsa-familia-pagamento-calendario-nis",
   "data": "2026-11-16",
   "hora": "17:21",
