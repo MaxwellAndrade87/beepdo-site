@@ -1,5 +1,45 @@
 [
  {
+  "slug": "bolsa-familia-pagamento-calendario-nis",
+  "data": "2026-11-16",
+  "hora": "17:21",
+  "categoria": "Brasil",
+  "titulo": "Bolsa Família começa a pagar novembro; veja as datas",
+  "resumo": "Bolsa Família começa a pagar novembro com calendário concentrado até quarta-feira. Confira as datas por NIS e organize as contas antes de gastar.",
+  "leitura": 3,
+  "capa": {
+   "emoji": "📅",
+   "de": "#1F9D63",
+   "para": "#2BB673"
+  },
+  "imagemPrompt": "Fotografia ilustrativa realista de duas pessoas adultas comuns organizando as despesas domésticas à mesa de uma cozinha simples brasileira, uma delas consultando um celular com a tela fora de foco, caderno aberto sem escrita legível, algumas compras de mercado ao lado, iluminação natural suave, ambiente acolhedor, sem marcas, logotipos, textos ou pessoas reais identificáveis.",
+  "imagemAlt": "Imagem ilustrativa: Bolsa Família começa a pagar novembro; veja as datas",
+  "palavrasChave": [
+   "Bolsa Família",
+   "calendário de pagamentos",
+   "NIS",
+   "Caixa Tem",
+   "benefícios sociais"
+  ],
+  "fontes": [
+   {
+    "nome": "Agência Brasil",
+    "url": "https://agenciabrasil.ebc.com.br/economia/noticia/2026-11/caixa-comeca-pagar-parcela-do-bolsa-familia-de-novembro"
+   },
+   {
+    "nome": "R7",
+    "url": "https://noticias.r7.com/prisma/conta-em-dia/bolsa-familia-comeca-pagamento-a-191-milhoes-veja-calendario-antecipado-ate-quarta-feira-16112026/"
+   },
+   {
+    "nome": "Governo Federal",
+    "url": "https://www.gov.br/mds/pt-br/noticias-e-conteudos/Noticias/2026/em-novembro-bolsa-familia-chega-a-19-07-milhoes-de-familias/"
+   }
+  ],
+  "copia": 1.7,
+  "automatico": true,
+  "corpo": "<p>O <strong>Bolsa Família</strong> começou a pagar a parcela de novembro nesta segunda-feira, 16 de novembro de 2026, aos beneficiários com Número de Identificação Social, o NIS, terminado em 1. A Caixa fará os depósitos deste mês em apenas três dias, com liberação para os demais grupos até quarta-feira, 18.</p><p>O calendário concentrado exige atenção de quem costuma consultar a tabela tradicional, distribuída pelos últimos dez dias úteis do mês. A antecipação muda o momento em que o dinheiro fica disponível, mas não deve ser confundida com uma parcela adicional.</p><h2>Quando o Bolsa Família será pago em novembro?</h2><p>O cronograma nacional separa os beneficiários em três grupos. Para identificar a data, é necessário conferir o último algarismo do NIS:</p><ul><li><strong>Final 1:</strong> segunda-feira, 16 de novembro.</li><li><strong>Final 2:</strong> terça-feira, 17 de novembro.</li><li><strong>Finais 3, 4, 5, 6, 7, 8, 9 e 0:</strong> quarta-feira, 18 de novembro.</li></ul><p>O Ministério do Desenvolvimento e Assistência Social informa que a concentração dos pagamentos é uma medida preventiva diante dos possíveis efeitos do El Niño sobre as famílias mais vulneráveis. Assim, quem tem NIS terminado em 0 também terá o crédito previsto para quarta-feira, sem precisar aguardar o fim do mês.</p><p>Para o orçamento doméstico, a principal diferença é ter o recurso disponível mais cedo. Isso pede cuidado para distribuir o dinheiro pelas despesas que ainda vencerão nas semanas seguintes.</p><h2>Quem pode receber antes da data do NIS?</h2><p>Há uma exceção ao calendário nacional: famílias atendidas em <strong>112 municípios de oito estados</strong> podem movimentar o benefício desde esta segunda-feira, independentemente do final do NIS. A medida alcança localidades com situação de emergência ou calamidade pública reconhecida pelo governo federal.</p><p>Os municípios contemplados ficam no Amazonas, em Minas Gerais, no Piauí, no Paraná, no Rio Grande do Norte, em Roraima, em São Paulo e em Sergipe. Morar em um desses estados, porém, não significa automaticamente ter direito à liberação no primeiro dia: é preciso que o município esteja incluído na medida.</p><h2>Como consultar o pagamento sem ir à agência?</h2><p>As datas, o valor individual e a composição da parcela podem ser consultados no Caixa Tem. O aplicativo também permite movimentar os recursos, sem exigir uma ida à agência apenas para verificar o depósito.</p><p>Informações do programa estão disponíveis ainda no aplicativo Bolsa Família e nos canais oficiais de atendimento. Para dúvidas sobre o benefício e o Cadastro Único, há o Disque Social 121; questões cadastrais também podem ser encaminhadas ao posto municipal responsável ou ao Centro de Referência de Assistência Social, o CRAS.</p><p>Antes de sair de casa, a recomendação é verificar a situação apresentada no aplicativo e identificar exatamente qual dúvida precisa ser resolvida. Isso ajuda a evitar deslocamentos feitos apenas com base em calendários antigos ou mensagens repassadas por outras pessoas.</p><h2>O que fazer agora para organizar as contas?</h2><p>A orientação do BeepDo é tratar a antecipação como uma mudança de agenda, não como dinheiro extra. O primeiro passo é anotar a data correta do crédito e listar as despesas que o benefício precisará cobrir.</p><ol><li><strong>Confira o depósito:</strong> consulte o valor efetivamente disponível antes de assumir um pagamento.</li><li><strong>Separe as despesas essenciais:</strong> organize alimentação, moradia, transporte e outras necessidades da família.</li><li><strong>Marque os vencimentos:</strong> registre quais contas precisam ser pagas agora e quais vencerão mais adiante.</li><li><strong>Programe lembretes:</strong> crie avisos para os pagamentos futuros, sem considerar todo o saldo como livre para compras.</li></ol><p>Se uma conta vence depois de quarta-feira, reserve o valor correspondente mesmo que decida não pagá-la imediatamente. O objetivo é aproveitar a disponibilidade antecipada sem deixar faltar dinheiro antes do próximo repasse.</p>"
+ },
+ {
   "slug": "feirao-maturidade-vagas-porto-alegre",
   "data": "2026-11-15",
   "hora": "21:57",
