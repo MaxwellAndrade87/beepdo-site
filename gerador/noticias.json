@@ -1,5 +1,45 @@
 [
  {
+  "slug": "brexit-reino-unido-aproximacao-ue",
+  "data": "2026-11-17",
+  "hora": "00:44",
+  "categoria": "Mundo",
+  "titulo": "Brexit: premiê britânico defende aproximação com a UE",
+  "resumo": "Brexit volta ao centro do debate britânico antes de reunião com a União Europeia. Entenda as propostas e os cuidados ao planejar viagens e negócios.",
+  "leitura": 3,
+  "capa": {
+   "emoji": "🌍",
+   "de": "#2563EB",
+   "para": "#4F86F7"
+  },
+  "imagemPrompt": "Fotografia ilustrativa realista de pessoas comuns em uma pequena empresa de comércio internacional, conferindo caixas sem identificação e documentos sem texto legível, em um escritório integrado a um depósito genérico europeu. Luz natural, ambiente organizado, expressões de atenção e colaboração, sem pessoas famosas, políticos, logotipos, marcas ou bandeiras.",
+  "imagemAlt": "Imagem ilustrativa: Brexit: premiê britânico defende aproximação com a UE",
+  "palavrasChave": [
+   "Brexit",
+   "Reino Unido",
+   "União Europeia",
+   "comércio internacional",
+   "Andy Burnham"
+  ],
+  "fontes": [
+   {
+    "nome": "AP",
+    "url": "https://apnews.com/article/andy-burnham-lord-mayor-banquet-speech-brexit-073f83b31ac8372ab7835e06a830261b"
+   },
+   {
+    "nome": "Reuters",
+    "url": "https://www.marketscreener.com/news/as-britain-seeks-closer-eu-ties-brexit-trade-offs-return-ce785edede80ff21"
+   },
+   {
+    "nome": "Parlamento britânico",
+    "url": "https://committees.parliament.uk/publications/55522/documents/308429/default/"
+   }
+  ],
+  "copia": 0,
+  "automatico": true,
+  "corpo": "<p>O Brexit voltou ao centro da política britânica nesta segunda-feira, 16 de novembro, quando o primeiro-ministro Andy Burnham afirmou que a saída da União Europeia não trouxe os resultados prometidos. Em discurso em Londres, ele defendeu uma relação mais próxima com o bloco, antes da reunião bilateral marcada para sexta-feira, 20 de novembro, em Bruxelas.</p><p>A declaração abre espaço para discutir o futuro dessa relação, mas não representa uma decisão de retornar à União Europeia. Para quem acompanha oportunidades de estudo, trabalho ou negócios, é importante separar a intenção política das medidas que ainda precisam ser negociadas.</p><h2>O que o governo britânico quer negociar?</h2><p>A aproximação tem como prioridades facilitar o comércio de alimentos e ampliar a cooperação em defesa. Também estão em discussão a conexão entre mercados de carbono e mecanismos de mobilidade para jovens.</p><p>No comércio de alimentos, a proposta envolve aproximar regras britânicas das europeias para reduzir verificações nas fronteiras. A contrapartida é aceitar maior alinhamento regulatório, justamente um dos temas que alimentaram as disputas sobre a saída do bloco.</p><p>O encontro não deve resolver todas as diferenças. Há divergências sobre o tamanho de um eventual programa para jovens e sobre mensalidades universitárias, com expectativa de mais meses de negociação para concluir esse pacote.</p><h2>O Reino Unido vai voltar à União Europeia?</h2><p>Não há uma decisão de retorno. Burnham pretende abrir uma discussão nacional sobre a relação de longo prazo com o bloco, enquanto o governo continua vinculado a compromissos eleitorais que limitam a aproximação.</p><p>O ponto central é distinguir acordos por setor de uma mudança completa na posição britânica. Facilitar uma operação comercial ou criar um programa específico não equivale, por si só, a restabelecer todas as condições anteriores ao Brexit.</p><h2>Quando haverá decisões mais concretas?</h2><p>A próxima data de referência é <strong>20 de novembro</strong>. A realização da reunião em Bruxelas já havia sido confirmada em correspondência publicada pelo Parlamento britânico em outubro.</p><p>Na mesma documentação, a comissão parlamentar responsável por assuntos externos cobrou objetivos mais claros, transparência e acompanhamento das negociações. Também pediu uma apresentação detalhada das alternativas disponíveis e de suas contrapartidas, como a relação entre crescimento econômico e liberdade para definir regras próprias.</p><p>Assim, o que merece atenção depois do encontro não é apenas o anúncio de um entendimento. Será necessário verificar quais compromissos foram efetivamente assumidos, o que permanece pendente e quais datas de implementação serão divulgadas.</p><h2>O que isso muda para seus planos?</h2><p>A orientação prática do BeepDo é tratar a reunião como um ponto de acompanhamento, não como autorização para antecipar gastos. Uma proposta em negociação não deve ser a única base para comprar passagens, contratar serviços ou assumir compromissos de estudo e trabalho.</p><p>Para organizar decisões relacionadas ao Reino Unido ou à União Europeia, vale montar uma lista curta:</p><ul><li><strong>Separe anúncio e aplicação:</strong> registre o que foi proposto e procure a confirmação de quando cada medida começará a valer.</li><li><strong>Confira o público atendido:</strong> não presuma que um futuro programa entre britânicos e europeus incluirá brasileiros.</li><li><strong>Revise antes de pagar:</strong> confirme condições de matrícula, contratação e cancelamento diretamente com a instituição ou empresa responsável.</li><li><strong>Marque uma revisão após a reunião:</strong> reserve um momento para consultar os documentos publicados, sem depender apenas das manchetes.</li></ul><p>Se você administra um pequeno negócio, peça ao parceiro comercial que identifique por escrito qualquer mudança alegada em documentação, custos ou prazos. O cuidado essencial é não transformar uma expectativa diplomática em uma obrigação financeira antes de conhecer as condições concretas.</p>"
+ },
+ {
   "slug": "previsao-do-tempo-chuva-forte",
   "data": "2026-11-16",
   "hora": "20:42",
