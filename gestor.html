@@ -7,11 +7,11 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.0/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js" defer></script>
 <style>
-:root{--bg:#F6F6F9;--sf:#FFFFFF;--bd:#E6E6EE;--bd2:#D9D9E3;--tx:#1B1B23;--mu:#5E5E6E;--ac:#5B3FB0;--acs:#EFEAFB;--ok:#1E6B3A;--oks:#E3F4E8;--er:#B3261E;--ers:#FDECEA;--wa:#7A5000;--was:#FFF4D6;--in:#0D5788;--ins:#D6ECFB}
+:root{--bg:#F6F4FB;--sf:#FFFFFF;--bd:#E3DEF0;--bd2:#D6CFEA;--tx:#16131F;--mu:#4B4560;--ac:#5E3FF2;--acs:#EEEAF9;--ok:#1E6B3A;--oks:#E3F4E8;--er:#B3261E;--ers:#FDECEA;--wa:#7A5000;--was:#FFF4D6;--in:#0D5788;--ins:#D6ECFB}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,sans-serif;font-size:14px}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -138,6 +138,26 @@ details.avisos summary::-webkit-details-marker{display:none}
   .main{padding:18px 14px 50px}
   h1{font-size:20px}
 }
+/* Redesenho: fontes, cartões arredondados e as ondas do beep no canto */
+h1{font-family:'Plus Jakarta Sans',Inter,sans-serif;font-size:32px;font-weight:800;letter-spacing:-.9px}
+.brand b{font-family:'Plus Jakarta Sans',Inter,sans-serif;font-weight:800;font-size:18px}
+.side{background:#FBFAFE;border-right-color:#E8E4F2}
+.nav button.on{font-weight:700}
+.card{border:0;border-radius:22px;box-shadow:0 1px 2px rgba(22,19,31,.04),0 10px 28px rgba(22,19,31,.05)}
+.kpi{border:0;border-radius:20px;box-shadow:0 1px 2px rgba(22,19,31,.04)}
+.kpi b{font-family:'Plus Jakarta Sans',Inter,sans-serif;font-weight:800}
+.btn{border-radius:999px}
+.btn.pri:hover{background:#4A2DD6}
+.btn.sm{border-radius:999px}
+.seg{border:0;background:#EEEAF9;border-radius:999px;padding:3px}
+.seg button{border-radius:999px}
+.seg button.on{background:#FFFFFF;color:var(--tx);box-shadow:0 1px 2px rgba(22,19,31,.08)}
+.tag{border-radius:8px}
+.main{position:relative;isolation:isolate}
+.main::before,.main::after{content:'';position:absolute;border-radius:50%;border:22px solid var(--ac);pointer-events:none;z-index:-1}
+.main::before{width:200px;height:200px;right:-20px;top:-20px;opacity:.13}
+.main::after{width:330px;height:330px;right:-85px;top:-85px;opacity:.08}
+.app{overflow-x:hidden}
 </style>
 </head>
 <body>
